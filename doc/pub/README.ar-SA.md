@@ -17,13 +17,7 @@
 
 ### التحميل
 
-التثبيت عبر Homebrew:
-
-```bash
-brew install --cask hajimi
-```
-
-كما يمكنك تنزيل أحدث الحزم من [إصدارات hajimi على GitHub](https://github.com/WaveF/hajimi/releases/).
+نزّل أحدث حزمة `.dmg` من [إصدارات hajimi على GitHub](https://github.com/WaveF/hajimi/releases/).
 
 ### دعم تعدد اللغات
 

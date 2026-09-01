@@ -17,13 +17,7 @@
 
 ### 下载
 
-通过 Homebrew 安装：
-
-```bash
-brew install --cask hajimi
-```
-
-你也可以从 [hajimi GitHub Releases](https://github.com/WaveF/hajimi/releases/) 获取最新的安装包。
+请从 [hajimi GitHub Releases](https://github.com/WaveF/hajimi/releases/) 下载最新的 `.dmg` 安装包。
 
 ### 国际化支持
 

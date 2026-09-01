@@ -17,13 +17,7 @@
 
 ### Download
 
-Installation via Homebrew:
-
-```bash
-brew install --cask hajimi
-```
-
-Du kannst die neuesten Pakete auch von den [hajimi GitHub Releases](https://github.com/WaveF/hajimi/releases/) herunterladen.
+Lade das neueste `.dmg`-Paket aus den [hajimi GitHub Releases](https://github.com/WaveF/hajimi/releases/) herunter.
 
 ### i18n-Unterstützung
 

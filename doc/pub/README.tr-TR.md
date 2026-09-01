@@ -17,13 +17,7 @@
 
 ### İndirme
 
-Homebrew ile kurun:
-
-```bash
-brew install --cask hajimi
-```
-
-Ayrıca en güncel paketleri [hajimi GitHub Releases](https://github.com/WaveF/hajimi/releases/) üzerinden indirebilirsiniz.
+[hajimi GitHub Releases](https://github.com/WaveF/hajimi/releases/) üzerinden en güncel `.dmg` paketini indirin.
 
 ### i18n desteği
 
