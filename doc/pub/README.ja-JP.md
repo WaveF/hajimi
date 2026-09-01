@@ -90,4 +90,4 @@ npm run tauri build
 
 ## 謝辞
 
-hajimi は [Cardinal](https://github.com/cardisoft/cardinal) を基盤として開発されています。インスピレーションと基礎を提供してくださった原作者および貢献者の皆さまに、心より感謝します。
+hajimi は [Cardinal](https://github.com/cardisoft/cardinal) から始まりました。しっかりした土台を作ってくれた原作者と貢献者のみなさんに大感謝です。ここからも気軽に改良を続けていきます。

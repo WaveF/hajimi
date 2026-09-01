@@ -90,4 +90,4 @@ npm run tauri build
 
 ## Ringraziamenti
 
-hajimi nasce sulle fondamenta di [Cardinal](https://github.com/cardisoft/cardinal). Ringraziamo sinceramente gli autori e i contributori del progetto originale per l’ispirazione e il lavoro fondante.
+hajimi è nato da [Cardinal](https://github.com/cardisoft/cardinal). Grazie di cuore agli autori e ai contributori originali per averci lasciato una base così solida: da qui continuiamo a fare esperimenti e migliorare.

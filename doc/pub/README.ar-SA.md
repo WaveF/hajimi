@@ -90,4 +90,4 @@ npm run tauri build
 
 ## تقدير
 
-بُني hajimi على أساس [Cardinal](https://github.com/cardisoft/cardinal). نتوجه بخالص الشكر إلى المؤلفين والمساهمين في المشروع الأصلي على إلهامهم وعملهم التأسيسي.
+hajimi بدأ من [Cardinal](https://github.com/cardisoft/cardinal). شكرًا كبيرًا للمؤلفين والمساهمين في المشروع الأصلي على هذا الأساس الرائع—وسنواصل التجربة والتطوير من هنا.

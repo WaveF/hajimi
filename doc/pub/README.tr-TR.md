@@ -90,4 +90,4 @@ npm run tauri build
 
 ## Teşekkür
 
-hajimi, [Cardinal](https://github.com/cardisoft/cardinal) temeli üzerine inşa edilmiştir. İlhamı ve temel çalışmaları için özgün projenin yazarlarına ve katkıda bulunanlarına içtenlikle teşekkür ederiz.
+hajimi, [Cardinal](https://github.com/cardisoft/cardinal) ile başladı. Böyle sağlam bir başlangıç hazırladıkları için özgün projenin yazarlarına ve katkıda bulunanlarına kocaman teşekkürler—buradan geliştirmeye devam ediyoruz.
