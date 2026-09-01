@@ -19,6 +19,20 @@
 
 [hajimi GitHub Releases](https://github.com/WaveF/hajimi/releases/) üzerinden en güncel `.dmg` paketini indirin.
 
+### Kurulum
+
+1. İndirdiğiniz `.dmg` dosyasını açın.
+2. `hajimi.app` dosyasını `Applications` klasörüne sürükleyin.
+3. hajimi’yi `Applications` içinden açın.
+
+Mevcut macOS derlemesi ad-hoc imzalıdır ve Apple tarafından henüz notarize edilmemiştir. macOS uygulamayı engellerse uygulamayı bir kez açın, ardından **Sistem Ayarları → Gizlilik ve Güvenlik → Yine de Aç** bölümüne gidip açmayı onaylayın. Bu işlemi yalnızca resmi hajimi GitHub Release’inden indirdiğiniz DMG için yapın.
+
+Komut satırı alternatifi olarak, uygulamayı `Applications` klasörüne taşıdıktan sonra indirme karantina özniteliğini kaldırabilirsiniz:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/hajimi.app
+```
+
 ### i18n desteği
 
 Farklı bir dil mi lazım? Durum çubuğundaki ⚙️ düğmesine tıklayarak anında değiştirin.

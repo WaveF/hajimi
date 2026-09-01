@@ -19,6 +19,20 @@
 
 [hajimi GitHub Releases](https://github.com/WaveF/hajimi/releases/) से नवीनतम `.dmg` पैकेज डाउनलोड करें।
 
+### इंस्टॉल करें
+
+1. डाउनलोड की गई `.dmg` फ़ाइल खोलें।
+2. `hajimi.app` को `Applications` फ़ोल्डर में खींचें।
+3. `Applications` से hajimi खोलें।
+
+macOS का वर्तमान बिल्ड ad-hoc हस्ताक्षरित है और Apple ने इसे अभी notarize नहीं किया है। यदि macOS ऐप को रोकता है, तो उसे एक बार खोलें, फिर **System Settings → Privacy & Security → Open Anyway** पर जाकर खोलने की पुष्टि करें। यह केवल आधिकारिक hajimi GitHub Release से डाउनलोड किए गए DMG के लिए करें।
+
+कमांड लाइन के विकल्प के रूप में, ऐप को `Applications` में ले जाने के बाद डाउनलोड quarantine attribute हटाया जा सकता है:
+
+```bash
+xattr -dr com.apple.quarantine /Applications/hajimi.app
+```
+
 ### i18n सपोर्ट
 
 किसी दूसरी भाषा की ज़रूरत है? स्टेटस बार में ⚙️ बटन पर क्लिक करके तुरंत बदलें।

@@ -19,6 +19,20 @@
 
 請從 [hajimi GitHub Releases](https://github.com/WaveF/hajimi/releases/) 下載最新的 `.dmg` 安裝包。
 
+### 安裝
+
+1. 開啟下載好的 `.dmg` 檔案。
+2. 將 `hajimi.app` 拖曳到 `Applications` 資料夾。
+3. 從 `Applications` 資料夾開啟 hajimi。
+
+目前的 macOS 版本使用 ad-hoc 簽章，尚未通過 Apple 公證。如果 macOS 阻止開啟，請先嘗試開啟一次，然後前往 **系統設定 → 隱私權與安全性 → 仍要開啟**，確認允許執行。請只對從 hajimi 官方 GitHub Release 下載的 DMG 執行此操作。
+
+如果需要使用命令列，先將應用程式移至 `Applications`，接著可以移除下載檔案的隔離屬性：
+
+```bash
+xattr -dr com.apple.quarantine /Applications/hajimi.app
+```
+
 ### 國際化支援
 
 想切換其他語言？點擊狀態列裡的 ⚙️ 按鈕即可即時切換。
