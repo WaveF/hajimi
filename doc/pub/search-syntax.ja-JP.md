@@ -1,6 +1,6 @@
-# Cardinal 検索構文
+# hajimi 検索構文
 
-Cardinal のクエリ言語は Everything の構文に意図的に近づけていますが、現在のエンジンが実際に実装している内容を反映しています。このページは Rust バックエンドが現時点で理解する内容の公式リファレンスです。
+hajimi のクエリ言語は Everything の構文に意図的に近づけていますが、現在のエンジンが実際に実装している内容を反映しています。このページは Rust バックエンドが現時点で理解する内容の公式リファレンスです。
 
 [English](search-syntax.md) · [Español](search-syntax.es-ES.md) · [한국어](search-syntax.ko-KR.md) · [Русский](search-syntax.ru-RU.md) · [简体中文](search-syntax.zh-CN.md) · [繁體中文](search-syntax.zh-TW.md) · [Português](search-syntax.pt-BR.md) · [Italiano](search-syntax.it-IT.md) · [日本語](search-syntax.ja-JP.md) · [Français](search-syntax.fr-FR.md) · [Deutsch](search-syntax.de-DE.md) · [Українська](search-syntax.uk-UA.md) · [العربية](search-syntax.ar-SA.md) · [हिन्दी](search-syntax.hi-IN.md) · [Türkçe](search-syntax.tr-TR.md)
 
@@ -37,7 +37,7 @@ ext:png;jpg travel|vacation   # 名前に “travel” または “vacation” 
 
 - 引用符がなく `/` を含まないトークンは 1 つのパスコンポーネントに対する **部分一致** です:
   - `demo` は `/Users/demo` フォルダや `/Users/alice/demo-notes.md` に一致します。
-  - 祖先フォルダ名が `demo` であるという理由だけでは `/Users/demo/Projects/cardinal.md` には一致しません。子孫を検索するには `demo/**` を使います。
+  - 祖先フォルダ名が `demo` であるという理由だけでは `/Users/demo/Projects/hajimi.md` には一致しません。子孫を検索するには `demo/**` を使います。
 - 二重引用符のフレーズは空白を含む正確な並びに一致します:
   - `"Application Support"` は `/Library/Application Support` に一致します。
 - UI の大文字/小文字トグルは両方に適用されます。
@@ -57,7 +57,7 @@ ext:png;jpg travel|vacation   # 名前に “travel” または “vacation” 
 
 ### 2.3 `/` によるパス風セグメント化
 
-Cardinal はトークン内の「スラッシュセグメント」を理解し、各セグメントをパス要素に対する前方/後方/完全/部分一致として分類します。例:
+hajimi はトークン内の「スラッシュセグメント」を理解し、各セグメントをパス要素に対する前方/後方/完全/部分一致として分類します。例:
 
 ```text
 elloworl        → Substring("elloworl")
@@ -81,7 +81,7 @@ bab/bob/        → Suffix("bab"), Exact("bob")
 
 ## 3. ブール論理とグルーピング
 
-Cardinal は Everything の優先順位に従います:
+hajimi は Everything の優先順位に従います:
 
 - `NOT` / `!` が最も強く結合される。
 - `OR` / `|` が次。
@@ -115,7 +115,7 @@ good (<src|tests> ext:rs)
 
 このセクションは、現在のエンジンが実際に評価するフィルタのみを列挙しています。
 
-> **注意**: フィルタ引数はコロンの直後に続ける必要があります（`ext:jpg`, `parent:/Users/demo`）。`file: *.md` のように空白を挟むと、Cardinal は `file:` フィルタ（引数なし）と別トークン `*.md` として扱います。
+> **注意**: フィルタ引数はコロンの直後に続ける必要があります（`ext:jpg`, `parent:/Users/demo`）。`file: *.md` のように空白を挟むと、hajimi は `file:` フィルタ（引数なし）と別トークン `*.md` として扱います。
 
 ### 4.1 ファイル / フォルダフィルタ
 
@@ -173,7 +173,7 @@ ext:png;jpg travel|vacation
 例:
 ```text
 type:picture vacation
-type:code "Cardinal"
+type:code "hajimi"
 type:archive dm:pastmonth
 ```
 
@@ -186,7 +186,7 @@ type:archive dm:pastmonth
 | `audio:` | `type:audio`  | `audio: piano`       |
 | `video:` | `type:video`  | `video: tutorial`    |
 | `doc:`   | `type:doc`    | `doc: invoice dm:2024` |
-| `exe:`   | `type:exe`    | `exe: "Cardinal"`   |
+| `exe:`   | `type:exe`    | `exe: "hajimi"`   |
 
 マクロは任意の引数を受け取れます:
 ```text
@@ -275,7 +275,7 @@ type:doc content:"Q4 budget"
 
 ### 4.10 タグフィルタ: `tag:` / `t:`
 
-Finder タグ（macOS）でフィルタします。Cardinal はファイルのメタデータからタグをオンデマンドで取得し（キャッシュなし）、結果が大きい場合は `mdfind` で候補を絞ってからタグ一致を適用します。
+Finder タグ（macOS）でフィルタします。hajimi はファイルのメタデータからタグをオンデマンドで取得し（キャッシュなし）、結果が大きい場合は `mdfind` で候補を絞ってからタグ一致を適用します。
 
 - `;` 区切りで 1 つ以上のタグを指定できます（論理 OR）: `tag:ProjectA;ProjectB`。
 - 複数の `tag:` フィルタを連結すると論理 AND になります: `tag:Project tag:Important`。

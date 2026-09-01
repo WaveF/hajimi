@@ -1,6 +1,6 @@
 [book]
-title = "Cardinal Documentation"
-authors = ["Cardinal Contributors"]
+title = "hajimi Documentation"
+authors = ["hajimi Contributors"]
 src = "doc/inner"
 
 [build]

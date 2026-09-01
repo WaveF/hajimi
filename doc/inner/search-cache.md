@@ -1,6 +1,6 @@
 # SearchCache Deep Dive
 
-`search-cache/` is Cardinal's in-process search and indexing engine. It stores the watched filesystem in a compact slab, maintains a name index for fast lookup, and applies FSEvent-driven subtree rescans.
+`search-cache/` is hajimi's in-process search and indexing engine. It stores the watched filesystem in a compact slab, maintains a name index for fast lookup, and applies FSEvent-driven subtree rescans.
 
 ## Core structures
 ```text
@@ -58,11 +58,11 @@ Persisted fields:
 ## Query pipeline
 ```text
 raw query
-  -> cardinal_syntax::parse_query
+  -> hajimi_syntax::parse_query
   -> expand_query_home_dirs
   -> strip_query_quotes
   -> highlight::derive_highlight_terms
-  -> cardinal_syntax::optimize_query
+  -> hajimi_syntax::optimize_query
   -> SearchCache::evaluate_expr
 ```
 

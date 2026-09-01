@@ -381,57 +381,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cardinal"
-version = "0.1.23"
-dependencies = [
- "anyhow",
- "base64 0.22.1",
- "camino",
- "cardinal-sdk",
- "crossbeam-channel",
- "fs-icon",
- "fswalk",
- "objc2",
- "objc2-app-kit",
- "objc2-foundation",
- "objc2-quick-look-ui",
- "once_cell",
- "parking_lot",
- "rayon",
- "search-cache",
- "search-cancel",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
- "tauri-plugin-drag",
- "tauri-plugin-global-shortcut",
- "tauri-plugin-macos-permissions",
- "tauri-plugin-opener",
- "tauri-plugin-prevent-default",
- "tauri-plugin-window-state",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "cardinal-sdk"
-version = "0.1.0"
-dependencies = [
- "bitflags 2.11.0",
- "crossbeam-channel",
- "dispatch2",
- "fswalk",
- "libc",
- "objc2-core-foundation",
- "objc2-core-services",
-]
-
-[[package]]
-name = "cardinal-syntax"
-version = "0.1.0"
-
-[[package]]
 name = "cargo-platform"
 version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1682,6 +1631,58 @@ dependencies = [
  "quote",
  "syn 2.0.117",
 ]
+
+[[package]]
+name = "hajimi"
+version = "0.1.23"
+dependencies = [
+ "anyhow",
+ "base64 0.22.1",
+ "camino",
+ "crossbeam-channel",
+ "fs-icon",
+ "fswalk",
+ "hajimi-sdk",
+ "objc2",
+ "objc2-app-kit",
+ "objc2-foundation",
+ "objc2-quick-look-ui",
+ "once_cell",
+ "parking_lot",
+ "rayon",
+ "search-cache",
+ "search-cancel",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-drag",
+ "tauri-plugin-global-shortcut",
+ "tauri-plugin-macos-permissions",
+ "tauri-plugin-opener",
+ "tauri-plugin-prevent-default",
+ "tauri-plugin-window-state",
+ "tracing",
+ "tracing-subscriber",
+ "uuid",
+]
+
+[[package]]
+name = "hajimi-sdk"
+version = "0.1.0"
+dependencies = [
+ "bitflags 2.11.0",
+ "crossbeam-channel",
+ "dispatch2",
+ "fswalk",
+ "libc",
+ "objc2-core-foundation",
+ "objc2-core-services",
+]
+
+[[package]]
+name = "hajimi-syntax"
+version = "0.1.0"
 
 [[package]]
 name = "hashbrown"
@@ -3694,12 +3695,12 @@ name = "search-cache"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "cardinal-sdk",
- "cardinal-syntax",
  "crossbeam-channel",
  "enumn",
  "file-tags",
  "fswalk",
+ "hajimi-sdk",
+ "hajimi-syntax",
  "hashbrown 0.16.1",
  "itertools",
  "jiff",

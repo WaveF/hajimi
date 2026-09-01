@@ -1,29 +1,29 @@
 <div align="center">
-  <img src="../../cardinal/mac-icon_1024x1024.png" alt="أيقونة Cardinal" width="120" height="120">
-  <h1>Cardinal</h1>
+  <img src="../../app-icon.png" alt="أيقونة hajimi" width="120" height="120">
+  <h1>hajimi</h1>
   <p>أسرع وأدق تطبيق للبحث عن الملفات على macOS.</p>
   <p>
-    <a href="#استخدام-cardinal">استخدام Cardinal</a> ·
-    <a href="#بناء-cardinal">بناء Cardinal</a>
+    <a href="#استخدام-hajimi">استخدام hajimi</a> ·
+    <a href="#بناء-hajimi">بناء hajimi</a>
   </p>
-  <img src="UI.gif" alt="معاينة واجهة Cardinal" width="720">
+  <img src="UI.gif" alt="معاينة واجهة hajimi" width="720">
 </div>
 
 ---
 
 [English](../../README.md) · [Español](README.es-ES.md) · [한국어](README.ko-KR.md) · [Русский](README.ru-RU.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [Português](README.pt-BR.md) · [Italiano](README.it-IT.md) · [日本語](README.ja-JP.md) · [Français](README.fr-FR.md) · [Deutsch](README.de-DE.md) · [Українська](README.uk-UA.md) · [العربية](README.ar-SA.md) · [हिन्दी](README.hi-IN.md) · [Türkçe](README.tr-TR.md)
 
-## استخدام Cardinal
+## استخدام hajimi
 
 ### التحميل
 
 التثبيت عبر Homebrew:
 
 ```bash
-brew install --cask cardinal-search
+brew install --cask hajimi
 ```
 
-كما يمكنك تنزيل أحدث الحزم من [GitHub Releases](https://github.com/cardisoft/cardinal/releases/).
+كما يمكنك تنزيل أحدث الحزم من [إصدارات hajimi على GitHub](https://github.com/WaveF/hajimi/releases/).
 
 ### دعم تعدد اللغات
 
@@ -31,7 +31,7 @@ brew install --cask cardinal-search
 
 ### أساسيات البحث
 
-يدعم Cardinal طبقة صياغة متوافقة مع Everything فوق أساليب المطابقة التقليدية (جزء من النص/بادئة):
+يدعم hajimi طبقة صياغة متوافقة مع Everything فوق أساليب المطابقة التقليدية (جزء من النص/بادئة):
 
 - `report draft` – المسافة تعمل كـ `AND`، لذا ستظهر الملفات التي تحتوي أسماؤها على كلا الرمزين.
 - `*.pdf briefing` – تصفية نتائج PDF التي يتضمن اسمها “briefing”.
@@ -48,12 +48,12 @@ brew install --cask cardinal-search
 
 ### اختصارات لوحة المفاتيح والمعاينات
 
-- `Cmd+Shift+Space` – إظهار/إخفاء نافذة Cardinal عالميًا عبر اختصار التشغيل السريع.
+- `Cmd+Shift+Space` – إظهار/إخفاء نافذة hajimi عالميًا عبر اختصار التشغيل السريع.
 - `Cmd+,` – فتح التفضيلات.
-- `Esc` – إخفاء نافذة Cardinal.
+- `Esc` – إخفاء نافذة hajimi.
 - `ArrowUp`/`ArrowDown` – تحريك التحديد.
 - `Shift+ArrowUp`/`Shift+ArrowDown` – توسيع التحديد.
-- `Space` – فتح Quick Look للصف المحدد دون مغادرة Cardinal.
+- `Space` – فتح Quick Look للصف المحدد دون مغادرة hajimi.
 - `Cmd+O` – يفتح النتيجة المحددة.
 - `Cmd+R` – إظهار النتيجة المحددة في Finder.
 - `Cmd+C` – نسخ الملفات المحددة إلى الحافظة.
@@ -65,7 +65,7 @@ brew install --cask cardinal-search
 
 ---
 
-## بناء Cardinal
+## بناء hajimi
 
 ### المتطلبات
 
@@ -87,3 +87,7 @@ npm run tauri dev -- --release --features dev
 cd cardinal
 npm run tauri build
 ```
+
+## تقدير
+
+بُني hajimi على أساس [Cardinal](https://github.com/cardisoft/cardinal). نتوجه بخالص الشكر إلى المؤلفين والمساهمين في المشروع الأصلي على إلهامهم وعملهم التأسيسي.

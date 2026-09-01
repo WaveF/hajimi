@@ -48,7 +48,7 @@ export const LANGUAGE_OPTIONS: LanguageOption[] = LANGUAGE_DEFINITIONS.map(({ co
   label,
 }));
 
-const STORAGE_KEY = 'cardinal.language';
+const STORAGE_KEY = 'hajimi.language';
 const DEFAULT_LANGUAGE: SupportedLanguage = 'en-US';
 
 const resources = LANGUAGE_DEFINITIONS.reduce<

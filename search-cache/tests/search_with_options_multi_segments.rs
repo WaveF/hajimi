@@ -126,7 +126,7 @@ fn multi_segments_with_wildcards() {
         guard_indices(cache.search_with_options("alpha* beta*", opts, CancellationToken::noop()));
     let nodes = cache.expand_file_nodes(&indices);
     // Depending on segmentation/wildcard translation, intersection may collapse; verify each match holds alpha and beta if any returned.
-    // No cardinality assertion; zero results acceptable.
+    // No hajimiity assertion; zero results acceptable.
     for n in &nodes {
         let name = n.path.file_name().unwrap().to_string_lossy();
         assert!(name.contains("alpha") && name.contains("beta"));

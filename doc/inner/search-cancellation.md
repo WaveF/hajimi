@@ -30,7 +30,7 @@ token.is_cancelled_sparse(i)?;
 ```
 and naturally bubble cancellation through `Option`.
 
-## Where Cardinal uses it
+## Where hajimi uses it
 - Frontend search requests pass an increasing `version` to the `search` Tauri command.
 - `commands.rs` turns that into `CancellationToken::new(version)`.
 - `SearchCache`, `NamePool`, and other loops periodically check the token and return `None` when a newer search has superseded them.

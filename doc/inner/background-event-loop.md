@@ -48,7 +48,7 @@ event_watcher          -> apply FSEvents, emit recent activity, advance lifecycl
 - `HistoryDone` flips `history_ready` and moves the lifecycle to `Ready`.
 - Only events received after `history_ready` are forwarded to the UI as `fs_events_batch`.
 - `SearchCache::handle_fs_events(...)` performs incremental subtree rescans through `scan_path_recursive(...)`.
-- If the cache returns `HandleFSEError::Rescan`, Cardinal increments `rescan_count` and surfaces that in the status bar. It does **not** automatically run a full rebuild today.
+- If the cache returns `HandleFSEError::Rescan`, hajimi increments `rescan_count` and surfaces that in the status bar. It does **not** automatically run a full rebuild today.
 
 ## Rescans and watch-config changes
 - `trigger_rescan()` sends a new scan token to `perform_rescan(...)`.

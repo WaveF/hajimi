@@ -1,6 +1,7 @@
 use crate::{EventFlag, FsEvent};
 use crossbeam_channel::{Receiver, Sender, bounded, unbounded};
 use dispatch2::{DispatchQueue, DispatchQueueAttr, DispatchRetained};
+use fswalk::PathFilter;
 use libc::dev_t;
 use objc2_core_foundation::{CFArray, CFString, CFTimeInterval};
 use objc2_core_services::{
@@ -98,7 +99,7 @@ impl EventStream {
 
     // Start the FSEventStream with a dispatch queue.
     pub fn spawn(self) -> Option<EventStreamWithQueue> {
-        let queue = DispatchQueue::new("cardinal-sdk-queue", DispatchQueueAttr::SERIAL);
+        let queue = DispatchQueue::new("hajimi-sdk-queue", DispatchQueueAttr::SERIAL);
         unsafe { FSEventStreamSetDispatchQueue(self.stream, Some(&queue)) };
         let result = unsafe { FSEventStreamStart(self.stream) };
         if !result {
@@ -174,12 +175,17 @@ impl EventWatcher {
     ) -> (dev_t, EventWatcher) {
         let (_cancellation_token, cancellation_token_rx) = bounded::<()>(1);
         let (sender, receiver) = unbounded();
+        let path_filter = PathFilter::new(
+            PathBuf::from(&path).as_path(),
+            &ignore_paths,
+            &include_paths,
+        );
         let stream = EventStream::new(
             &[&path],
             since_event_id,
             latency,
             Box::new(move |events| {
-                let events = filter_events_by_paths(events, &ignore_paths, &include_paths);
+                let events = filter_events_by_filter(events, &path_filter);
                 if !events.is_empty() {
                     let _ = sender.send(events);
                 }
@@ -187,7 +193,7 @@ impl EventWatcher {
         );
         let dev = stream.dev();
         std::thread::Builder::new()
-            .name("cardinal-sdk-event-watcher".to_string())
+            .name("hajimi-sdk-event-watcher".to_string())
             .spawn(move || {
                 let _stream_and_queue = stream.spawn().expect("failed to spawn event stream");
                 let _ = cancellation_token_rx.recv();
@@ -203,16 +209,26 @@ impl EventWatcher {
     }
 }
 
+#[cfg(test)]
 fn filter_events_by_paths(
     events: Vec<FsEvent>,
     ignore_paths: &[PathBuf],
     include_paths: &[PathBuf],
 ) -> Vec<FsEvent> {
+    let root = PathBuf::from("/");
+    let path_filter = PathFilter::new(&root, ignore_paths, include_paths);
+    filter_events_by_filter(events, &path_filter)
+}
+
+fn filter_events_by_filter(events: Vec<FsEvent>, path_filter: &PathFilter) -> Vec<FsEvent> {
     events
         .into_iter()
         .filter(|event| {
             event.flag.contains(EventFlag::HistoryDone)
-                || !fswalk::should_ignore_path(&event.path, ignore_paths, include_paths)
+                || !path_filter.should_ignore_with_type(
+                    &event.path,
+                    Some(event.flag.contains(EventFlag::ItemIsDir)),
+                )
         })
         .collect()
 }
@@ -330,7 +346,7 @@ mod tests {
         std::thread::sleep(Duration::from_millis(500));
 
         let created_file = watched_root.join("respawn_event.txt");
-        std::fs::write(&created_file, "cardinal").expect("failed to write test file");
+        std::fs::write(&created_file, "hajimi").expect("failed to write test file");
 
         let deadline = Instant::now() + Duration::from_secs(5);
         let mut observed_change = false;
@@ -466,5 +482,30 @@ mod tests {
                 .collect::<Vec<_>>();
             assert_eq!(actual_ids, expected_ids, "{name}");
         }
+
+        let root = PathBuf::from("/root");
+        let filter = PathFilter::new(&root, &[PathBuf::from("node_modules/")], &[]);
+        let filtered = filter_events_by_filter(
+            vec![
+                FsEvent {
+                    path: PathBuf::from("/root/project/node_modules"),
+                    flag: EventFlag::ItemCreated | EventFlag::ItemIsDir,
+                    id: 1,
+                },
+                FsEvent {
+                    path: PathBuf::from("/root/project/src/main.rs"),
+                    flag: EventFlag::ItemCreated | EventFlag::ItemIsFile,
+                    id: 2,
+                },
+            ],
+            &filter,
+        );
+        assert_eq!(
+            filtered
+                .into_iter()
+                .map(|event| event.id)
+                .collect::<Vec<_>>(),
+            vec![2]
+        );
     }
 }

@@ -18,22 +18,18 @@ const LanguageSwitcher = ({ className }: LanguageSwitcherProps): React.JSX.Eleme
 
   return (
     <div className={className}>
-      <span className="sr-only">{t('language.label')}</span>
-      <div className="language-switcher">
-        <span className="language-switcher__text">{t('language.trigger')}</span>
-        <select
-          className="language-switcher__select"
-          value={currentCode}
-          onChange={handleChange}
-          aria-label={t('language.label')}
-        >
-          {LANGUAGE_OPTIONS.map((option) => (
-            <option key={option.code} value={option.code}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      </div>
+      <select
+        className="preferences-select"
+        value={currentCode}
+        onChange={handleChange}
+        aria-label={t('language.label')}
+      >
+        {LANGUAGE_OPTIONS.map((option) => (
+          <option key={option.code} value={option.code}>
+            {option.label}
+          </option>
+        ))}
+      </select>
     </div>
   );
 };

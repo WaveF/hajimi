@@ -11,7 +11,7 @@ This chapter documents the Tauri commands exposed from `cardinal/src-tauri/src/c
 | `get_sorted_view(results, sort?)` | Sort the current result set on the backend | Reuses a small `SearchState` cache when the same slab-index slice is sorted repeatedly. |
 | `update_icon_viewport(id, viewport)` | Send the visible slab indices for thumbnail prefetch | Fire-and-forget; the backend responds via `icon_update` events. |
 | `trigger_rescan()` | Request a full rebuild of the current watch root | Uses `CancellationToken::new_scan()`. |
-| `set_watch_config(watch_root, ignore_paths)` | Replace the watch root / ignore list | Input is normalized to absolute paths; `/System/Volumes/Data` is always appended. |
+| `set_watch_config(watch_root, ignore_paths)` | Replace the watch root / ignore list | Ignore entries accept gitignore-style patterns such as `node_modules/`; absolute and `~/` entries are normalized, and `/System/Volumes/Data` is always appended. |
 
 ## Quick Look
 

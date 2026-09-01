@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useStoredState } from '../useStoredState';
 
-const STORAGE_KEY = 'cardinal.test.storedState';
+const STORAGE_KEY = 'hajimi.test.storedState';
 const READ_ERROR_MESSAGE = 'read error';
 const WRITE_ERROR_MESSAGE = 'write error';
 

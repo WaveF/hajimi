@@ -1,6 +1,6 @@
-# Sintaxe de busca do Cardinal
+# Sintaxe de busca do hajimi
 
-A linguagem de consulta do Cardinal é intencionalmente próxima da sintaxe do Everything, mas reflete o que o mecanismo atual realmente implementa. Esta página é a referência oficial do que o backend em Rust entende hoje.
+A linguagem de consulta do hajimi é intencionalmente próxima da sintaxe do Everything, mas reflete o que o mecanismo atual realmente implementa. Esta página é a referência oficial do que o backend em Rust entende hoje.
 
 [English](search-syntax.md) · [Español](search-syntax.es-ES.md) · [한국어](search-syntax.ko-KR.md) · [Русский](search-syntax.ru-RU.md) · [简体中文](search-syntax.zh-CN.md) · [繁體中文](search-syntax.zh-TW.md) · [Português](search-syntax.pt-BR.md) · [Italiano](search-syntax.it-IT.md) · [日本語](search-syntax.ja-JP.md) · [Français](search-syntax.fr-FR.md) · [Deutsch](search-syntax.de-DE.md) · [Українська](search-syntax.uk-UA.md) · [العربية](search-syntax.ar-SA.md) · [हिन्दी](search-syntax.hi-IN.md) · [Türkçe](search-syntax.tr-TR.md)
 
@@ -37,7 +37,7 @@ ext:png;jpg travel|vacation   # PNG ou JPG cujos nomes contêm “travel” ou �
 
 - Um token sem aspas e sem `/` é uma **correspondência por substring** em um componente de caminho:
   - `demo` corresponde à pasta `/Users/demo` e a `/Users/alice/demo-notes.md`.
-  - Ele não corresponde a `/Users/demo/Projects/cardinal.md` apenas porque um ancestral se chama `demo`; use `demo/**` para pesquisar descendentes.
+  - Ele não corresponde a `/Users/demo/Projects/hajimi.md` apenas porque um ancestral se chama `demo`; use `demo/**` para pesquisar descendentes.
 - Frases entre aspas duplas correspondem à sequência exata, incluindo espaços:
   - `"Application Support"` corresponde a `/Library/Application Support`.
 - O toggle de sensibilidade a maiúsculas/minúsculas da UI se aplica a ambos.
@@ -57,7 +57,7 @@ ext:png;jpg travel|vacation   # PNG ou JPG cujos nomes contêm “travel” ou �
 
 ### 2.3 Segmentação em estilo de caminho com `/`
 
-Cardinal entende “segmentos com barra” dentro de um token e classifica cada segmento como correspondência de prefixo/sufixo/exata/substring nos componentes do caminho. Exemplos:
+hajimi entende “segmentos com barra” dentro de um token e classifica cada segmento como correspondência de prefixo/sufixo/exata/substring nos componentes do caminho. Exemplos:
 
 ```text
 elloworl        → Substring("elloworl")
@@ -81,7 +81,7 @@ Isso permite expressar:
 
 ## 3. Lógica booleana e agrupamento
 
-Cardinal segue a precedência do Everything:
+hajimi segue a precedência do Everything:
 
 - `NOT` / `!` tem a precedência mais alta,
 - `OR` / `|` em seguida,
@@ -115,7 +115,7 @@ Use parênteses ou `<...>` sempre que quiser substituir a precedência padrão.
 
 Esta seção lista apenas os filtros que o mecanismo atual realmente avalia.
 
-> **Nota**: os argumentos de filtro devem vir imediatamente após os dois-pontos (`ext:jpg`, `parent:/Users/demo`). Escrever `file: *.md` insere um espaço em branco, então o Cardinal trata isso como um filtro `file:` (sem argumento) seguido do token separado `*.md`.
+> **Nota**: os argumentos de filtro devem vir imediatamente após os dois-pontos (`ext:jpg`, `parent:/Users/demo`). Escrever `file: *.md` insere um espaço em branco, então o hajimi trata isso como um filtro `file:` (sem argumento) seguido do token separado `*.md`.
 
 ### 4.1 Filtros de arquivo / pasta
 
@@ -173,7 +173,7 @@ Esses filtros recebem um caminho absoluto como argumento; um `~` inicial é expa
 Exemplos:
 ```text
 type:picture vacation
-type:code "Cardinal"
+type:code "hajimi"
 type:archive dm:pastmonth
 ```
 
@@ -186,7 +186,7 @@ Atalhos para casos comuns de `type:`:
 | `audio:` | `type:audio`        | `audio: piano`         |
 | `video:` | `type:video`        | `video: tutorial`      |
 | `doc:`   | `type:doc`          | `doc: invoice dm:2024` |
-| `exe:`   | `type:exe`          | `exe: "Cardinal"`     |
+| `exe:`   | `type:exe`          | `exe: "hajimi"`     |
 
 As macros aceitam um argumento opcional:
 ```text
@@ -275,7 +275,7 @@ A correspondência de conteúdo é feita em streaming pelo arquivo; sequências 
 
 ### 4.10 Filtro de tags: `tag:` / `t:`
 
-Filtra por tags do Finder (macOS). O Cardinal busca tags sob demanda a partir dos metadados do arquivo (sem cache) e, para conjuntos grandes de resultados, usa `mdfind` para reduzir candidatos antes de aplicar a correspondência de tags.
+Filtra por tags do Finder (macOS). O hajimi busca tags sob demanda a partir dos metadados do arquivo (sem cache) e, para conjuntos grandes de resultados, usa `mdfind` para reduzir candidatos antes de aplicar a correspondência de tags.
 
 - Aceita uma ou mais tags separadas por `;` (OR lógico): `tag:ProjectA;ProjectB`.
 - Encadeie vários filtros `tag:` (AND lógico) para combinar várias tags: `tag:Project tag:Important`.

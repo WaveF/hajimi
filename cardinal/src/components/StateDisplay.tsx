@@ -67,6 +67,17 @@ export function StateDisplay({
       <line x1="9" y1="9" x2="13" y2="13" />
     </svg>
   );
+  const hasSearchInput = Boolean(query?.trim() || directoryQuery?.trim());
+  if (!hasSearchInput) {
+    return (
+      <State
+        icon={icon}
+        title={t('stateDisplay.emptyQueryTitle')}
+        message={t('stateDisplay.emptyQueryMessage')}
+      />
+    );
+  }
+
   const emptyTitle =
     query && directoryQuery
       ? t('stateDisplay.emptyTitleWithDirectory', { query, directoryQuery })

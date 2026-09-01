@@ -18,7 +18,7 @@ jobs:
     runs-on: macos-14
     defaults:
       run:
-        working-directory: cardinal
+        working-directory: hajimi
 
     steps:
       - name: Checkout repository

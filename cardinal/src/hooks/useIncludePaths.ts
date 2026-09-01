@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useStoredState } from './useStoredState';
 
-const STORAGE_KEY = 'cardinal.includePaths';
+const STORAGE_KEY = 'hajimi.includePaths';
 // Include paths are opt-in: by default no path is rescued from the ignore list.
 // Users add specific subpaths here when they want to override an ignored
 // ancestor (e.g. ignore `/Volumes` broadly but keep `/Volumes/media` indexed).

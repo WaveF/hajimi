@@ -119,6 +119,13 @@ impl SearchState {
         })
     }
 
+    pub(crate) fn request_nodes_for_mcp(
+        &self,
+        slab_indices: Vec<SlabIndex>,
+    ) -> Vec<SearchResultNode> {
+        self.request_nodes(slab_indices)
+    }
+
     fn fetch_sorted_nodes(&self, slab_indices: &[SlabIndex]) -> Vec<SearchResultNode> {
         if slab_indices.is_empty() {
             return Vec::new();
@@ -139,6 +146,54 @@ impl SearchState {
             nodes: nodes.clone(),
         });
         nodes
+    }
+
+    pub(crate) fn search_sync(
+        &self,
+        directory_query: Option<String>,
+        query: Option<String>,
+        options: SearchOptionsPayload,
+    ) -> Result<SearchResponse, String> {
+        search_activity::note_search_activity();
+
+        let cancellation_token = CancellationToken::new_search();
+        let (result_tx, result_rx) = bounded(1);
+        if let Err(e) = self.search_tx.send(SearchJob {
+            query: SearchQuery {
+                directory_query,
+                query,
+            },
+            options,
+            cancellation_token: cancellation_token.clone(),
+            result_tx,
+        }) {
+            error!("Failed to send search request: {e:?}");
+            return Err(format!("Failed to send search request: {e:?}"));
+        }
+
+        match result_rx.recv() {
+            Ok(res) => res,
+            Err(e) => {
+                error!("Failed to receive search result: {e:?}");
+                return Err(format!("Failed to receive search result: {e:?}"));
+            }
+        }
+        .map(|SearchOutcome { nodes, highlights }| {
+            let (status_code, results) = match nodes {
+                Some(list) => (SearchResponse::OK, list),
+                None => {
+                    let version = cancellation_token.version();
+                    info!("Search {version} was cancelled");
+                    (SearchResponse::CANCELLED, vec![])
+                }
+            };
+            SearchResponse {
+                results,
+                highlights,
+                status_code,
+            }
+        })
+        .map_err(|e| format!("Failed to process search result: {e:?}"))
     }
 }
 
@@ -175,6 +230,24 @@ fn normalize_path_input(raw: &str) -> Option<String> {
     }
 }
 
+fn normalize_ignore_pattern(raw: &str) -> Option<String> {
+    let trimmed = raw.trim();
+    if trimmed.is_empty() || trimmed.starts_with('#') {
+        return None;
+    }
+    if trimmed.starts_with('!') {
+        warn!("Ignoring unsupported negated ignore pattern: {trimmed:?}");
+        return None;
+    }
+
+    if trimmed == "~" || trimmed.starts_with("~/") {
+        let home = std::env::var_os("HOME")?.to_string_lossy().into_owned();
+        return Some(format!("{home}{}", &trimmed[1..]));
+    }
+
+    Some(trimmed.to_string())
+}
+
 pub(crate) fn normalize_watch_config(
     watch_root: &str,
     ignore_paths: Vec<String>,
@@ -186,7 +259,7 @@ pub(crate) fn normalize_watch_config(
     let mut ignore_paths = ignore_paths
         .into_iter()
         .filter_map(|path| {
-            let normalized = normalize_path_input(&path);
+            let normalized = normalize_ignore_pattern(&path);
             if normalized.is_none() {
                 warn!("Ignoring invalid ignore path: {path:?}");
             }
@@ -262,6 +335,17 @@ pub async fn close_quicklook(app_handle: AppHandle) {
 }
 
 #[tauri::command]
+pub fn quit_app(app_handle: AppHandle) {
+    info!("Application quit requested from preferences");
+    app_handle.exit(0);
+}
+
+#[tauri::command]
+pub fn get_mcp_connection_info(app_handle: AppHandle) -> crate::mcp::McpConnectionInfo {
+    crate::mcp::connection_info(&app_handle)
+}
+
+#[tauri::command]
 pub async fn update_quicklook(app_handle: AppHandle, items: Vec<QuickLookItemInput>) {
     let app_handle_cloned = app_handle.clone();
     if let Err(e) = app_handle.run_on_main_thread(move || {
@@ -288,47 +372,7 @@ pub async fn search(
     options: Option<SearchOptionsPayload>,
     state: State<'_, SearchState>,
 ) -> Result<SearchResponse, String> {
-    search_activity::note_search_activity();
-
-    let options = options.unwrap_or_default();
-    let cancellation_token = CancellationToken::new_search();
-    let (result_tx, result_rx) = bounded(1);
-    if let Err(e) = state.search_tx.send(SearchJob {
-        query: SearchQuery {
-            directory_query,
-            query,
-        },
-        options,
-        cancellation_token,
-        result_tx,
-    }) {
-        error!("Failed to send search request: {e:?}");
-        return Err(format!("Failed to send search request: {e:?}"));
-    }
-
-    match result_rx.recv() {
-        Ok(res) => res,
-        Err(e) => {
-            error!("Failed to receive search result: {e:?}");
-            return Err(format!("Failed to receive search result: {e:?}"));
-        }
-    }
-    .map(|SearchOutcome { nodes, highlights }| {
-        let (status_code, results) = match nodes {
-            Some(list) => (SearchResponse::OK, list),
-            None => {
-                let version = cancellation_token.version();
-                info!("Search {version} was cancelled");
-                (SearchResponse::CANCELLED, vec![])
-            }
-        };
-        SearchResponse {
-            results,
-            highlights,
-            status_code,
-        }
-    })
-    .map_err(|e| format!("Failed to process search result: {e:?}"))
+    state.search_sync(directory_query, query, options.unwrap_or_default())
 }
 
 #[tauri::command(async)]
@@ -438,16 +482,26 @@ pub fn set_watch_config(
 
 #[tauri::command]
 pub async fn open_in_finder(path: String) {
-    if let Err(e) = Command::new("open").arg("-R").arg(&path).spawn() {
+    if let Err(e) = reveal_in_finder_impl(&path) {
         error!("Failed to reveal path in Finder: {e}");
     }
 }
 
 #[tauri::command]
 pub async fn open_path(path: String) {
-    if let Err(e) = Command::new("open").arg(&path).spawn() {
+    if let Err(e) = open_path_impl(&path) {
         error!("Failed to open path: {e}");
     }
+}
+
+pub(crate) fn reveal_in_finder_impl(path: &str) -> Result<()> {
+    Command::new("open").arg("-R").arg(path).spawn()?;
+    Ok(())
+}
+
+pub(crate) fn open_path_impl(path: &str) -> Result<()> {
+    Command::new("open").arg(path).spawn()?;
+    Ok(())
 }
 
 #[tauri::command]
@@ -576,5 +630,38 @@ mod tests {
         assert_eq!(normalize_path_input("./relative"), None);
         assert_eq!(normalize_path_input("~someone"), None);
         assert_eq!(normalize_path_input("~someone/Documents"), None);
+    }
+
+    #[test]
+    fn normalize_ignore_pattern_accepts_relative_gitignore_rules() {
+        assert_eq!(
+            normalize_ignore_pattern(" node_modules/ "),
+            Some("node_modules/".to_string())
+        );
+        assert_eq!(
+            normalize_ignore_pattern("packages/*/dist/"),
+            Some("packages/*/dist/".to_string())
+        );
+        assert_eq!(
+            normalize_ignore_pattern("/Users/example/**/target/"),
+            Some("/Users/example/**/target/".to_string())
+        );
+    }
+
+    #[test]
+    fn normalize_ignore_pattern_expands_tilde_without_losing_glob_syntax() {
+        let Ok(home) = std::env::var("HOME") else {
+            return;
+        };
+        assert_eq!(
+            normalize_ignore_pattern("~/projects/**/node_modules/"),
+            Some(format!("{home}/projects/**/node_modules/"))
+        );
+    }
+
+    #[test]
+    fn normalize_ignore_pattern_discards_comments_and_negations() {
+        assert_eq!(normalize_ignore_pattern("# generated dependencies"), None);
+        assert_eq!(normalize_ignore_pattern("!keep/"), None);
     }
 }

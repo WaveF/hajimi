@@ -3,11 +3,11 @@ use crate::{
     SlabNodeMetadataCompact, build_segment_matchers, cache::NAME_POOL,
 };
 use anyhow::{Result, anyhow, bail};
-use cardinal_syntax::{
-    ArgumentKind, ComparisonOp, Expr, Filter, FilterArgument, FilterKind, RangeSeparator, Term,
-};
 use file_tags::{read_tags_from_path, search_tags_using_mdfind};
 use fswalk::NodeFileType;
+use hajimi_syntax::{
+    ArgumentKind, ComparisonOp, Expr, Filter, FilterArgument, FilterKind, RangeSeparator, Term,
+};
 use hashbrown::HashSet;
 use jiff::{Timestamp, civil::Date, tz::TimeZone};
 use memchr::arch::all::rabinkarp;

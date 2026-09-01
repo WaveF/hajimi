@@ -3,10 +3,10 @@
 This chapter describes the virtualized list component in `cardinal/src/components/VirtualList.tsx` and its supporting hooks.
 
 ## Why this is custom
-- Cardinal does not use a stock "big spacer div + native vertical scroll" virtualizer for the files tab.
+- hajimi does not use a stock "big spacer div + native vertical scroll" virtualizer for the files tab.
 - Safari/WebKit has a practical maximum element height in the ~33.5M px range. WebKit bug 198291 reproduces the issue with a `div` at `33554428px` and explicitly calls out the impact on virtual scrolling when the total scrollable area exceeds the maximum permitted element height.
-- With Cardinal's `ROW_HEIGHT = 24`, that ceiling is only about `floor(33554428 / 24) = 1,398,101` rows. A multi-million-file result set can exceed that easily, so a traditional virtualizer that sets `height = rowCount * rowHeight` on a spacer element is not robust enough here.
-- For that reason, `totalHeight` in Cardinal is used for scrollbar math only. The DOM never creates a native vertical scroll region with millions of rows' worth of pixel height.
+- With hajimi's `ROW_HEIGHT = 24`, that ceiling is only about `floor(33554428 / 24) = 1,398,101` rows. A multi-million-file result set can exceed that easily, so a traditional virtualizer that sets `height = rowCount * rowHeight` on a spacer element is not robust enough here.
+- For that reason, `totalHeight` in hajimi is used for scrollbar math only. The DOM never creates a native vertical scroll region with millions of rows' worth of pixel height.
 - Metadata hydration also has to be lazy. Search results are initially just `SlabIndex[]`; row metadata is fetched on demand for the visible range via `get_nodes_info`. Eagerly hydrating all visible search results would make latency and IPC cost much harder to control.
 - The same visible-range signal is also reused to tell the backend which icons/thumbnails matter right now, so virtualization doubles as a backend work scheduler.
 

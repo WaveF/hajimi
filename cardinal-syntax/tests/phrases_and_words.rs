@@ -1,6 +1,6 @@
 mod common;
-use cardinal_syntax::*;
 use common::*;
+use hajimi_syntax::*;
 
 #[test]
 fn parses_bare_words_and_wildcards() {

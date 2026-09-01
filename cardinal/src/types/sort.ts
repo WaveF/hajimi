@@ -1,4 +1,4 @@
-export type SortKey = 'filename' | 'fullPath' | 'size' | 'mtime' | 'ctime';
+export type SortKey = 'filename' | 'extension' | 'fullPath' | 'size' | 'mtime' | 'ctime';
 
 export type SortDirection = 'asc' | 'desc';
 

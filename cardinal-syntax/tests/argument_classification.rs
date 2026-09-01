@@ -1,6 +1,6 @@
 mod common;
-use cardinal_syntax::*;
 use common::*;
+use hajimi_syntax::*;
 
 #[test]
 fn list_with_single_item_or_trailing_semicolon_is_list() {

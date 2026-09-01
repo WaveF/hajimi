@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useIncludePaths } from '../useIncludePaths';
 
-const STORAGE_KEY = 'cardinal.includePaths';
+const STORAGE_KEY = 'hajimi.includePaths';
 
 const flushEffects = async () => {
   await act(async () => {});

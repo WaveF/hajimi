@@ -1,10 +1,10 @@
 mod cli;
 
 use anyhow::{Context, Result};
-use cardinal_sdk::EventWatcher;
 use clap::Parser;
 use cli::Cli;
 use crossbeam_channel::{Sender, bounded, unbounded};
+use hajimi_sdk::EventWatcher;
 use rustyline::{DefaultEditor, error::ReadlineError};
 use search_cache::{HandleFSEError, SearchCache, SearchResultNode};
 use search_cancel::CancellationToken;

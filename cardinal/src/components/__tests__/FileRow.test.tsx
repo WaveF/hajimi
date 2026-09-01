@@ -77,4 +77,23 @@ describe('FileRow selection interactions', () => {
     fireEvent.dragStart(node);
     expect(onSelect).not.toHaveBeenCalled();
   });
+
+  it('displays file sizes using an automatic unit', () => {
+    const { container } = renderRow({
+      item: {
+        ...baseItem,
+        metadata: { ...baseItem.metadata, size: 1024 ** 2 },
+      },
+    });
+
+    expect(container.querySelector('.size-text')).toHaveTextContent('1 MB');
+  });
+
+  it('displays the final file extension in its own column', () => {
+    const { container } = renderRow({
+      item: { ...baseItem, path: '/tmp/archive.tar.gz' },
+    });
+
+    expect(container.querySelector('.extension-text')).toHaveTextContent('gz');
+  });
 });

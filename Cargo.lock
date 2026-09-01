@@ -131,25 +131,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5d20789868f4b01b2f2caec9f5c4e0213b41e3e5702a50157d699ae31ced2fcb"
 
 [[package]]
-name = "cardinal-sdk"
-version = "0.1.0"
-dependencies = [
- "bitflags",
- "crossbeam-channel",
- "dispatch2",
- "fswalk",
- "libc",
- "objc2-core-foundation",
- "objc2-core-services",
- "tempfile",
- "tracing-subscriber",
-]
-
-[[package]]
-name = "cardinal-syntax"
-version = "0.1.0"
-
-[[package]]
 name = "cast"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -566,6 +547,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "hajimi-sdk"
+version = "0.1.0"
+dependencies = [
+ "bitflags",
+ "crossbeam-channel",
+ "dispatch2",
+ "fswalk",
+ "libc",
+ "objc2-core-foundation",
+ "objc2-core-services",
+ "tempfile",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "hajimi-syntax"
+version = "0.1.0"
+
+[[package]]
 name = "half"
 version = "2.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -790,11 +790,11 @@ name = "lsf"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "cardinal-sdk",
  "clap",
  "clap-verbosity-flag",
  "crossbeam-channel",
  "fswalk",
+ "hajimi-sdk",
  "namepool",
  "query-segmentation",
  "rustyline",
@@ -1468,13 +1468,13 @@ name = "search-cache"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "cardinal-sdk",
- "cardinal-syntax",
  "criterion",
  "crossbeam-channel",
  "enumn",
  "file-tags",
  "fswalk",
+ "hajimi-sdk",
+ "hajimi-syntax",
  "hashbrown 0.16.1",
  "itertools 0.14.0",
  "jiff",
@@ -1877,10 +1877,10 @@ dependencies = [
 name = "was"
 version = "0.1.0"
 dependencies = [
- "cardinal-sdk",
  "chrono",
  "clap",
  "crossbeam",
+ "hajimi-sdk",
 ]
 
 [[package]]

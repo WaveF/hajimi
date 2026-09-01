@@ -1,6 +1,6 @@
 mod common;
-use cardinal_syntax::FilterKind;
 use common::*;
+use hajimi_syntax::FilterKind;
 
 #[test]
 fn regex_term_parses_basic_pattern() {

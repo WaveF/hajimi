@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useWatchRoot } from '../useWatchRoot';
 
-const STORAGE_KEY = 'cardinal.watchRoot';
+const STORAGE_KEY = 'hajimi.watchRoot';
 
 const flushEffects = async () => {
   await act(async () => {});

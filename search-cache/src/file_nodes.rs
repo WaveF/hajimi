@@ -1,4 +1,5 @@
 use crate::{SlabIndex, SlabNode, ThinSlab};
+use fswalk::PathFilter;
 use std::{
     ffi::OsStr,
     ops::{Deref, DerefMut},
@@ -10,6 +11,7 @@ pub struct FileNodes {
     path: PathBuf,
     ignore_paths: Vec<PathBuf>,
     include_paths: Vec<PathBuf>,
+    path_filter: PathFilter,
     slab: ThinSlab<SlabNode>,
     root: SlabIndex,
 }
@@ -22,10 +24,12 @@ impl FileNodes {
         slab: ThinSlab<SlabNode>,
         root: SlabIndex,
     ) -> Self {
+        let path_filter = PathFilter::new(&path, &ignore_paths, &include_paths);
         Self {
             path,
             ignore_paths,
             include_paths,
+            path_filter,
             slab,
             root,
         }
@@ -62,6 +66,10 @@ impl FileNodes {
         &self.include_paths
     }
 
+    pub(crate) fn path_filter(&self) -> &PathFilter {
+        &self.path_filter
+    }
+
     pub(crate) fn take_slab(&mut self) -> ThinSlab<SlabNode> {
         std::mem::take(&mut self.slab)
     }
@@ -83,6 +91,7 @@ impl FileNodes {
             path,
             ignore_paths,
             include_paths,
+            path_filter: _,
             slab,
             root,
         } = self;

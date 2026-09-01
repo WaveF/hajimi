@@ -24,7 +24,7 @@ fn parses_unc_paths_and_child_filter() {
     let expr = parse_ok("\\\\srv\\share child:*.mp3");
     let parts = as_and(&expr);
     word_is(&parts[0], "\\\\srv\\share");
-    filter_is_kind(&parts[1], &cardinal_syntax::FilterKind::Child);
+    filter_is_kind(&parts[1], &hajimi_syntax::FilterKind::Child);
     filter_arg_raw(&parts[1], "*.mp3");
 }
 
@@ -43,7 +43,7 @@ fn parses_windows_drive_roots_and_dirs() {
 fn parses_env_expanded_style_segments_as_words() {
     let expr = parse_ok("%TEMP%\\*.log");
     match &expr {
-        cardinal_syntax::Expr::Term(cardinal_syntax::Term::Word(w)) => {
+        hajimi_syntax::Expr::Term(hajimi_syntax::Term::Word(w)) => {
             assert_eq!(w, "%TEMP%\\*.log")
         }
         other => panic!("unexpected {other:?}"),

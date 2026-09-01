@@ -1,6 +1,6 @@
 mod common;
-use cardinal_syntax::*;
 use common::*;
+use hajimi_syntax::*;
 
 // Tests for backslash escape sequences, focusing on quote escaping
 

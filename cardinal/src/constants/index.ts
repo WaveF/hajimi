@@ -2,8 +2,9 @@
 
 // Column width ratios derived from the viewport width percentages.
 export const COL_WIDTH_RATIOS = {
-  filename: 0.25, // 25%
-  path: 0.38, // 38%
+  filename: 0.22, // 22%
+  extension: 0.08, // 8%
+  path: 0.33, // 33%
   size: 0.08, // 8%
   modified: 0.145, // 14.5%
   created: 0.145, // 14.5%

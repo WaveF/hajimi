@@ -1,10 +1,18 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { PreferencesOverlay } from '../PreferencesOverlay';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
+  }),
+}));
+
+vi.mock('@tauri-apps/api/core', () => ({
+  invoke: vi.fn().mockResolvedValue({
+    available: true,
+    discoveryPath: '/tmp/hajimi/mcp/bridge.json',
+    executablePath: '/Applications/hajimi.app/Contents/MacOS/hajimi',
   }),
 }));
 
@@ -26,6 +34,14 @@ const baseProps = {
   onSortThresholdChange: vi.fn(),
   trayIconEnabled: false,
   onTrayIconEnabledChange: vi.fn(),
+  hideEmptyResults: true,
+  onHideEmptyResultsChange: vi.fn(),
+  refreshEventsOnlyWhenActive: true,
+  onRefreshEventsOnlyWhenActiveChange: vi.fn(),
+  globalShortcut: '',
+  defaultGlobalShortcut: '',
+  onGlobalShortcutChange: vi.fn(),
+  onQuit: vi.fn(),
   watchRoot: '/old/root',
   defaultWatchRoot: '/default/root',
   ignorePaths: ['/ignore/a', '/ignore/b'],
@@ -38,6 +54,77 @@ const baseProps = {
 };
 
 describe('PreferencesOverlay', () => {
+  it('quits the app from the lower-left action', () => {
+    const onQuit = vi.fn();
+    render(<PreferencesOverlay {...baseProps} onQuit={onQuit} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'tray.quit' }));
+
+    expect(onQuit).toHaveBeenCalledTimes(1);
+  });
+
+  it('navigates between preference sections from the sidebar', () => {
+    render(<PreferencesOverlay {...baseProps} />);
+
+    const searchNavigation = screen.getByRole('button', { name: 'preferences.nav.search' });
+    expect(searchNavigation).not.toHaveClass('is-active');
+
+    fireEvent.click(searchNavigation);
+
+    expect(searchNavigation).toHaveClass('is-active');
+    expect(searchNavigation).toHaveAttribute('aria-current', 'page');
+  });
+
+  it('shows the MCP connection prompt and copies it for an AI agent', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText },
+    });
+    render(<PreferencesOverlay {...baseProps} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'preferences.nav.mcp' }));
+
+    const prompt = await screen.findByLabelText('preferences.mcp.promptLabel');
+    expect(prompt).toHaveAttribute('readonly');
+    expect((prompt as HTMLTextAreaElement).value).toContain('search_files');
+
+    const copyButton = screen.getByRole('button', { name: 'preferences.mcp.copy' });
+    expect(copyButton).toBeEnabled();
+    fireEvent.click(copyButton);
+
+    await waitFor(() => {
+      expect(writeText).toHaveBeenCalledWith(
+        expect.stringContaining('/tmp/hajimi/mcp/bridge.json'),
+      );
+    });
+  });
+
+  it('renders and updates search display switches', () => {
+    const onHideEmptyResultsChange = vi.fn();
+    const onRefreshEventsOnlyWhenActiveChange = vi.fn();
+    render(
+      <PreferencesOverlay
+        {...baseProps}
+        onHideEmptyResultsChange={onHideEmptyResultsChange}
+        onRefreshEventsOnlyWhenActiveChange={onRefreshEventsOnlyWhenActiveChange}
+      />,
+    );
+
+    const hideEmptyResults = screen.getByLabelText('preferences.hideEmptyResults.label');
+    const refreshEventsOnlyWhenActive = screen.getByLabelText(
+      'preferences.refreshEventsOnlyWhenActive.label',
+    );
+    expect(hideEmptyResults).toBeChecked();
+    expect(refreshEventsOnlyWhenActive).toBeChecked();
+
+    fireEvent.click(hideEmptyResults);
+    fireEvent.click(refreshEventsOnlyWhenActive);
+
+    expect(onHideEmptyResultsChange).toHaveBeenCalledWith(false);
+    expect(onRefreshEventsOnlyWhenActiveChange).toHaveBeenCalledWith(false);
+  });
+
   it('saves watch root updates via onWatchConfigChange', () => {
     const onWatchConfigChange = vi.fn();
     render(<PreferencesOverlay {...baseProps} onWatchConfigChange={onWatchConfigChange} />);
@@ -68,6 +155,118 @@ describe('PreferencesOverlay', () => {
       ignorePaths: ['/tmp/one', '/tmp/two'],
       includePaths: baseProps.includePaths,
     });
+  });
+
+  it('accepts relative gitignore-style ignore rules', () => {
+    const onWatchConfigChange = vi.fn();
+    render(<PreferencesOverlay {...baseProps} onWatchConfigChange={onWatchConfigChange} />);
+
+    const ignorePathsInput = screen.getByLabelText('ignorePaths.label');
+    fireEvent.change(ignorePathsInput, {
+      target: { value: 'node_modules/\n**/.git/\npackages/*/dist/' },
+    });
+
+    const saveButton = screen.getByText('preferences.save') as HTMLButtonElement;
+    expect(saveButton.disabled).toBe(false);
+    fireEvent.click(saveButton);
+
+    expect(onWatchConfigChange).toHaveBeenCalledWith({
+      watchRoot: baseProps.watchRoot,
+      ignorePaths: ['node_modules/', '**/.git/', 'packages/*/dist/'],
+      includePaths: baseProps.includePaths,
+    });
+  });
+
+  it('blocks unsupported negated ignore rules', () => {
+    const onWatchConfigChange = vi.fn();
+    render(<PreferencesOverlay {...baseProps} onWatchConfigChange={onWatchConfigChange} />);
+
+    const ignorePathsInput = screen.getByLabelText('ignorePaths.label');
+    fireEvent.change(ignorePathsInput, { target: { value: '!keep/' } });
+
+    const saveButton = screen.getByText('preferences.save') as HTMLButtonElement;
+    expect(saveButton.disabled).toBe(true);
+    fireEvent.click(saveButton);
+    expect(onWatchConfigChange).not.toHaveBeenCalled();
+  });
+
+  it('records and saves a global shortcut', async () => {
+    const onGlobalShortcutChange = vi.fn().mockResolvedValue(undefined);
+    render(<PreferencesOverlay {...baseProps} onGlobalShortcutChange={onGlobalShortcutChange} />);
+
+    const shortcutInput = screen.getByLabelText('preferences.globalShortcut.label');
+    fireEvent.keyDown(shortcutInput, {
+      key: 'k',
+      code: 'KeyK',
+      metaKey: true,
+      shiftKey: true,
+    });
+
+    expect(shortcutInput).toHaveValue('Ctrl+Shift+K');
+    fireEvent.click(screen.getByText('preferences.save'));
+
+    await waitFor(() => {
+      expect(onGlobalShortcutChange).toHaveBeenCalledWith('CommandOrControl+Shift+K');
+    });
+  });
+
+  it('clears a configured global shortcut', async () => {
+    const onGlobalShortcutChange = vi.fn().mockResolvedValue(undefined);
+    render(
+      <PreferencesOverlay
+        {...baseProps}
+        globalShortcut="CommandOrControl+Shift+K"
+        onGlobalShortcutChange={onGlobalShortcutChange}
+      />,
+    );
+
+    fireEvent.click(screen.getByLabelText('preferences.globalShortcut.clear'));
+    fireEvent.click(screen.getByText('preferences.save'));
+
+    await waitFor(() => {
+      expect(onGlobalShortcutChange).toHaveBeenCalledWith('');
+    });
+  });
+
+  it('clears the shortcut with Escape without closing preferences', () => {
+    const onClose = vi.fn();
+    render(
+      <PreferencesOverlay
+        {...baseProps}
+        globalShortcut="CommandOrControl+Shift+K"
+        onClose={onClose}
+      />,
+    );
+
+    const shortcutInput = screen.getByLabelText('preferences.globalShortcut.label');
+    fireEvent.keyDown(shortcutInput, { key: 'Escape', code: 'Escape' });
+
+    expect(shortcutInput).toHaveValue('');
+    expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it('keeps the preferences open when shortcut registration fails', async () => {
+    const onGlobalShortcutChange = vi.fn().mockRejectedValue(new Error('shortcut is busy'));
+    const onClose = vi.fn();
+    render(
+      <PreferencesOverlay
+        {...baseProps}
+        onClose={onClose}
+        onGlobalShortcutChange={onGlobalShortcutChange}
+      />,
+    );
+
+    fireEvent.keyDown(screen.getByLabelText('preferences.globalShortcut.label'), {
+      key: 'k',
+      code: 'KeyK',
+      ctrlKey: true,
+    });
+    fireEvent.click(screen.getByText('preferences.save'));
+
+    await waitFor(() => {
+      expect(screen.getByText('preferences.globalShortcut.errors.unavailable')).toBeInTheDocument();
+    });
+    expect(onClose).not.toHaveBeenCalled();
   });
 
   it('saves include path updates via onWatchConfigChange', () => {

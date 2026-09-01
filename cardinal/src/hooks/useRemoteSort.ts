@@ -3,7 +3,7 @@ import { invoke } from '@tauri-apps/api/core';
 import type { SortKey, SortState } from '../types/sort';
 import type { SlabIndex } from '../types/slab';
 
-const SORT_THRESHOLD_STORAGE_KEY = 'cardinal.sortThreshold';
+const SORT_THRESHOLD_STORAGE_KEY = 'hajimi.sortThreshold';
 export const DEFAULT_SORTABLE_RESULT_THRESHOLD = 20000;
 
 const clampSortThreshold = (value: number): number => {

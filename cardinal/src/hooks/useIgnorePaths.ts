@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useStoredState } from './useStoredState';
 
-const STORAGE_KEY = 'cardinal.ignorePaths';
+const STORAGE_KEY = 'hajimi.ignorePaths';
 // Ignore generated, disposable, or high-churn macOS paths by default:
 // - `/Volumes` can include external drives and network mounts that are large or slow to traverse.
 // - `~/Library/CloudStorage` can contain cloud stubs that trigger downloads or network I/O.

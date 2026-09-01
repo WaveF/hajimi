@@ -5,7 +5,7 @@
 ## Core idea
 `NamePool` stores unique names in `Mutex<BTreeSet<Box<str>>>`. Every distinct string is kept once, and callers can retrieve stable borrowed `&str` references backed by that set.
 
-In Cardinal, the pool lives behind a process-global `LazyLock`, so interned names effectively stay valid for the lifetime of the app.
+In hajimi, the pool lives behind a process-global `LazyLock`, so interned names effectively stay valid for the lifetime of the app.
 
 ## `push`
 ```rust
@@ -34,7 +34,7 @@ All of them:
 
 `None` means the search was cancelled. `Some(set)` means the scan completed, even if the set is empty.
 
-## Integration with Cardinal
+## Integration with hajimi
 - `search-cache` interns every basename through `NAME_POOL.push(...)`.
 - `NameIndex` maps each interned name to slab indices sorted by full path.
 - Query evaluation uses the pool as the fast first step for basename matching before path hierarchy constraints are applied.

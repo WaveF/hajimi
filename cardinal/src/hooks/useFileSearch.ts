@@ -35,11 +35,15 @@ type SearchParams = {
   caseSensitive: boolean;
 };
 
-export const DIRECTORY_SCOPE_OPEN_STORAGE_KEY = 'cardinal.search.directoryScopeOpen';
+export const DIRECTORY_SCOPE_OPEN_STORAGE_KEY = 'hajimi.search.directoryScopeOpen';
 
 type QueueSearchOptions = {
   immediate?: boolean;
   onSearchCommitted?: () => void;
+};
+
+type UseFileSearchOptions = {
+  hideResultsWhenQueryEmpty?: boolean;
 };
 
 type SearchAction =
@@ -66,6 +70,10 @@ type SearchAction =
         error: SearchError;
         duration: number;
       };
+    }
+  | {
+      type: 'SEARCH_EMPTY';
+      payload: { query: string; directoryQuery: string };
     }
   | { type: 'SEARCH_CANCELLED' }
   | { type: 'SET_LIFECYCLE_STATE'; payload: { status: AppLifecycleStatus } };
@@ -168,6 +176,20 @@ function reducer(state: SearchState, action: SearchAction): SearchState {
         resultCount: 0,
         highlightTerms: [],
       };
+    case 'SEARCH_EMPTY':
+      return {
+        ...state,
+        results: [],
+        resultsVersion: state.resultsVersion + 1,
+        currentQuery: action.payload.query,
+        currentDirectoryQuery: action.payload.directoryQuery,
+        highlightTerms: [],
+        showLoadingUI: false,
+        initialFetchCompleted: true,
+        durationMs: null,
+        resultCount: 0,
+        searchError: null,
+      };
     case 'SEARCH_CANCELLED':
       return {
         ...state,
@@ -205,7 +227,9 @@ type UseFileSearchResult = {
   requestRescan: () => Promise<void>;
 };
 
-export function useFileSearch(): UseFileSearchResult {
+export function useFileSearch({
+  hideResultsWhenQueryEmpty = false,
+}: UseFileSearchOptions = {}): UseFileSearchResult {
   const [initialSearchParamsForHook] = useState<SearchParams>(() => ({
     ...initialSearchParams,
     directoryScopeOpen: readStoredDirectoryScopeOpen(),
@@ -269,96 +293,108 @@ export function useFileSearch(): UseFileSearchResult {
     cancelTimer(loadingDelayTimerRef);
   }, []);
 
-  const handleSearch = useCallback(async (overrides: Partial<SearchParams> = {}) => {
-    const nextSearch = { ...latestSearchRef.current, ...overrides };
-    latestSearchRef.current = nextSearch;
-    // the backend already has search version cancellation
-    // but we keep the check at frontend to make sure that
-    // the UI always reflects the latest request
-    const requestVersion = searchVersionRef.current + 1;
-    searchVersionRef.current = requestVersion;
+  const handleSearch = useCallback(
+    async (overrides: Partial<SearchParams> = {}) => {
+      const nextSearch = { ...latestSearchRef.current, ...overrides };
+      latestSearchRef.current = nextSearch;
+      // the backend already has search version cancellation
+      // but we keep the check at frontend to make sure that
+      // the UI always reflects the latest request
+      const requestVersion = searchVersionRef.current + 1;
+      searchVersionRef.current = requestVersion;
 
-    const { query, caseSensitive } = nextSearch;
-    const directoryQuery = activeDirectoryQuery(nextSearch);
-    const startTs = performance.now();
-    const isInitial = !hasInitialSearchRunRef.current;
+      const { query, caseSensitive } = nextSearch;
+      const directoryQuery = activeDirectoryQuery(nextSearch);
+      const startTs = performance.now();
+      const isInitial = !hasInitialSearchRunRef.current;
 
-    dispatch({ type: 'SEARCH_REQUEST', payload: { immediate: isInitial } });
+      dispatch({ type: 'SEARCH_REQUEST', payload: { immediate: isInitial } });
 
-    if (!isInitial) {
-      cancelTimer(loadingDelayTimerRef);
-      loadingDelayTimerRef.current = setTimeout(() => {
-        dispatch({ type: 'SEARCH_LOADING_DELAY' });
-        loadingDelayTimerRef.current = null;
-      }, 150);
-    }
-
-    try {
-      const rawResults = await invoke<SearchResponsePayload>('search', {
-        query: searchParamOrNull(query),
-        directoryQuery: searchParamOrNull(directoryQuery),
-        options: {
-          caseInsensitive: !caseSensitive,
-        },
-      });
-
-      if (searchVersionRef.current !== requestVersion) {
+      if (hideResultsWhenQueryEmpty && query.trim().length === 0) {
+        dispatch({
+          type: 'SEARCH_EMPTY',
+          payload: { query, directoryQuery },
+        });
+        hasInitialSearchRunRef.current = true;
         return;
       }
 
-      if (rawResults.statusCode === SearchStatusCode.CANCELLED) {
+      if (!isInitial) {
         cancelTimer(loadingDelayTimerRef);
-        dispatch({ type: 'SEARCH_CANCELLED' });
-        return;
+        loadingDelayTimerRef.current = setTimeout(() => {
+          dispatch({ type: 'SEARCH_LOADING_DELAY' });
+          loadingDelayTimerRef.current = null;
+        }, 150);
       }
 
-      const searchResults = rawResults.results as SlabIndex[];
-      const highlightTerms = Array.isArray(rawResults.highlights)
-        ? rawResults.highlights.filter((term): term is string => typeof term === 'string')
-        : [];
+      try {
+        const rawResults = await invoke<SearchResponsePayload>('search', {
+          query: searchParamOrNull(query),
+          directoryQuery: searchParamOrNull(directoryQuery),
+          options: {
+            caseInsensitive: !caseSensitive,
+          },
+        });
 
-      cancelTimer(loadingDelayTimerRef);
+        if (searchVersionRef.current !== requestVersion) {
+          return;
+        }
 
-      const endTs = performance.now();
-      const duration = endTs - startTs;
+        if (rawResults.statusCode === SearchStatusCode.CANCELLED) {
+          cancelTimer(loadingDelayTimerRef);
+          dispatch({ type: 'SEARCH_CANCELLED' });
+          return;
+        }
 
-      dispatch({
-        type: 'SEARCH_SUCCESS',
-        payload: {
-          results: searchResults,
-          query,
-          directoryQuery,
-          duration,
-          count: searchResults.length,
-          highlightTerms,
-        },
-      });
-    } catch (error) {
-      console.error('Search failed:', error);
+        const searchResults = rawResults.results as SlabIndex[];
+        const highlightTerms = Array.isArray(rawResults.highlights)
+          ? rawResults.highlights.filter((term): term is string => typeof term === 'string')
+          : [];
 
-      if (searchVersionRef.current !== requestVersion) {
-        return;
+        cancelTimer(loadingDelayTimerRef);
+
+        const endTs = performance.now();
+        const duration = endTs - startTs;
+
+        dispatch({
+          type: 'SEARCH_SUCCESS',
+          payload: {
+            results: searchResults,
+            query,
+            directoryQuery,
+            duration,
+            count: searchResults.length,
+            highlightTerms,
+          },
+        });
+      } catch (error) {
+        console.error('Search failed:', error);
+
+        if (searchVersionRef.current !== requestVersion) {
+          return;
+        }
+
+        cancelTimer(loadingDelayTimerRef);
+
+        const endTs = performance.now();
+        const duration = endTs - startTs;
+
+        const normalisedError =
+          error instanceof Error ? error : error ? String(error) : 'An unknown error occurred.';
+
+        dispatch({
+          type: 'SEARCH_FAILURE',
+          payload: {
+            error: normalisedError,
+            duration,
+          },
+        });
+      } finally {
+        hasInitialSearchRunRef.current = true;
       }
-
-      cancelTimer(loadingDelayTimerRef);
-
-      const endTs = performance.now();
-      const duration = endTs - startTs;
-
-      const normalisedError =
-        error instanceof Error ? error : error ? String(error) : 'An unknown error occurred.';
-
-      dispatch({
-        type: 'SEARCH_FAILURE',
-        payload: {
-          error: normalisedError,
-          duration,
-        },
-      });
-    } finally {
-      hasInitialSearchRunRef.current = true;
-    }
-  }, []);
+    },
+    [hideResultsWhenQueryEmpty],
+  );
 
   const queueSearchParams = useCallback(
     (patch: Partial<SearchParams>, options?: QueueSearchOptions) => {
@@ -409,11 +445,12 @@ export function useFileSearch(): UseFileSearchResult {
 
     const nextSearch = latestSearchRef.current;
     if (!nextSearch.query && !activeDirectoryQuery(nextSearch)) {
+      void handleSearch();
       return;
     }
 
     void handleSearch();
-  }, [handleSearch, searchParams.caseSensitive]);
+  }, [handleSearch, hideResultsWhenQueryEmpty, searchParams.caseSensitive]);
 
   const requestRescan = useCallback(async () => {
     await invoke('trigger_rescan');

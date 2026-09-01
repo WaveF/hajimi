@@ -1,29 +1,29 @@
 <div align="center">
-  <img src="../../cardinal/mac-icon_1024x1024.png" alt="Cardinal simgesi" width="120" height="120">
-  <h1>Cardinal</h1>
+  <img src="../../app-icon.png" alt="hajimi simgesi" width="120" height="120">
+  <h1>hajimi</h1>
   <p>macOS için en hızlı ve en doğru dosya arama uygulaması.</p>
   <p>
-    <a href="#cardinali-kullanma">Cardinal’i kullanma</a> ·
-    <a href="#cardinali-derleme">Cardinal’i derleme</a>
+    <a href="#hajimii-kullanma">hajimi’i kullanma</a> ·
+    <a href="#hajimii-derleme">hajimi’i derleme</a>
   </p>
-  <img src="UI.gif" alt="Cardinal arayüz önizlemesi" width="720">
+  <img src="UI.gif" alt="hajimi arayüz önizlemesi" width="720">
 </div>
 
 ---
 
 [English](../../README.md) · [Español](README.es-ES.md) · [한국어](README.ko-KR.md) · [Русский](README.ru-RU.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [Português](README.pt-BR.md) · [Italiano](README.it-IT.md) · [日本語](README.ja-JP.md) · [Français](README.fr-FR.md) · [Deutsch](README.de-DE.md) · [Українська](README.uk-UA.md) · [العربية](README.ar-SA.md) · [हिन्दी](README.hi-IN.md) · [Türkçe](README.tr-TR.md)
 
-## Cardinal’i kullanma
+## hajimi’i kullanma
 
 ### İndirme
 
 Homebrew ile kurun:
 
 ```bash
-brew install --cask cardinal-search
+brew install --cask hajimi
 ```
 
-Ayrıca en güncel paketleri [GitHub Releases](https://github.com/cardisoft/cardinal/releases/) üzerinden indirebilirsiniz.
+Ayrıca en güncel paketleri [hajimi GitHub Releases](https://github.com/WaveF/hajimi/releases/) üzerinden indirebilirsiniz.
 
 ### i18n desteği
 
@@ -31,7 +31,7 @@ Farklı bir dil mi lazım? Durum çubuğundaki ⚙️ düğmesine tıklayarak an
 
 ### Arama temelleri
 
-Cardinal artık klasik alt dize/ön ek eşleştirmesinin üzerine Everything uyumlu bir söz dizimi katmanı ekliyor:
+hajimi artık klasik alt dize/ön ek eşleştirmesinin üzerine Everything uyumlu bir söz dizimi katmanı ekliyor:
 
 - `report draft` – boşluk `AND` gibi davranır; yalnızca adında her iki belirteci de içeren dosyaları görürsünüz.
 - `*.pdf briefing` – adında “briefing” geçen PDF sonuçlarını filtreler.
@@ -48,12 +48,12 @@ Desteklenen operatör kataloğu (mantıksal gruplama, klasör kapsamı, uzantı 
 
 ### Klavye kısayolları ve önizlemeler
 
-- `Cmd+Shift+Space` – hızlı başlatma kısayoluyla Cardinal penceresini global olarak aç/kapatın.
+- `Cmd+Shift+Space` – hızlı başlatma kısayoluyla hajimi penceresini global olarak aç/kapatın.
 - `Cmd+,` – Tercihler’i açın.
-- `Esc` – Cardinal penceresini gizleyin.
+- `Esc` – hajimi penceresini gizleyin.
 - `ArrowUp`/`ArrowDown` – seçimi hareket ettirin.
 - `Shift+ArrowUp`/`Shift+ArrowDown` – seçimi genişletin.
-- `Space` – Cardinal’den ayrılmadan seçili satırı Quick Look ile önizleyin.
+- `Space` – hajimi’den ayrılmadan seçili satırı Quick Look ile önizleyin.
 - `Cmd+O` – seçili sonucu açın.
 - `Cmd+R` – vurgulanan sonucu Finder’da gösterin.
 - `Cmd+C` – seçili dosyaları panoya kopyalayın.
@@ -65,7 +65,7 @@ Desteklenen operatör kataloğu (mantıksal gruplama, klasör kapsamı, uzantı 
 
 ---
 
-## Cardinal’i derleme
+## hajimi’i derleme
 
 ### Gereksinimler
 
@@ -87,3 +87,7 @@ npm run tauri dev -- --release --features dev
 cd cardinal
 npm run tauri build
 ```
+
+## Teşekkür
+
+hajimi, [Cardinal](https://github.com/cardisoft/cardinal) temeli üzerine inşa edilmiştir. İlhamı ve temel çalışmaları için özgün projenin yazarlarına ve katkıda bulunanlarına içtenlikle teşekkür ederiz.

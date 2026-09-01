@@ -1,29 +1,29 @@
 <div align="center">
-  <img src="../../cardinal/mac-icon_1024x1024.png" alt="Cardinal icon" width="120" height="120">
-  <h1>Cardinal</h1>
+  <img src="../../app-icon.png" alt="hajimi icon" width="120" height="120">
+  <h1>hajimi</h1>
   <p>最快又最準的 macOS 檔案搜尋應用程式</p>
   <p>
-    <a href="#使用-cardinal">使用 Cardinal</a> ·
-    <a href="#建置-cardinal">建置 Cardinal</a>
+    <a href="#使用-hajimi">使用 hajimi</a> ·
+    <a href="#建置-hajimi">建置 hajimi</a>
   </p>
-  <img src="UI.gif" alt="Cardinal UI preview" width="720">
+  <img src="UI.gif" alt="hajimi UI preview" width="720">
 </div>
 
 ---
 
 [English](../../README.md) · [Español](README.es-ES.md) · [한국어](README.ko-KR.md) · [Русский](README.ru-RU.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [Português](README.pt-BR.md) · [Italiano](README.it-IT.md) · [日本語](README.ja-JP.md) · [Français](README.fr-FR.md) · [Deutsch](README.de-DE.md) · [Українська](README.uk-UA.md) · [العربية](README.ar-SA.md) · [हिन्दी](README.hi-IN.md) · [Türkçe](README.tr-TR.md)
 
-## 使用 Cardinal
+## 使用 hajimi
 
 ### 下載
 
 透過 Homebrew 安裝：
 
 ```bash
-brew install --cask cardinal-search
+brew install --cask hajimi
 ```
 
-你也可以從 [GitHub Releases](https://github.com/cardisoft/cardinal/releases/) 取得最新的安裝包。
+你也可以從 [hajimi GitHub Releases](https://github.com/WaveF/hajimi/releases/) 取得最新的安裝包。
 
 ### 國際化支援
 
@@ -31,7 +31,7 @@ brew install --cask cardinal-search
 
 ### 基礎搜尋語法
 
-Cardinal 現在在經典的子字串/前綴匹配基礎上疊加了 Everything 相容語法：
+hajimi 現在在經典的子字串/前綴匹配基礎上疊加了 Everything 相容語法：
 
 - `report draft` – 空白代表 `AND`，只會得到同時包含兩個詞的檔案。
 - `*.pdf briefing` – 只顯示檔名包含「briefing」的 PDF 結果。
@@ -48,12 +48,12 @@ Cardinal 現在在經典的子字串/前綴匹配基礎上疊加了 Everything �
 
 ### 鍵盤快捷鍵與預覽
 
-- `Cmd+Shift+Space` – 透過全域快捷鍵開/關 Cardinal 視窗。
+- `Cmd+Shift+Space` – 透過全域快捷鍵開/關 hajimi 視窗。
 - `Cmd+,` – 打開偏好設定。
-- `Esc` – 隱藏 Cardinal 視窗。
+- `Esc` – 隱藏 hajimi 視窗。
 - `ArrowUp`/`ArrowDown` – 上下移動選取項目。
 - `Shift+ArrowUp`/`Shift+ArrowDown` – 擴展選取範圍。
-- `Space` – 不離開 Cardinal 即可對目前行執行 Quick Look。
+- `Space` – 不離開 hajimi 即可對目前行執行 Quick Look。
 - `Cmd+O` – 打開選中的結果。
 - `Cmd+R` – 在 Finder 中定位選中的結果。
 - `Cmd+C` – 複製所選檔案到剪貼簿。
@@ -65,7 +65,7 @@ Cardinal 現在在經典的子字串/前綴匹配基礎上疊加了 Everything �
 
 ---
 
-## 建置 Cardinal
+## 建置 hajimi
 
 ### 環境需求
 
@@ -87,3 +87,7 @@ npm run tauri dev -- --release --features dev
 cd cardinal
 npm run tauri build
 ```
+
+## 致敬源專案
+
+hajimi 基於 [Cardinal](https://github.com/cardisoft/cardinal) 的基礎持續開發，感謝原專案及其貢獻者提供的啟發與基礎工作。

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getWatchRootValidation, isPathInputValid } from '../watchRoot';
+import { getWatchRootValidation, isIgnorePatternValid, isPathInputValid } from '../watchRoot';
 
 describe('isPathInputValid', () => {
   it('rejects empty or whitespace-only inputs', () => {
@@ -69,5 +69,18 @@ describe('getWatchRootValidation', () => {
       isValid: true,
       errorKey: null,
     });
+  });
+});
+
+describe('isIgnorePatternValid', () => {
+  it('accepts relative gitignore-style patterns and comments', () => {
+    expect(isIgnorePatternValid('node_modules/')).toBe(true);
+    expect(isIgnorePatternValid('*.log')).toBe(true);
+    expect(isIgnorePatternValid('packages/*/dist/')).toBe(true);
+    expect(isIgnorePatternValid('# generated files')).toBe(true);
+  });
+
+  it('rejects unsupported negated rules', () => {
+    expect(isIgnorePatternValid('!keep-me/')).toBe(false);
   });
 });

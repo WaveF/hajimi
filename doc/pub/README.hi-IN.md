@@ -1,29 +1,29 @@
 <div align="center">
-  <img src="../../cardinal/mac-icon_1024x1024.png" alt="Cardinal आइकन" width="120" height="120">
-  <h1>Cardinal</h1>
+  <img src="../../app-icon.png" alt="hajimi आइकन" width="120" height="120">
+  <h1>hajimi</h1>
   <p>macOS के लिए सबसे तेज़ और सबसे सटीक फ़ाइल खोज ऐप।</p>
   <p>
-    <a href="#cardinal-का-उपयोग">Cardinal का उपयोग</a> ·
-    <a href="#cardinal-बिल्ड-करें">Cardinal बिल्ड करें</a>
+    <a href="#hajimi-का-उपयोग">hajimi का उपयोग</a> ·
+    <a href="#hajimi-बिल्ड-करें">hajimi बिल्ड करें</a>
   </p>
-  <img src="UI.gif" alt="Cardinal UI प्रीव्यू" width="720">
+  <img src="UI.gif" alt="hajimi UI प्रीव्यू" width="720">
 </div>
 
 ---
 
 [English](../../README.md) · [Español](README.es-ES.md) · [한국어](README.ko-KR.md) · [Русский](README.ru-RU.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [Português](README.pt-BR.md) · [Italiano](README.it-IT.md) · [日本語](README.ja-JP.md) · [Français](README.fr-FR.md) · [Deutsch](README.de-DE.md) · [Українська](README.uk-UA.md) · [العربية](README.ar-SA.md) · [हिन्दी](README.hi-IN.md) · [Türkçe](README.tr-TR.md)
 
-## Cardinal का उपयोग
+## hajimi का उपयोग
 
 ### डाउनलोड
 
 Homebrew से इंस्टॉल करें:
 
 ```bash
-brew install --cask cardinal-search
+brew install --cask hajimi
 ```
 
-आप [GitHub Releases](https://github.com/cardisoft/cardinal/releases/) से नवीनतम पैकेज भी डाउनलोड कर सकते हैं।
+आप [hajimi GitHub Releases](https://github.com/WaveF/hajimi/releases/) से नवीनतम पैकेज भी डाउनलोड कर सकते हैं।
 
 ### i18n सपोर्ट
 
@@ -31,7 +31,7 @@ brew install --cask cardinal-search
 
 ### खोज की बुनियादी बातें
 
-Cardinal अब क्लासिक substring/prefix मैचिंग के ऊपर Everything-संगत सिंटैक्स लेयर सपोर्ट करता है:
+hajimi अब क्लासिक substring/prefix मैचिंग के ऊपर Everything-संगत सिंटैक्स लेयर सपोर्ट करता है:
 
 - `report draft` – स्पेस `AND` की तरह काम करता है, इसलिए केवल वे फ़ाइलें दिखेंगी जिनके नाम में दोनों टोकन हों।
 - `*.pdf briefing` – नाम में “briefing” वाले PDF परिणाम फ़िल्टर करें।
@@ -48,12 +48,12 @@ Cardinal अब क्लासिक substring/prefix मैचिंग के
 
 ### कीबोर्ड शॉर्टकट और प्रीव्यू
 
-- `Cmd+Shift+Space` – global hotkey से Cardinal विंडो टॉगल करें।
+- `Cmd+Shift+Space` – global hotkey से hajimi विंडो टॉगल करें।
 - `Cmd+,` – Preferences खोलें।
-- `Esc` – Cardinal विंडो छिपाएं।
+- `Esc` – hajimi विंडो छिपाएं।
 - `ArrowUp`/`ArrowDown` – चयन को ऊपर/नीचे ले जाएं।
 - `Shift+ArrowUp`/`Shift+ArrowDown` – चयन का विस्तार करें।
-- `Space` – Cardinal छोड़े बिना चयनित row का Quick Look।
+- `Space` – hajimi छोड़े बिना चयनित row का Quick Look।
 - `Cmd+O` – चयनित परिणाम खोलें।
 - `Cmd+R` – हाइलाइट किए गए परिणाम को Finder में दिखाएँ।
 - `Cmd+C` – चयनित फ़ाइलें क्लिपबोर्ड में कॉपी करें।
@@ -65,7 +65,7 @@ Cardinal अब क्लासिक substring/prefix मैचिंग के
 
 ---
 
-## Cardinal बिल्ड करें
+## hajimi बिल्ड करें
 
 ### आवश्यकताएँ
 
@@ -87,3 +87,7 @@ npm run tauri dev -- --release --features dev
 cd cardinal
 npm run tauri build
 ```
+
+## आभार
+
+hajimi [Cardinal](https://github.com/cardisoft/cardinal) की नींव पर बनाया गया है। मूल प्रोजेक्ट के लेखकों और योगदानकर्ताओं की प्रेरणा और आधारभूत कार्य के लिए हम उनका हार्दिक आभार व्यक्त करते हैं।

@@ -181,7 +181,7 @@ mod tests {
 
     #[test]
     fn test_icon_of_path_ql_normal() {
-        let data = icon_of_path_ql("../cardinal/mac-icon_1024x1024.png").unwrap();
+        let data = icon_of_path_ql("../app-icon.png").unwrap();
         std::fs::write("/tmp/icon_ql.png", data).unwrap();
     }
 
@@ -197,7 +197,7 @@ mod tests {
 
     #[test]
     fn test_icon_dimension() {
-        let (width, height) = image_dimension("../cardinal/mac-icon_1024x1024.png").unwrap();
+        let (width, height) = image_dimension("../app-icon.png").unwrap();
         assert_eq!(width, 1024.0);
         assert_eq!(height, 1024.0);
     }

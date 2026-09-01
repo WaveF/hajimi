@@ -1,6 +1,6 @@
-# Cardinal 搜尋語法
+# hajimi 搜尋語法
 
-Cardinal 的查詢語言刻意貼近 Everything 的語法，同時反映目前引擎實際實作的內容。本頁是 Rust 後端目前支援能力的權威參考。
+hajimi 的查詢語言刻意貼近 Everything 的語法，同時反映目前引擎實際實作的內容。本頁是 Rust 後端目前支援能力的權威參考。
 
 [English](search-syntax.md) · [Español](search-syntax.es-ES.md) · [한국어](search-syntax.ko-KR.md) · [Русский](search-syntax.ru-RU.md) · [简体中文](search-syntax.zh-CN.md) · [繁體中文](search-syntax.zh-TW.md) · [Português](search-syntax.pt-BR.md) · [Italiano](search-syntax.it-IT.md) · [日本語](search-syntax.ja-JP.md) · [Français](search-syntax.fr-FR.md) · [Deutsch](search-syntax.de-DE.md) · [Українська](search-syntax.uk-UA.md) · [العربية](search-syntax.ar-SA.md) · [हिन्दी](search-syntax.hi-IN.md) · [Türkçe](search-syntax.tr-TR.md)
 
@@ -37,7 +37,7 @@ ext:png;jpg travel|vacation   # 檔名包含 “travel” 或 “vacation” 的
 
 - 不加引號且不含 `/` 的詞元，會比對檔案或資料夾名稱中包含該子字串的項目：
   - `demo` 會匹配 `/Users/demo` 資料夾和 `/Users/alice/demo-notes.md`。
-  - 它不會只因為祖先資料夾名為 `demo` 就匹配 `/Users/demo/Projects/cardinal.md`；如果要匹配子孫項，請使用 `demo/**`。
+  - 它不會只因為祖先資料夾名為 `demo` 就匹配 `/Users/demo/Projects/hajimi.md`；如果要匹配子孫項，請使用 `demo/**`。
 - 雙引號片語會在單一檔案或資料夾名稱內匹配包含空白在內的精確序列：
   - `"Application Support"` 會匹配 `/Library/Application Support` 資料夾。
 - UI 的大小寫開關對兩者都有效。
@@ -57,7 +57,7 @@ ext:png;jpg travel|vacation   # 檔名包含 “travel” 或 “vacation” 的
 
 ### 2.3 使用 `/` 的路徑式分段
 
-Cardinal 能理解詞元中的「斜線分段」，並將每個分段歸類為檔案或資料夾名稱的前綴/後綴/精確/子字串比對。範例：
+hajimi 能理解詞元中的「斜線分段」，並將每個分段歸類為檔案或資料夾名稱的前綴/後綴/精確/子字串比對。範例：
 
 ```text
 elloworl        → Substring("elloworl")
@@ -83,7 +83,7 @@ bab/bob/        → Suffix("bab"), Exact("bob")
 
 ## 3. 布林邏輯與分組
 
-Cardinal 遵循 Everything 的優先序：
+hajimi 遵循 Everything 的優先序：
 
 - `NOT` / `!` 綁定最緊，
 - `OR` / `|` 次之，
@@ -117,7 +117,7 @@ good (<src|tests> ext:rs)
 
 本節只列出目前引擎實際會計算的過濾器。
 
-> **注意**：過濾器參數必須緊接在冒號之後（`ext:jpg`, `parent:/Users/demo`）。寫成 `file: *.md` 會插入空白，Cardinal 會將其視為 `file:` 過濾器（無參數），後面接一個獨立詞元 `*.md`。
+> **注意**：過濾器參數必須緊接在冒號之後（`ext:jpg`, `parent:/Users/demo`）。寫成 `file: *.md` 會插入空白，hajimi 會將其視為 `file:` 過濾器（無參數），後面接一個獨立詞元 `*.md`。
 
 ### 4.1 檔案 / 資料夾過濾器
 
@@ -175,7 +175,7 @@ ext:png;jpg travel|vacation
 範例：
 ```text
 type:picture vacation
-type:code "Cardinal"
+type:code "hajimi"
 type:archive dm:pastmonth
 ```
 
@@ -188,7 +188,7 @@ type:archive dm:pastmonth
 | `audio:` | `type:audio`    | `audio: piano`        |
 | `video:` | `type:video`    | `video: tutorial`     |
 | `doc:`   | `type:doc`      | `doc: invoice dm:2024` |
-| `exe:`   | `type:exe`      | `exe: "Cardinal"`    |
+| `exe:`   | `type:exe`      | `exe: "hajimi"`    |
 
 巨集可接受可選參數：
 ```text
@@ -277,7 +277,7 @@ type:doc content:"Q4 budget"
 
 ### 4.10 標籤過濾器：`tag:` / `t:`
 
-依 Finder 標籤（macOS）過濾。Cardinal 會按需從檔案中繼資料取得標籤（不快取），並在結果集很大時先使用 `mdfind` 縮小候選，再進行標籤比對。
+依 Finder 標籤（macOS）過濾。hajimi 會按需從檔案中繼資料取得標籤（不快取），並在結果集很大時先使用 `mdfind` 縮小候選，再進行標籤比對。
 
 - 接受一個或多個以 `;` 分隔的標籤（邏輯 OR）：`tag:ProjectA;ProjectB`。
 - 可串聯多個 `tag:` 過濾器（邏輯 AND）以達到多標籤匹配：`tag:Project tag:Important`。

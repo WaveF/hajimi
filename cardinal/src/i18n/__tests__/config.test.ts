@@ -69,10 +69,10 @@ describe('i18n locale normalization', () => {
   });
 
   it('detects initial language from localStorage first (supported only)', () => {
-    window.localStorage.setItem('cardinal.language', 'fr-FR');
+    window.localStorage.setItem('hajimi.language', 'fr-FR');
     expect(__test__.detectInitialLanguage()).toBe('fr-FR');
 
-    window.localStorage.setItem('cardinal.language', 'fr');
+    window.localStorage.setItem('hajimi.language', 'fr');
     const navigatorLanguage = vi
       .spyOn(window.navigator, 'language', 'get')
       .mockReturnValue('ja-JP');
@@ -82,7 +82,7 @@ describe('i18n locale normalization', () => {
   });
 
   it('falls back to browser language when localStorage is invalid', () => {
-    window.localStorage.setItem('cardinal.language', 'not-a-language');
+    window.localStorage.setItem('hajimi.language', 'not-a-language');
 
     const navigatorLanguage = vi
       .spyOn(window.navigator, 'language', 'get')
@@ -93,7 +93,7 @@ describe('i18n locale normalization', () => {
   });
 
   it('falls back to browser language when stored language casing is invalid', () => {
-    window.localStorage.setItem('cardinal.language', 'fr-fr');
+    window.localStorage.setItem('hajimi.language', 'fr-fr');
 
     const navigatorLanguage = vi
       .spyOn(window.navigator, 'language', 'get')
@@ -126,7 +126,7 @@ describe('i18n locale normalization', () => {
   });
 
   it('handles empty localStorage gracefully', () => {
-    window.localStorage.setItem('cardinal.language', '');
+    window.localStorage.setItem('hajimi.language', '');
 
     const navigatorLanguage = vi
       .spyOn(window.navigator, 'language', 'get')
@@ -151,7 +151,7 @@ describe('i18n locale normalization', () => {
 describe('i18n language change events', () => {
   it('persists language to localStorage on change', () => {
     i18n.changeLanguage('ja-JP');
-    expect(window.localStorage.getItem('cardinal.language')).toBe('ja-JP');
+    expect(window.localStorage.getItem('hajimi.language')).toBe('ja-JP');
   });
 
   it('updates document.documentElement.lang on change', () => {

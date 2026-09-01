@@ -6,8 +6,8 @@ use crate::{
 };
 use anyhow::Result;
 use base64::{Engine as _, engine::general_purpose};
-use cardinal_sdk::{EventFlag, EventWatcher, FsEvent};
 use crossbeam_channel::{Receiver, Sender};
+use hajimi_sdk::{EventFlag, EventWatcher, FsEvent};
 use once_cell::sync::Lazy;
 use parking_lot::Mutex;
 use rayon::spawn;

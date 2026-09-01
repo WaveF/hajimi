@@ -5,6 +5,7 @@ import { applyThemePreference, persistThemePreference } from '../../theme';
 import { setTrayEnabled } from '../../tray';
 import { getStoredTrayIconEnabled, persistTrayIconEnabled } from '../../trayIconPreference';
 import { setWatchConfig } from '../../utils/watchConfig';
+import { getStoredGlobalShortcut, updateGlobalShortcut } from '../../utils/globalShortcuts';
 import { getBrowserLanguage } from '../../i18n/config';
 import { useIgnorePaths } from '../useIgnorePaths';
 import { useIncludePaths } from '../useIncludePaths';
@@ -35,6 +36,7 @@ vi.mock('../../trayIconPreference', () => ({
 
 vi.mock('../../tray', () => ({
   setTrayEnabled: vi.fn(),
+  setTrayGlobalShortcut: vi.fn(),
 }));
 
 vi.mock('../../theme', () => ({
@@ -44,6 +46,12 @@ vi.mock('../../theme', () => ({
 
 vi.mock('../../utils/watchConfig', () => ({
   setWatchConfig: vi.fn(),
+}));
+
+vi.mock('../../utils/globalShortcuts', () => ({
+  DEFAULT_GLOBAL_SHORTCUT: '',
+  getStoredGlobalShortcut: vi.fn(),
+  updateGlobalShortcut: vi.fn(),
 }));
 
 vi.mock('../../i18n/config', () => ({
@@ -60,6 +68,8 @@ const mockedSetTrayEnabled = vi.mocked(setTrayEnabled);
 const mockedPersistThemePreference = vi.mocked(persistThemePreference);
 const mockedApplyThemePreference = vi.mocked(applyThemePreference);
 const mockedSetWatchConfig = vi.mocked(setWatchConfig);
+const mockedGetStoredGlobalShortcut = vi.mocked(getStoredGlobalShortcut);
+const mockedUpdateGlobalShortcut = vi.mocked(updateGlobalShortcut);
 const mockedGetBrowserLanguage = vi.mocked(getBrowserLanguage);
 
 describe('useAppPreferences', () => {
@@ -90,6 +100,8 @@ describe('useAppPreferences', () => {
     mockedGetStoredTrayIconEnabled.mockReturnValue(true);
     mockedSetTrayEnabled.mockResolvedValue(undefined);
     mockedSetWatchConfig.mockResolvedValue(undefined);
+    mockedGetStoredGlobalShortcut.mockReturnValue('');
+    mockedUpdateGlobalShortcut.mockResolvedValue(undefined);
     mockedInvoke.mockResolvedValue(undefined);
     mockedGetBrowserLanguage.mockReturnValue('fr-FR');
   });
@@ -120,6 +132,24 @@ describe('useAppPreferences', () => {
     });
 
     expect(mockedInvoke).toHaveBeenCalledTimes(1);
+  });
+
+  it('updates the global shortcut only after registration succeeds', async () => {
+    const { result } = renderHook(() =>
+      useAppPreferences({
+        fullDiskAccessStatus: 'denied',
+        isCheckingFullDiskAccess: false,
+        refreshSearchResults,
+        i18n: { changeLanguage },
+      }),
+    );
+
+    await act(async () => {
+      await result.current.handleGlobalShortcutChange('CommandOrControl+Shift+K');
+    });
+
+    expect(mockedUpdateGlobalShortcut).toHaveBeenCalledWith('CommandOrControl+Shift+K');
+    expect(result.current.globalShortcut).toBe('CommandOrControl+Shift+K');
   });
 
   it('updates watch config and refreshes search when preferences change', async () => {

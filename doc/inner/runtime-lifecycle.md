@@ -1,6 +1,6 @@
 # Runtime Lifecycle
 
-Cardinal exposes a small lifecycle state machine to the UI. The state is stored in `cardinal/src-tauri/src/lifecycle.rs` and broadcast as the `app_lifecycle_state` Tauri event.
+hajimi exposes a small lifecycle state machine to the UI. The state is stored in `cardinal/src-tauri/src/lifecycle.rs` and broadcast as the `app_lifecycle_state` Tauri event.
 
 ## States
 - **Initializing**: no usable steady-state watcher yet. This covers the initial filesystem walk, full rescans, and watch-config rebuilds.

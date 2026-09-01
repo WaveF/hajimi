@@ -45,7 +45,7 @@ const getAvailableWidth = (windowWidth: number) =>
   windowWidth - CONTAINER_PADDING - SCROLLBAR_WIDTH;
 
 const getFixedWidth = (widths: ColumnWidths) =>
-  widths.path + widths.size + widths.modified + widths.created;
+  widths.extension + widths.path + widths.size + widths.modified + widths.created;
 
 const getTotalWidth = (widths: ColumnWidths) => getFixedWidth(widths) + widths.filename;
 

@@ -14,6 +14,7 @@ pub struct SortStatePayload {
 #[serde(rename_all = "camelCase")]
 pub enum SortKeyPayload {
     Filename,
+    Extension,
     FullPath,
     Size,
     Mtime,
@@ -33,17 +34,20 @@ pub(crate) struct SortEntry {
     node: SearchResultNode,
     path_key: String,
     name_key: String,
+    extension_key: String,
 }
 
 impl SortEntry {
     pub(crate) fn new(slab_index: SlabIndex, node: SearchResultNode) -> Self {
         let path_key = normalize_path(&node.path);
         let name_key = extract_filename(&node);
+        let extension_key = extract_extension(&node);
         Self {
             slab_index,
             node,
             path_key,
             name_key,
+            extension_key,
         }
     }
 }
@@ -64,6 +68,14 @@ fn extract_filename(node: &SearchResultNode) -> String {
         .unwrap_or_else(|| node.path.to_string_lossy().into_owned())
 }
 
+fn extract_extension(node: &SearchResultNode) -> String {
+    node.path
+        .extension()
+        .and_then(|extension| extension.to_str())
+        .map(str::to_lowercase)
+        .unwrap_or_default()
+}
+
 fn metadata_numeric(meta: &SlabNodeMetadataCompact, key: SortKeyPayload) -> i64 {
     let Some(meta_ref) = meta.as_ref() else {
         return i64::MIN;
@@ -78,7 +90,7 @@ fn metadata_numeric(meta: &SlabNodeMetadataCompact, key: SortKeyPayload) -> i64 
             .ctime()
             .map(|value| value.get() as i64)
             .unwrap_or(i64::MIN),
-        SortKeyPayload::FullPath | SortKeyPayload::Filename => 0,
+        SortKeyPayload::FullPath | SortKeyPayload::Filename | SortKeyPayload::Extension => 0,
     }
 }
 
@@ -100,6 +112,12 @@ fn compare_entries(a: &SortEntry, b: &SortEntry, sort: &SortStatePayload) -> Std
         SortKeyPayload::Filename => a
             .name_key
             .cmp(&b.name_key)
+            .then_with(|| type_order(&a.node).cmp(&type_order(&b.node)))
+            .then_with(|| a.path_key.cmp(&b.path_key)),
+        SortKeyPayload::Extension => a
+            .extension_key
+            .cmp(&b.extension_key)
+            .then_with(|| a.name_key.cmp(&b.name_key))
             .then_with(|| type_order(&a.node).cmp(&type_order(&b.node)))
             .then_with(|| a.path_key.cmp(&b.path_key)),
         SortKeyPayload::Size | SortKeyPayload::Mtime | SortKeyPayload::Ctime => {
@@ -194,6 +212,45 @@ mod tests {
             order,
             vec![0, 2, 1],
             "directories stay ahead when size and names match, while files fall back to path order"
+        );
+    }
+
+    #[test]
+    fn extension_sort_groups_extensions_case_insensitively() {
+        let sort_state = SortStatePayload {
+            key: SortKeyPayload::Extension,
+            direction: SortDirectionPayload::Asc,
+        };
+        let mut entries = vec![
+            entry_with_metadata(
+                0,
+                "/tmp/readme.txt",
+                metadata_with_type(NodeFileType::File, 0),
+            ),
+            entry_with_metadata(
+                1,
+                "/tmp/source.RS",
+                metadata_with_type(NodeFileType::File, 0),
+            ),
+            entry_with_metadata(
+                2,
+                "/tmp/source.rs",
+                metadata_with_type(NodeFileType::File, 0),
+            ),
+            entry_with_metadata(
+                3,
+                "/tmp/.gitignore",
+                metadata_with_type(NodeFileType::File, 0),
+            ),
+        ];
+
+        sort_entries(&mut entries, &sort_state);
+        let order: Vec<usize> = entries.iter().map(|entry| entry.slab_index.get()).collect();
+
+        assert_eq!(
+            order,
+            vec![3, 1, 2, 0],
+            "extension sorting should group case variants while keeping names stable within a group"
         );
     }
 }

@@ -29,6 +29,7 @@ describe('useRecentFSEvents', () => {
         caseSensitive: false,
         isActive: true,
         eventFilterQuery: '',
+        refreshWhenInactive: false,
       },
     });
 
@@ -49,6 +50,7 @@ describe('useRecentFSEvents', () => {
       caseSensitive: false,
       isActive: true,
       eventFilterQuery: 'alpha',
+      refreshWhenInactive: false,
     });
 
     expect(result.current.filteredEvents).toHaveLength(1);
@@ -57,10 +59,44 @@ describe('useRecentFSEvents', () => {
 
   it('cleans up runtime subscription on unmount', async () => {
     const { unmount } = renderHook(() =>
-      useRecentFSEvents({ caseSensitive: false, isActive: true, eventFilterQuery: '' }),
+      useRecentFSEvents({
+        caseSensitive: false,
+        isActive: true,
+        eventFilterQuery: '',
+        refreshWhenInactive: false,
+      }),
     );
     unmount();
 
     expect(unlisten).toHaveBeenCalledTimes(1);
+  });
+
+  it('defers inactive list refreshes until the Events tab becomes active', async () => {
+    const { result, rerender } = renderHook((props) => useRecentFSEvents(props), {
+      initialProps: {
+        caseSensitive: false,
+        isActive: false,
+        eventFilterQuery: '',
+        refreshWhenInactive: false,
+      },
+    });
+
+    await waitFor(() => expect(fsEventsBatchListener).not.toBeNull());
+
+    act(() => {
+      fsEventsBatchListener?.([
+        { path: '/tmp/deferred.txt', eventId: 1, timestamp: 1, flagBits: 0 },
+      ]);
+    });
+    expect(result.current.filteredEvents).toHaveLength(0);
+
+    rerender({
+      caseSensitive: false,
+      isActive: true,
+      eventFilterQuery: '',
+      refreshWhenInactive: false,
+    });
+
+    await waitFor(() => expect(result.current.filteredEvents).toHaveLength(1));
   });
 });

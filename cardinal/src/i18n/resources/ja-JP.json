@@ -22,6 +22,7 @@
   },
   "columns": {
     "filename": "ファイル名",
+    "extension": "拡張子",
     "path": "パス",
     "size": "サイズ",
     "modified": "更新日時",
@@ -71,7 +72,7 @@
       "settings": "環境設定を開く"
     },
     "rescan": {
-      "disabledHint": "Cardinal の準備が整うと再スキャンを利用できます。",
+      "disabledHint": "hajimi の準備が整うと再スキャンを利用できます。",
       "enabledHint": "ファイルシステム全体の再スキャンを実行します。",
       "errorCountSuffix": " これまでにファイルシステムエラーが{{formatted}}回発生しています。再スキャンを推奨します。"
     },
@@ -86,11 +87,11 @@
   "app": {
     "fullDiskAccess": {
       "title": "フルディスクアクセスが必要です",
-      "description": "Cardinal がシステム全体のファイルをインデックス化・監視するには、macOS のフルディスクアクセスが必要です。システム設定で Cardinal のフルディスクアクセスを有効にしてください。",
+      "description": "hajimi がシステム全体のファイルをインデックス化・監視するには、macOS のフルディスクアクセスが必要です。システム設定で hajimi のフルディスクアクセスを有効にしてください。",
       "steps": {
         "one": "システム設定 > プライバシーとセキュリティ > フルディスクアクセス を開きます。",
-        "two": "変更を許可するために錠前をクリックし、Cardinal を有効にします。",
-        "three": "求められたら、macOS に Cardinal の再起動を許可します。"
+        "two": "変更を許可するために錠前をクリックし、hajimi を有効にします。",
+        "three": "求められたら、macOS に hajimi の再起動を許可します。"
       },
       "status": {
         "checking": "権限の状態を確認しています...",
@@ -122,17 +123,21 @@
   },
   "preferences": {
     "title": "環境設定",
-    "heading": "Cardinal を自分好みに",
-    "subtitle": "見た目と言語を調整します。",
     "appearance": "表示",
-    "themeHint": "ライト / ダーク / システムから選択。",
     "language": "言語",
-    "languageHint": "UI 言語をすぐに切り替えます。",
     "trayIcon": {
       "label": "トレイアイコンを表示"
     },
     "sortingLimit": {
       "label": "並び替えの上限"
+    },
+    "globalShortcut": {
+      "label": "Global shortcut",
+      "placeholder": "Press a key combination",
+      "clear": "Clear",
+      "errors": {
+        "unavailable": "This shortcut is unavailable or already in use."
+      }
     },
     "save": "保存",
     "reset": "既定値に戻す",
@@ -152,8 +157,8 @@
     }
   },
   "tray": {
-    "open": "Cardinalを開く",
-    "quit": "Cardinal を終了"
+    "open": "hajimiを開く",
+    "quit": "hajimi を終了"
   },
   "watchRoot": {
     "label": "監視ルートパス",
@@ -163,14 +168,14 @@
       "absolute": "「/」または「~」で始まる絶対パスを入力してください。"
     },
     "title": "監視ルートパスを選択",
-    "description": "Cardinal はこのディレクトリ配下のファイルをインデックス化して監視します。後で環境設定から変更できます。",
+    "description": "hajimi はこのディレクトリ配下のファイルをインデックス化して監視します。後で環境設定から変更できます。",
     "action": "インデックス開始"
   },
   "ignorePaths": {
     "label": "無視するパス",
-    "help": "1 行に 1 パス。無視するパスはインデックス作成時にスキップされます。",
+    "help": "1 行に 1 ルール。node_modules/、.git/、target/ など gitignore 形式のパターンに対応しています。",
     "errors": {
-      "absolute": "各パスは「/」または「~」で始まる必要があります。"
+      "pattern": "除外パターンを入力してください。「!」で始まる否定ルールには対応していません。"
     }
   },
   "includePaths": {

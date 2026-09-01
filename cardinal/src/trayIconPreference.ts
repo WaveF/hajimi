@@ -1,4 +1,4 @@
-const TRAY_ICON_ENABLED_STORAGE_KEY = 'cardinal.trayIconEnabled';
+const TRAY_ICON_ENABLED_STORAGE_KEY = 'hajimi.trayIconEnabled';
 
 export const getStoredTrayIconEnabled = (): boolean => {
   const stored = window.localStorage.getItem(TRAY_ICON_ENABLED_STORAGE_KEY);

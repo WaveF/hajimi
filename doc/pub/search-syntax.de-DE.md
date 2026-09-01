@@ -1,6 +1,6 @@
-# Cardinal-Suchsyntax
+# hajimi-Suchsyntax
 
-Die Abfragesprache von Cardinal ist bewusst an die Syntax von Everything angelehnt, spiegelt aber das wider, was die aktuelle Engine tatsächlich implementiert. Diese Seite ist die maßgebliche Referenz dafür, was das Rust-Backend heute versteht.
+Die Abfragesprache von hajimi ist bewusst an die Syntax von Everything angelehnt, spiegelt aber das wider, was die aktuelle Engine tatsächlich implementiert. Diese Seite ist die maßgebliche Referenz dafür, was das Rust-Backend heute versteht.
 
 [English](search-syntax.md) · [Español](search-syntax.es-ES.md) · [한국어](search-syntax.ko-KR.md) · [Русский](search-syntax.ru-RU.md) · [简体中文](search-syntax.zh-CN.md) · [繁體中文](search-syntax.zh-TW.md) · [Português](search-syntax.pt-BR.md) · [Italiano](search-syntax.it-IT.md) · [日本語](search-syntax.ja-JP.md) · [Français](search-syntax.fr-FR.md) · [Deutsch](search-syntax.de-DE.md) · [Українська](search-syntax.uk-UA.md) · [العربية](search-syntax.ar-SA.md) · [हिन्दी](search-syntax.hi-IN.md) · [Türkçe](search-syntax.tr-TR.md)
 
@@ -37,7 +37,7 @@ ext:png;jpg travel|vacation   # PNG oder JPG, deren Namen “travel” oder “v
 
 - Ein Token ohne Anführungszeichen und ohne `/` ist ein **Substring-Match** auf einer Pfadkomponente:
   - `demo` matcht den Ordner `/Users/demo` und `/Users/alice/demo-notes.md`.
-  - Es matcht `/Users/demo/Projects/cardinal.md` nicht nur deshalb, weil ein übergeordneter Ordner `demo` heißt; verwenden Sie `demo/**`, um Nachfahren zu suchen.
+  - Es matcht `/Users/demo/Projects/hajimi.md` nicht nur deshalb, weil ein übergeordneter Ordner `demo` heißt; verwenden Sie `demo/**`, um Nachfahren zu suchen.
 - Phrasen in doppelten Anführungszeichen matchen die exakte Sequenz inklusive Leerzeichen:
   - `"Application Support"` matcht `/Library/Application Support`.
 - Der UI-Schalter für Groß-/Kleinschreibung gilt für beide.
@@ -57,7 +57,7 @@ ext:png;jpg travel|vacation   # PNG oder JPG, deren Namen “travel” oder “v
 
 ### 2.3 Pfadartige Segmentierung mit `/`
 
-Cardinal versteht „Slash-Segmente“ innerhalb eines Tokens und klassifiziert jedes Segment als Prefix-/Suffix-/Exact-/Substring-Match auf Pfadkomponenten. Beispiele:
+hajimi versteht „Slash-Segmente“ innerhalb eines Tokens und klassifiziert jedes Segment als Prefix-/Suffix-/Exact-/Substring-Match auf Pfadkomponenten. Beispiele:
 
 ```text
 elloworl        → Substring("elloworl")
@@ -81,7 +81,7 @@ Damit können Sie ausdrücken:
 
 ## 3. Boolesche Logik und Gruppierung
 
-Cardinal folgt der Präzedenz von Everything:
+hajimi folgt der Präzedenz von Everything:
 
 - `NOT` / `!` bindet am stärksten,
 - `OR` / `|` als Nächstes,
@@ -115,7 +115,7 @@ Verwenden Sie Klammern oder `<...>`, wenn Sie die Standardpräzedenz überschrei
 
 Dieser Abschnitt listet nur Filter auf, die die aktuelle Engine tatsächlich auswertet.
 
-> **Hinweis**: Filterargumente müssen direkt nach dem Doppelpunkt folgen (`ext:jpg`, `parent:/Users/demo`). Das Schreiben von `file: *.md` fügt ein Leerzeichen ein, daher behandelt Cardinal das als `file:`-Filter (ohne Argument) gefolgt vom separaten Token `*.md`.
+> **Hinweis**: Filterargumente müssen direkt nach dem Doppelpunkt folgen (`ext:jpg`, `parent:/Users/demo`). Das Schreiben von `file: *.md` fügt ein Leerzeichen ein, daher behandelt hajimi das als `file:`-Filter (ohne Argument) gefolgt vom separaten Token `*.md`.
 
 ### 4.1 Datei-/Ordnerfilter
 
@@ -173,7 +173,7 @@ Diese Filter erwarten einen absoluten Pfad als Argument; ein führendes `~` wird
 Beispiele:
 ```text
 type:picture vacation
-type:code "Cardinal"
+type:code "hajimi"
 type:archive dm:pastmonth
 ```
 
@@ -186,7 +186,7 @@ Abkürzungen für gängige `type:`-Fälle:
 | `audio:` | `type:audio`       | `audio: piano`        |
 | `video:` | `type:video`       | `video: tutorial`     |
 | `doc:`   | `type:doc`         | `doc: invoice dm:2024` |
-| `exe:`   | `type:exe`         | `exe: "Cardinal"`    |
+| `exe:`   | `type:exe`         | `exe: "hajimi"`    |
 
 Makros akzeptieren ein optionales Argument:
 ```text
@@ -275,7 +275,7 @@ Das Inhalts-Matching erfolgt streamend über die Datei; Multibyte-Sequenzen kön
 
 ### 4.10 Tag-Filter: `tag:` / `t:`
 
-Filtert nach Finder-Tags (macOS). Cardinal holt Tags bei Bedarf aus den Metadaten der Datei (ohne Caching) und nutzt bei großen Ergebnismengen `mdfind`, um Kandidaten vorab einzugrenzen, bevor Tag-Matching angewendet wird.
+Filtert nach Finder-Tags (macOS). hajimi holt Tags bei Bedarf aus den Metadaten der Datei (ohne Caching) und nutzt bei großen Ergebnismengen `mdfind`, um Kandidaten vorab einzugrenzen, bevor Tag-Matching angewendet wird.
 
 - Akzeptiert ein oder mehrere Tags, getrennt durch `;` (logisches OR): `tag:ProjectA;ProjectB`.
 - Ketten Sie mehrere `tag:`-Filter (logisches AND) für Multi-Tag-Matches: `tag:Project tag:Important`.

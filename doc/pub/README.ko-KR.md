@@ -1,29 +1,29 @@
 <div align="center">
-  <img src="../../cardinal/mac-icon_1024x1024.png" alt="Cardinal 아이콘" width="120" height="120">
-  <h1>Cardinal</h1>
+  <img src="../../app-icon.png" alt="hajimi 아이콘" width="120" height="120">
+  <h1>hajimi</h1>
   <p>macOS에서 가장 빠르고 정확한 파일 검색 앱입니다.</p>
   <p>
-    <a href="#cardinal-사용하기">Cardinal 사용하기</a> ·
-    <a href="#cardinal-빌드하기">Cardinal 빌드하기</a>
+    <a href="#hajimi-사용하기">hajimi 사용하기</a> ·
+    <a href="#hajimi-빌드하기">hajimi 빌드하기</a>
   </p>
-  <img src="UI.gif" alt="Cardinal UI 미리보기" width="720">
+  <img src="UI.gif" alt="hajimi UI 미리보기" width="720">
 </div>
 
 ---
 
 [English](../../README.md) · [Español](README.es-ES.md) · [한국어](README.ko-KR.md) · [Русский](README.ru-RU.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [Português](README.pt-BR.md) · [Italiano](README.it-IT.md) · [日本語](README.ja-JP.md) · [Français](README.fr-FR.md) · [Deutsch](README.de-DE.md) · [Українська](README.uk-UA.md) · [العربية](README.ar-SA.md) · [हिन्दी](README.hi-IN.md) · [Türkçe](README.tr-TR.md)
 
-## Cardinal 사용하기
+## hajimi 사용하기
 
 ### 다운로드
 
 Homebrew로 설치:
 
 ```bash
-brew install --cask cardinal-search
+brew install --cask hajimi
 ```
 
-[GitHub Releases](https://github.com/cardisoft/cardinal/releases/)에서 최신 패키지 빌드를 받을 수도 있습니다.
+[hajimi GitHub Releases](https://github.com/WaveF/hajimi/releases/)에서 최신 패키지 빌드를 받을 수도 있습니다.
 
 ### 국제화(i18n) 지원
 
@@ -31,7 +31,7 @@ brew install --cask cardinal-search
 
 ### 검색 기본기
 
-Cardinal은 기존의 부분 문자열/접두사 매칭 위에 Everything과 호환되는 문법을 더했습니다:
+hajimi은 기존의 부분 문자열/접두사 매칭 위에 Everything과 호환되는 문법을 더했습니다:
 
 - `report draft` – 공백은 `AND`로 동작하므로 두 토큰을 모두 포함한 파일만 표시됩니다.
 - `*.pdf briefing` – 이름에 “briefing”이 포함된 PDF 결과만 필터링합니다.
@@ -48,12 +48,12 @@ Cardinal은 기존의 부분 문자열/접두사 매칭 위에 Everything과 호
 
 ### 단축키와 미리보기
 
-- `Cmd+Shift+Space` – 전역 단축키로 Cardinal 창을 토글합니다.
+- `Cmd+Shift+Space` – 전역 단축키로 hajimi 창을 토글합니다.
 - `Cmd+,` – 환경설정을 엽니다.
-- `Esc` – Cardinal 창을 숨깁니다.
+- `Esc` – hajimi 창을 숨깁니다.
 - `ArrowUp`/`ArrowDown` – 선택을 이동합니다.
 - `Shift+ArrowUp`/`Shift+ArrowDown` – 선택 범위를 확장합니다.
-- `Space` – Cardinal을 떠나지 않고 선택된 행을 Quick Look으로 확인합니다.
+- `Space` – hajimi을 떠나지 않고 선택된 행을 Quick Look으로 확인합니다.
 - `Cmd+O` – 선택한 결과를 엽니다.
 - `Cmd+R` – 선택한 결과를 Finder에서 열어 보여줍니다.
 - `Cmd+C` – 선택한 파일을 클립보드에 복사합니다.
@@ -65,7 +65,7 @@ Cardinal은 기존의 부분 문자열/접두사 매칭 위에 Everything과 호
 
 ---
 
-## Cardinal 빌드하기
+## hajimi 빌드하기
 
 ### 요구 사항
 
@@ -87,3 +87,7 @@ npm run tauri dev -- --release --features dev
 cd cardinal
 npm run tauri build
 ```
+
+## 감사의 말
+
+hajimi는 [Cardinal](https://github.com/cardisoft/cardinal)을 기반으로 만들어졌습니다. 영감과 토대를 제공해 준 원 프로젝트의 작성자와 기여자들께 진심으로 감사드립니다.

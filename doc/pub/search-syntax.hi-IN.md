@@ -1,6 +1,6 @@
-# Cardinal खोज वाक्यविन्यास
+# hajimi खोज वाक्यविन्यास
 
-Cardinal की क्वेरी भाषा जानबूझकर Everything के वाक्यविन्यास के करीब है, लेकिन यह दर्शाती है कि मौजूदा इंजन वास्तव में क्या लागू करता है। यह पेज बताता है कि Rust बैकएंड आज क्या समझता है—यही आधिकारिक संदर्भ है।
+hajimi की क्वेरी भाषा जानबूझकर Everything के वाक्यविन्यास के करीब है, लेकिन यह दर्शाती है कि मौजूदा इंजन वास्तव में क्या लागू करता है। यह पेज बताता है कि Rust बैकएंड आज क्या समझता है—यही आधिकारिक संदर्भ है।
 
 [English](search-syntax.md) · [Español](search-syntax.es-ES.md) · [한국어](search-syntax.ko-KR.md) · [Русский](search-syntax.ru-RU.md) · [简体中文](search-syntax.zh-CN.md) · [繁體中文](search-syntax.zh-TW.md) · [Português](search-syntax.pt-BR.md) · [Italiano](search-syntax.it-IT.md) · [日本語](search-syntax.ja-JP.md) · [Français](search-syntax.fr-FR.md) · [Deutsch](search-syntax.de-DE.md) · [Українська](search-syntax.uk-UA.md) · [العربية](search-syntax.ar-SA.md) · [हिन्दी](search-syntax.hi-IN.md) · [Türkçe](search-syntax.tr-TR.md)
 
@@ -37,7 +37,7 @@ ext:png;jpg travel|vacation   # जिन PNG/JPG नामों में “t
 
 - बिना उद्धरण और बिना `/` वाला टोकन एक पाथ कंपोनेंट पर **सब‑स्ट्रिंग मैच** होता है:
   - `demo` का मैच `/Users/demo` फ़ोल्डर और `/Users/alice/demo-notes.md` से होता है।
-  - केवल किसी ancestor का नाम `demo` होने से यह `/Users/demo/Projects/cardinal.md` से मैच नहीं करता; descendants खोजने के लिए `demo/**` इस्तेमाल करें।
+  - केवल किसी ancestor का नाम `demo` होने से यह `/Users/demo/Projects/hajimi.md` से मैच नहीं करता; descendants खोजने के लिए `demo/**` इस्तेमाल करें।
 - डबल‑क्वोटेड वाक्यांश स्पेस सहित सटीक अनुक्रम से मैच करते हैं:
   - `"Application Support"` का मैच `/Library/Application Support` से होता है।
 - UI का केस टॉगल दोनों पर लागू होता है।
@@ -57,7 +57,7 @@ ext:png;jpg travel|vacation   # जिन PNG/JPG नामों में “t
 
 ### 2.3 `/` के साथ पाथ‑स्टाइल सेगमेंटेशन
 
-Cardinal टोकन के भीतर “स्लैश‑सेगमेंट्स” समझता है और हर सेगमेंट को पाथ कंपोनेंट्स पर प्रीफ़िक्स/सफ़िक्स/एक्ज़ैक्ट/सब‑स्ट्रिंग मैच के रूप में वर्गीकृत करता है। उदाहरण:
+hajimi टोकन के भीतर “स्लैश‑सेगमेंट्स” समझता है और हर सेगमेंट को पाथ कंपोनेंट्स पर प्रीफ़िक्स/सफ़िक्स/एक्ज़ैक्ट/सब‑स्ट्रिंग मैच के रूप में वर्गीकृत करता है। उदाहरण:
 
 ```text
 elloworl        → Substring("elloworl")
@@ -81,7 +81,7 @@ bab/bob/        → Suffix("bab"), Exact("bob")
 
 ## 3. बूलियन लॉजिक और ग्रुपिंग
 
-Cardinal Everything की प्राथमिकता का पालन करता है:
+hajimi Everything की प्राथमिकता का पालन करता है:
 
 - `NOT` / `!` सबसे अधिक बाइंड करता है,
 - `OR` / `|` उसके बाद,
@@ -115,7 +115,7 @@ good (<src|tests> ext:rs)
 
 यह सेक्शन केवल उन फ़िल्टरों की सूची देता है जिन्हें वर्तमान इंजन वास्तव में जाँचता है।
 
-> **नोट**: फ़िल्टर आर्ग्युमेंट्स को तुरंत कोलन के बाद होना चाहिए (`ext:jpg`, `parent:/Users/demo`)। `file: *.md` लिखने पर स्पेस जुड़ जाता है, इसलिए Cardinal इसे `file:` फ़िल्टर (बिना आर्ग्युमेंट) और उसके बाद अलग टोकन `*.md` मानता है।
+> **नोट**: फ़िल्टर आर्ग्युमेंट्स को तुरंत कोलन के बाद होना चाहिए (`ext:jpg`, `parent:/Users/demo`)। `file: *.md` लिखने पर स्पेस जुड़ जाता है, इसलिए hajimi इसे `file:` फ़िल्टर (बिना आर्ग्युमेंट) और उसके बाद अलग टोकन `*.md` मानता है।
 
 ### 4.1 फ़ाइल / फ़ोल्डर फ़िल्टर
 
@@ -173,7 +173,7 @@ ext:png;jpg travel|vacation
 उदाहरण:
 ```text
 type:picture vacation
-type:code "Cardinal"
+type:code "hajimi"
 type:archive dm:pastmonth
 ```
 
@@ -186,7 +186,7 @@ type:archive dm:pastmonth
 | `audio:` | `type:audio`  | `audio: piano`        |
 | `video:` | `type:video`  | `video: tutorial`     |
 | `doc:`   | `type:doc`    | `doc: invoice dm:2024` |
-| `exe:`   | `type:exe`    | `exe: "Cardinal"`    |
+| `exe:`   | `type:exe`    | `exe: "hajimi"`    |
 
 मैक्रो वैकल्पिक आर्ग्युमेंट स्वीकार करते हैं:
 ```text
@@ -275,7 +275,7 @@ type:doc content:"Q4 budget"
 
 ### 4.10 टैग फ़िल्टर: `tag:` / `t:`
 
-Finder टैग (macOS) से फ़िल्टर करता है। Cardinal फ़ाइल के मेटाडेटा से टैग मांग पर लाता है (कोई कैश नहीं), और बड़े परिणाम सेट के लिए `mdfind` का उपयोग करके टैग मिलान से पहले उम्मीदवारों को सीमित करता है।
+Finder टैग (macOS) से फ़िल्टर करता है। hajimi फ़ाइल के मेटाडेटा से टैग मांग पर लाता है (कोई कैश नहीं), और बड़े परिणाम सेट के लिए `mdfind` का उपयोग करके टैग मिलान से पहले उम्मीदवारों को सीमित करता है।
 
 - `;` से अलग किए गए एक या अधिक टैग स्वीकार करता है (तार्किक OR): `tag:ProjectA;ProjectB`।
 - कई `tag:` फ़िल्टर को श्रृंखला में जोड़ें (तार्किक AND): `tag:Project tag:Important`।

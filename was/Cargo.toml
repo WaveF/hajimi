@@ -2,7 +2,7 @@
 name = "was"
 version = "0.1.0"
 edition = "2024"
-description = "CLI utility that streams filesystem events through the Cardinal SDK."
+description = "CLI utility that streams filesystem events through the hajimi SDK."
 license = "MIT"
 repository = "https://github.com/cardisoft/cardinal"
 homepage = "https://github.com/cardisoft/cardinal"
@@ -13,7 +13,7 @@ default-target = "aarch64-apple-darwin"
 targets = ["aarch64-apple-darwin", "x86_64-apple-darwin"]
 
 [dependencies]
-cardinal-sdk.path = "../cardinal-sdk"
+hajimi-sdk.path = "../cardinal-sdk"
 crossbeam = "0.8"
 chrono = "0.4"
 clap = { version = "4", features = ["derive"] }

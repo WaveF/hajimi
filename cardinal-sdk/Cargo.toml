@@ -1,12 +1,12 @@
 [package]
-name = "cardinal-sdk"
+name = "hajimi-sdk"
 version = "0.1.0"
 edition = "2024"
-description = "Cardinal's SDK for building macOS file search utilities."
+description = "hajimi's SDK for building macOS file search utilities."
 license = "MIT"
 repository = "https://github.com/cardisoft/cardinal"
 homepage = "https://github.com/cardisoft/cardinal"
-documentation = "https://docs.rs/cardinal-sdk"
+documentation = "https://docs.rs/hajimi-sdk"
 publish = false
 
 [package.metadata.docs.rs]

@@ -6,8 +6,8 @@ edition = "2024"
 [dependencies]
 fswalk = { path = "../fswalk" }
 namepool = { path = "../namepool" }
-cardinal-sdk = { path = "../cardinal-sdk" }
-cardinal-syntax = { path = "../cardinal-syntax" }
+hajimi-sdk = { path = "../cardinal-sdk" }
+hajimi-syntax = { path = "../cardinal-syntax" }
 query-segmentation = { path = "../query-segmentation" }
 search-cancel = { path = "../search-cancel" }
 zstd = { version = "0.13", features = ["zstdmt"] }

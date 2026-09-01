@@ -18,10 +18,13 @@
     "error": "Search Error",
     "emptyTitle": "No results for \"{{query}}\"",
     "emptyMessage": "Try adjusting your keywords or filters.",
+    "emptyQueryTitle": "Search results are hidden",
+    "emptyQueryMessage": "Enter a file or folder name to begin searching.",
     "emptyTitleWithDirectory": "No results for \"{{query}}\" in folder scope \"{{directoryQuery}}\""
   },
   "columns": {
     "filename": "Filename",
+    "extension": "Extension",
     "path": "Path",
     "size": "Size",
     "modified": "Modified",
@@ -71,7 +74,7 @@
       "settings": "Open preferences"
     },
     "rescan": {
-      "disabledHint": "Rescan becomes available once Cardinal is ready.",
+      "disabledHint": "Rescan becomes available once hajimi is ready.",
       "enabledHint": "Trigger a full filesystem rescan.",
       "errorCountSuffix": " {{formatted}} filesystem errors have occurred, rescan is suggested."
     },
@@ -86,11 +89,11 @@
   "app": {
     "fullDiskAccess": {
       "title": "Full Disk Access Required",
-      "description": "Cardinal needs macOS Full Disk Access to index and monitor files across your system. Please enable Full Disk Access for Cardinal in System Settings.",
+      "description": "hajimi needs macOS Full Disk Access to index and monitor files across your system. Please enable Full Disk Access for hajimi in System Settings.",
       "steps": {
         "one": "Open System Settings > Privacy & Security > Full Disk Access.",
-        "two": "Click the lock to make changes and enable Cardinal.",
-        "three": "When prompted, allow macOS to restart Cardinal."
+        "two": "Click the lock to make changes and enable hajimi.",
+        "three": "When prompted, allow macOS to restart hajimi."
       },
       "status": {
         "checking": "Checking permission status...",
@@ -122,17 +125,44 @@
   },
   "preferences": {
     "title": "Preferences",
-    "heading": "Make Cardinal yours",
-    "subtitle": "Adjust appearance and language to your liking.",
+    "nav": {
+      "general": "General",
+      "search": "Search",
+      "indexing": "Indexing",
+      "mcp": "MCP"
+    },
     "appearance": "Appearance",
-    "themeHint": "Choose light, dark, or follow the system.",
     "language": "Language",
-    "languageHint": "Switch the interface language instantly.",
     "trayIcon": {
       "label": "Show tray icon"
     },
+    "mcp": {
+      "description": "Connect third-party AI agents to hajimi through a local MCP server.",
+      "status": {
+        "label": "Connection status",
+        "ready": "Available",
+        "unavailable": "Unavailable"
+      },
+      "promptLabel": "Agent instructions",
+      "copy": "Copy for AI",
+      "copied": "Copied"
+    },
+    "hideEmptyResults": {
+      "label": "Hide results when search is empty"
+    },
+    "refreshEventsOnlyWhenActive": {
+      "label": "Refresh events only when the Events tab is active"
+    },
     "sortingLimit": {
       "label": "Sorting limit"
+    },
+    "globalShortcut": {
+      "label": "Global shortcut",
+      "placeholder": "Press a key combination",
+      "clear": "Clear",
+      "errors": {
+        "unavailable": "This shortcut is unavailable or already in use."
+      }
     },
     "save": "Save",
     "reset": "Restore defaults",
@@ -152,8 +182,8 @@
     }
   },
   "tray": {
-    "open": "Open Cardinal",
-    "quit": "Quit Cardinal"
+    "open": "Open hajimi",
+    "quit": "Quit hajimi"
   },
   "watchRoot": {
     "label": "Monitor root path",
@@ -163,14 +193,14 @@
       "absolute": "Please enter an absolute path starting with '/' or '~'."
     },
     "title": "Choose monitor root path",
-    "description": "Cardinal will index and monitor files under this directory. You can change it later in Preferences.",
+    "description": "hajimi will index and monitor files under this directory. You can change it later in Preferences.",
     "action": "Start indexing"
   },
   "ignorePaths": {
     "label": "Ignore paths",
-    "help": "One path per line; ignored paths are skipped during indexing.",
+    "help": "One rule per line; supports gitignore-style patterns such as node_modules/, .git/, and target/.",
     "errors": {
-      "absolute": "Each path must start with '/' or '~'."
+      "pattern": "Use an ignore pattern; negated rules starting with '!' are not supported."
     }
   },
   "includePaths": {

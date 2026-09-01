@@ -1,6 +1,6 @@
-# Cardinal 검색 문법
+# hajimi 검색 문법
 
-Cardinal의 쿼리 언어는 Everything의 문법에 의도적으로 가깝지만, 현재 엔진이 실제로 구현한 내용을 반영합니다. 이 문서는 Rust 백엔드가 오늘 기준으로 이해하는 내용을 담은 기준 문서입니다.
+hajimi의 쿼리 언어는 Everything의 문법에 의도적으로 가깝지만, 현재 엔진이 실제로 구현한 내용을 반영합니다. 이 문서는 Rust 백엔드가 오늘 기준으로 이해하는 내용을 담은 기준 문서입니다.
 
 [English](search-syntax.md) · [Español](search-syntax.es-ES.md) · [한국어](search-syntax.ko-KR.md) · [Русский](search-syntax.ru-RU.md) · [简体中文](search-syntax.zh-CN.md) · [繁體中文](search-syntax.zh-TW.md) · [Português](search-syntax.pt-BR.md) · [Italiano](search-syntax.it-IT.md) · [日本語](search-syntax.ja-JP.md) · [Français](search-syntax.fr-FR.md) · [Deutsch](search-syntax.de-DE.md) · [Українська](search-syntax.uk-UA.md) · [العربية](search-syntax.ar-SA.md) · [हिन्दी](search-syntax.hi-IN.md) · [Türkçe](search-syntax.tr-TR.md)
 
@@ -37,7 +37,7 @@ ext:png;jpg travel|vacation   # 이름에 “travel” 또는 “vacation”이 
 
 - 따옴표가 없고 `/`가 없는 토큰은 하나의 경로 구성 요소에 대한 **부분 문자열 매칭**입니다:
   - `demo`는 `/Users/demo` 폴더와 `/Users/alice/demo-notes.md`와 일치합니다.
-  - 조상 폴더 이름이 `demo`라는 이유만으로 `/Users/demo/Projects/cardinal.md`와 일치하지는 않습니다. 하위 항목을 검색하려면 `demo/**`를 사용하세요.
+  - 조상 폴더 이름이 `demo`라는 이유만으로 `/Users/demo/Projects/hajimi.md`와 일치하지는 않습니다. 하위 항목을 검색하려면 `demo/**`를 사용하세요.
 - 큰따옴표로 감싼 구문은 공백을 포함한 정확한 시퀀스와 일치합니다:
   - `"Application Support"`는 `/Library/Application Support`와 일치합니다.
 - UI 대/소문자 토글은 둘 다에 적용됩니다.
@@ -57,7 +57,7 @@ ext:png;jpg travel|vacation   # 이름에 “travel” 또는 “vacation”이 
 
 ### 2.3 `/`로 경로 스타일 세그먼트화
 
-Cardinal은 토큰 안의 “슬래시 세그먼트”를 이해하고 각 세그먼트를 경로 구성요소에 대한 접두사/접미사/정확/부분 문자열 매칭으로 분류합니다. 예시:
+hajimi은 토큰 안의 “슬래시 세그먼트”를 이해하고 각 세그먼트를 경로 구성요소에 대한 접두사/접미사/정확/부분 문자열 매칭으로 분류합니다. 예시:
 
 ```text
 elloworl        → Substring("elloworl")
@@ -81,7 +81,7 @@ bab/bob/        → Suffix("bab"), Exact("bob")
 
 ## 3. 불리언 로직과 그룹핑
 
-Cardinal은 Everything의 우선순위를 따릅니다:
+hajimi은 Everything의 우선순위를 따릅니다:
 
 - `NOT` / `!`가 가장 강하게 결합됩니다.
 - `OR` / `|`가 그 다음입니다.
@@ -115,7 +115,7 @@ good (<src|tests> ext:rs)
 
 이 섹션은 현재 엔진이 실제로 평가하는 필터만 나열합니다.
 
-> **참고**: 필터 인자는 콜론 바로 뒤에 와야 합니다 (`ext:jpg`, `parent:/Users/demo`). `file: *.md`처럼 공백을 넣으면 Cardinal이 이를 `file:` 필터(인자 없음)와 별도의 `*.md` 토큰으로 처리합니다.
+> **참고**: 필터 인자는 콜론 바로 뒤에 와야 합니다 (`ext:jpg`, `parent:/Users/demo`). `file: *.md`처럼 공백을 넣으면 hajimi이 이를 `file:` 필터(인자 없음)와 별도의 `*.md` 토큰으로 처리합니다.
 
 ### 4.1 파일 / 폴더 필터
 
@@ -173,7 +173,7 @@ ext:png;jpg travel|vacation
 예시:
 ```text
 type:picture vacation
-type:code "Cardinal"
+type:code "hajimi"
 type:archive dm:pastmonth
 ```
 
@@ -186,7 +186,7 @@ type:archive dm:pastmonth
 | `audio:` | `type:audio`   | `audio: piano`       |
 | `video:` | `type:video`   | `video: tutorial`    |
 | `doc:`   | `type:doc`     | `doc: invoice dm:2024` |
-| `exe:`   | `type:exe`     | `exe: "Cardinal"`   |
+| `exe:`   | `type:exe`     | `exe: "hajimi"`   |
 
 매크로는 선택적 인자를 받을 수 있습니다:
 ```text
@@ -275,7 +275,7 @@ type:doc content:"Q4 budget"
 
 ### 4.10 태그 필터: `tag:` / `t:`
 
-Finder 태그(macOS)로 필터링합니다. Cardinal은 파일 메타데이터에서 태그를 필요할 때 가져오며(캐시 없음), 결과가 큰 경우 `mdfind`로 후보를 좁힌 뒤 태그 매칭을 적용합니다.
+Finder 태그(macOS)로 필터링합니다. hajimi은 파일 메타데이터에서 태그를 필요할 때 가져오며(캐시 없음), 결과가 큰 경우 `mdfind`로 후보를 좁힌 뒤 태그 매칭을 적용합니다.
 
 - `;`로 구분된 하나 이상의 태그를 허용합니다(논리 OR): `tag:ProjectA;ProjectB`.
 - 여러 `tag:` 필터를 연결하면 논리 AND가 되어 여러 태그 매칭을 수행합니다: `tag:Project tag:Important`.

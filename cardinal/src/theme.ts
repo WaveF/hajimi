@@ -1,6 +1,6 @@
 export type ThemePreference = 'system' | 'light' | 'dark';
 
-const THEME_STORAGE_KEY = 'cardinal.theme';
+const THEME_STORAGE_KEY = 'hajimi.theme';
 
 const isBrowser = typeof window !== 'undefined';
 const isDocumentAvailable = typeof document !== 'undefined';

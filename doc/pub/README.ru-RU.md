@@ -1,29 +1,29 @@
 <div align="center">
-  <img src="../../cardinal/mac-icon_1024x1024.png" alt="Иконка Cardinal" width="120" height="120">
-  <h1>Cardinal</h1>
+  <img src="../../app-icon.png" alt="Иконка hajimi" width="120" height="120">
+  <h1>hajimi</h1>
   <p>Самое быстрое и точное приложение для поиска файлов на macOS.</p>
   <p>
-    <a href="#использование-cardinal">Использование Cardinal</a> ·
-    <a href="#сборка-cardinal">Сборка Cardinal</a>
+    <a href="#использование-hajimi">Использование hajimi</a> ·
+    <a href="#сборка-hajimi">Сборка hajimi</a>
   </p>
-  <img src="UI.gif" alt="Предпросмотр интерфейса Cardinal" width="720">
+  <img src="UI.gif" alt="Предпросмотр интерфейса hajimi" width="720">
 </div>
 
 ---
 
 [English](../../README.md) · [Español](README.es-ES.md) · [한국어](README.ko-KR.md) · [Русский](README.ru-RU.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [Português](README.pt-BR.md) · [Italiano](README.it-IT.md) · [日本語](README.ja-JP.md) · [Français](README.fr-FR.md) · [Deutsch](README.de-DE.md) · [Українська](README.uk-UA.md) · [العربية](README.ar-SA.md) · [हिन्दी](README.hi-IN.md) · [Türkçe](README.tr-TR.md)
 
-## Использование Cardinal
+## Использование hajimi
 
 ### Загрузка
 
 Установите через Homebrew:
 
 ```bash
-brew install --cask cardinal-search
+brew install --cask hajimi
 ```
 
-Свежие установочные пакеты можно взять на [GitHub Releases](https://github.com/cardisoft/cardinal/releases/).
+Свежие установочные пакеты можно взять на [GitHub Releases hajimi](https://github.com/WaveF/hajimi/releases/).
 
 ### Поддержка i18n
 
@@ -31,7 +31,7 @@ brew install --cask cardinal-search
 
 ### Основы поиска
 
-Cardinal теперь поддерживает совместимую с Everything синтаксическую надстройку поверх классического поиска по подстроке/префиксу:
+hajimi теперь поддерживает совместимую с Everything синтаксическую надстройку поверх классического поиска по подстроке/префиксу:
 
 - `report draft` – пробел работает как `AND`, поэтому отображаются только файлы, имена которых содержат оба токена.
 - `*.pdf briefing` – отфильтруйте PDF, в имени которых есть “briefing”.
@@ -48,12 +48,12 @@ Cardinal теперь поддерживает совместимую с Everyth
 
 ### Горячие клавиши и предпросмотры
 
-- `Cmd+Shift+Space` – глобальная горячая клавиша для показа/скрытия окна Cardinal.
+- `Cmd+Shift+Space` – глобальная горячая клавиша для показа/скрытия окна hajimi.
 - `Cmd+,` – открывает настройки.
-- `Esc` – скрывает окно Cardinal.
+- `Esc` – скрывает окно hajimi.
 - `ArrowUp`/`ArrowDown` – перемещает выделение.
 - `Shift+ArrowUp`/`Shift+ArrowDown` – расширяет выделение.
-- `Space` – Quick Look выделенной строки, не выходя из Cardinal.
+- `Space` – Quick Look выделенной строки, не выходя из hajimi.
 - `Cmd+O` – открыть выбранный результат.
 - `Cmd+R` – показать выбранный результат в Finder.
 - `Cmd+C` – скопировать выбранные файлы в буфер обмена.
@@ -65,7 +65,7 @@ Cardinal теперь поддерживает совместимую с Everyth
 
 ---
 
-## Сборка Cardinal
+## Сборка hajimi
 
 ### Требования
 
@@ -87,3 +87,7 @@ npm run tauri dev -- --release --features dev
 cd cardinal
 npm run tauri build
 ```
+
+## Благодарности
+
+hajimi создан на основе [Cardinal](https://github.com/cardisoft/cardinal). Мы искренне благодарим авторов и участников исходного проекта за вдохновение и фундаментальную работу.

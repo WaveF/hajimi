@@ -1,7 +1,7 @@
 [package]
-name = "cardinal"
+name = "hajimi"
 version = "0.1.23"
-description = "Cardinal is a cross platform file searching tool"
+description = "hajimi is a cross platform file searching tool"
 authors = ["ldm2993593805@163.com"]
 edition = "2024"
 
@@ -11,7 +11,7 @@ edition = "2024"
 # The `_lib` suffix may seem redundant but it is necessary
 # to make the lib name unique and wouldn't conflict with the bin name.
 # This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
-name = "cardinal_lib"
+name = "hajimi_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
@@ -40,12 +40,13 @@ tauri-plugin-macos-permissions = "2.3.0"
 tauri-plugin-window-state = "2"
 once_cell = { version = "1.20", features = ["parking_lot"] }
 
-cardinal-sdk.path = "../../cardinal-sdk"
+hajimi-sdk.path = "../../cardinal-sdk"
 search-cache.path = "../../search-cache"
 fswalk.path = "../../fswalk"
 fs-icon.path = "../../fs-icon"
 search-cancel.path = "../../search-cancel"
 camino = "1.2.1"
+uuid = { version = "1", features = ["v4"] }
 
 [features]
 default = []

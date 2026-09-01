@@ -1,6 +1,6 @@
-# Cardinal Search Syntax
+# hajimi Search Syntax
 
-Cardinal’s query language is intentionally close to Everything’s syntax, while reflecting what the current engine actually implements. This page is the ground‑truth reference for what the Rust backend understands today.
+hajimi’s query language is intentionally close to Everything’s syntax, while reflecting what the current engine actually implements. This page is the ground‑truth reference for what the Rust backend understands today.
 
 [English](search-syntax.md) · [Español](search-syntax.es-ES.md) · [한국어](search-syntax.ko-KR.md) · [Русский](search-syntax.ru-RU.md) · [简体中文](search-syntax.zh-CN.md) · [繁體中文](search-syntax.zh-TW.md) · [Português](search-syntax.pt-BR.md) · [Italiano](search-syntax.it-IT.md) · [日本語](search-syntax.ja-JP.md) · [Français](search-syntax.fr-FR.md) · [Deutsch](search-syntax.de-DE.md) · [Українська](search-syntax.uk-UA.md) · [العربية](search-syntax.ar-SA.md) · [हिन्दी](search-syntax.hi-IN.md) · [Türkçe](search-syntax.tr-TR.md)
 
@@ -37,7 +37,7 @@ ext:png;jpg travel|vacation   # PNG or JPG whose names contain “travel” or �
 
 - An unquoted token without `/` is a **substring match** on one path component:
   - `demo` matches the `/Users/demo` folder and `/Users/alice/demo-notes.md`.
-  - It does not match `/Users/demo/Projects/cardinal.md` merely because an ancestor is named `demo`; use `demo/**` when you want descendants.
+  - It does not match `/Users/demo/Projects/hajimi.md` merely because an ancestor is named `demo`; use `demo/**` when you want descendants.
 - Double‑quoted phrases match the exact sequence including spaces within one path component:
   - `"Application Support"` matches the `/Library/Application Support` folder.
 - The UI case‑sensitivity toggle applies to both.
@@ -57,7 +57,7 @@ ext:png;jpg travel|vacation   # PNG or JPG whose names contain “travel” or �
 
 ### 2.3 Path‑style segmentation with `/`
 
-Cardinal understands “slash‑segments” inside a token and classifies each segment as a prefix/suffix/exact/substring match on path components. Examples:
+hajimi understands “slash‑segments” inside a token and classifies each segment as a prefix/suffix/exact/substring match on path components. Examples:
 
 ```text
 elloworl        → Substring("elloworl")
@@ -83,7 +83,7 @@ The matched result is the item that satisfies the final segment. For example, `e
 
 ## 3. Boolean logic and grouping
 
-Cardinal follows Everything’s precedence:
+hajimi follows Everything’s precedence:
 
 - `NOT` / `!` binds tightest,
 - `OR` / `|` next,
@@ -117,7 +117,7 @@ Use parentheses or `<...>` any time you want to override the default precedence.
 
 This section only lists filters that the current engine actually evaluates.
 
-> **Note**: filter arguments must follow the colon immediately (`ext:jpg`, `parent:/Users/demo`). Writing `file: *.md` inserts whitespace, so Cardinal treats it as a `file:` filter (with no argument) followed by the separate token `*.md`.
+> **Note**: filter arguments must follow the colon immediately (`ext:jpg`, `parent:/Users/demo`). Writing `file: *.md` inserts whitespace, so hajimi treats it as a `file:` filter (with no argument) followed by the separate token `*.md`.
 
 ### 4.1 File / folder filters
 
@@ -175,7 +175,7 @@ These filters take an absolute path as their argument; a leading `~` is expanded
 Examples:
 ```text
 type:picture vacation
-type:code "Cardinal"
+type:code "hajimi"
 type:archive dm:pastmonth
 ```
 
@@ -188,7 +188,7 @@ Shortcuts for common `type:` cases:
 | `audio:` | `type:audio`                      | `audio: piano`          |
 | `video:` | `type:video`                      | `video: tutorial`       |
 | `doc:`   | `type:doc`                        | `doc: invoice dm:2024`  |
-| `exe:`   | `type:exe`                        | `exe: "Cardinal"`       |
+| `exe:`   | `type:exe`                        | `exe: "hajimi"`       |
 
 Macros accept an optional argument:
 ```text
@@ -277,7 +277,7 @@ Content matching is done in streaming fashion over the file; multi-byte sequence
 
 ### 4.10 Tag filter: `tag:` / `t:`
 
-Filters by Finder tags (macOS). Cardinal fetches tags on demand from the file’s metadata (no caching), and for large result sets it uses `mdfind` to narrow candidates before applying tag matching.
+Filters by Finder tags (macOS). hajimi fetches tags on demand from the file’s metadata (no caching), and for large result sets it uses `mdfind` to narrow candidates before applying tag matching.
 
 - Accepts one or more tags separated by `;` (logical OR): `tag:ProjectA;ProjectB`.
 - Chain multiple `tag:` filters (logical AND) for multi-tag matches: `tag:Project tag:Important`.

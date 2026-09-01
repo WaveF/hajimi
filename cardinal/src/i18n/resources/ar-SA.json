@@ -22,6 +22,7 @@
   },
   "columns": {
     "filename": "اسم الملف",
+    "extension": "الامتداد",
     "path": "المسار",
     "size": "الحجم",
     "modified": "تاريخ التعديل",
@@ -71,7 +72,7 @@
       "settings": "فتح التفضيلات"
     },
     "rescan": {
-      "disabledHint": "سيصبح الفحص متاحًا عندما يصبح Cardinal جاهزًا.",
+      "disabledHint": "سيصبح الفحص متاحًا عندما يصبح hajimi جاهزًا.",
       "enabledHint": "ابدأ فحصًا كاملاً لنظام الملفات.",
       "errorCountSuffix": " حدثت {{formatted}} أخطاء في نظام الملفات، يُنصح بإعادة الفحص."
     },
@@ -86,11 +87,11 @@
   "app": {
     "fullDiskAccess": {
       "title": "يلزم الوصول الكامل للقرص",
-      "description": "يحتاج Cardinal إلى صلاحية الوصول الكامل للقرص في macOS لفهرسة الملفات ومراقبتها في النظام بالكامل. يرجى تمكين الوصول لـ Cardinal في إعدادات النظام.",
+      "description": "يحتاج hajimi إلى صلاحية الوصول الكامل للقرص في macOS لفهرسة الملفات ومراقبتها في النظام بالكامل. يرجى تمكين الوصول لـ hajimi في إعدادات النظام.",
       "steps": {
         "one": "افتح إعدادات النظام > الخصوصية والأمان > الوصول الكامل للقرص.",
-        "two": "انقر القفل للسماح بالتغييرات ثم فعّل Cardinal.",
-        "three": "عند الطلب، اسمح لـ macOS بإعادة تشغيل Cardinal."
+        "two": "انقر القفل للسماح بالتغييرات ثم فعّل hajimi.",
+        "three": "عند الطلب، اسمح لـ macOS بإعادة تشغيل hajimi."
       },
       "status": {
         "checking": "جارٍ التحقق من حالة الصلاحيات...",
@@ -122,17 +123,21 @@
   },
   "preferences": {
     "title": "التفضيلات",
-    "heading": "خصّص Cardinal",
-    "subtitle": "اضبط المظهر واللغة كما تحب.",
     "appearance": "المظهر",
-    "themeHint": "اختر الفاتح أو الداكن أو اتبع النظام.",
     "language": "اللغة",
-    "languageHint": "بدّل لغة الواجهة فورًا.",
     "trayIcon": {
       "label": "إظهار أيقونة العلبة"
     },
     "sortingLimit": {
       "label": "حد الفرز"
+    },
+    "globalShortcut": {
+      "label": "Global shortcut",
+      "placeholder": "Press a key combination",
+      "clear": "Clear",
+      "errors": {
+        "unavailable": "This shortcut is unavailable or already in use."
+      }
     },
     "save": "حفظ",
     "reset": "إعادة الإعدادات الافتراضية",
@@ -152,8 +157,8 @@
     }
   },
   "tray": {
-    "open": "افتح Cardinal",
-    "quit": "إنهاء Cardinal"
+    "open": "افتح hajimi",
+    "quit": "إنهاء hajimi"
   },
   "watchRoot": {
     "label": "مسار الجذر للمراقبة",
@@ -163,14 +168,14 @@
       "absolute": "يرجى إدخال مسار مطلق يبدأ بـ '/' أو '~'."
     },
     "title": "اختر مسار الجذر للمراقبة",
-    "description": "سيقوم Cardinal بفهرسة الملفات الموجودة ضمن هذا المجلد ومراقبتها. يمكنك تغييره لاحقًا من التفضيلات.",
+    "description": "سيقوم hajimi بفهرسة الملفات الموجودة ضمن هذا المجلد ومراقبتها. يمكنك تغييره لاحقًا من التفضيلات.",
     "action": "بدء الفهرسة"
   },
   "ignorePaths": {
     "label": "مسارات متجاهلة",
-    "help": "مسار واحد في كل سطر؛ المسارات المتجاهلة يتم تخطيها أثناء الفهرسة.",
+    "help": "قاعدة واحدة في كل سطر؛ تدعم أنماطًا شبيهة بـ gitignore مثل node_modules/ و.git/ وtarget/.",
     "errors": {
-      "absolute": "يجب أن يبدأ كل مسار بـ '/' أو '~'."
+      "pattern": "استخدم قاعدة تجاهل؛ القواعد العكسية التي تبدأ بـ '!' غير مدعومة."
     }
   },
   "includePaths": {

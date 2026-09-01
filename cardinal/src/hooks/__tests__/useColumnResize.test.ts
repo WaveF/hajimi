@@ -39,10 +39,10 @@ const dispatchWindowResize = () => {
 };
 
 const sumColumnWidths = (widths: ReturnType<typeof useColumnResize>['colWidths']) =>
-  widths.filename + widths.path + widths.size + widths.modified + widths.created;
+  widths.filename + widths.extension + widths.path + widths.size + widths.modified + widths.created;
 
 const fixedColumnWidth = (widths: ReturnType<typeof useColumnResize>['colWidths']) =>
-  widths.path + widths.size + widths.modified + widths.created;
+  widths.extension + widths.path + widths.size + widths.modified + widths.created;
 
 const getLastResizeDragOptions = () => {
   const calls = mocks.startColumnResizeDrag.mock.calls;
@@ -67,12 +67,16 @@ describe('useColumnResize', () => {
     dispatchWindowResize();
 
     const fixedWidth =
-      initialWidths.path + initialWidths.size + initialWidths.modified + initialWidths.created;
+      initialWidths.extension +
+      initialWidths.path +
+      initialWidths.size +
+      initialWidths.modified +
+      initialWidths.created;
     const availableWidth = window.innerWidth - CONTAINER_PADDING - SCROLLBAR_WIDTH;
 
     expect(result.current.colWidths).toEqual({
       ...initialWidths,
-      filename: availableWidth - fixedWidth,
+      filename: Math.max(MIN_COL_WIDTH, availableWidth - fixedWidth),
     });
   });
 
@@ -85,7 +89,11 @@ describe('useColumnResize', () => {
     dispatchWindowResize();
 
     const fixedWidth =
-      initialWidths.path + initialWidths.size + initialWidths.modified + initialWidths.created;
+      initialWidths.extension +
+      initialWidths.path +
+      initialWidths.size +
+      initialWidths.modified +
+      initialWidths.created;
     const availableWidth = window.innerWidth - CONTAINER_PADDING - SCROLLBAR_WIDTH;
 
     expect(result.current.colWidths).toEqual({

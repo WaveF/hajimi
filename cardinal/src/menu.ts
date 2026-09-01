@@ -18,7 +18,7 @@ export function initializeAppMenu(): Promise<void> {
 }
 
 async function buildAppMenu(): Promise<void> {
-  const name = (await getName().catch(() => null)) ?? 'Cardinal';
+  const name = (await getName().catch(() => null)) ?? 'hajimi';
   const aboutItem = await PredefinedMenuItem.new({
     item: { About: null },
     text: i18n.t('menu.about', { appName: name }),

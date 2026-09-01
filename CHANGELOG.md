@@ -89,7 +89,7 @@
 - Speedup `parent:` and `infolder:` filters.
 
 ## 0.1.8 — 2025-11-16
-- Cardinal now fully supports the "Everything syntax"(AND/OR/NOT, parentheses, quoted phrases, wildcards).
+- hajimi now fully supports the "Everything syntax"(AND/OR/NOT, parentheses, quoted phrases, wildcards).
 - Removed the legacy regex toggle and unified the search bar, hooks, and IPC payloads around the new parser pipeline.
 - Highlight of search results was improved.
 - Enhance show/hide shortcut.
@@ -110,11 +110,11 @@
 
 ## 0.1.3 — 2025-11-08
 - Added keyboard shortcuts for Quick Look (Space), Finder reveal (Cmd+R), copy path (Cmd+C), and refocusing search (Cmd+F).
-- The search field auto-focuses after launch and whenever the quick-launch shortcut summons Cardinal.
+- The search field auto-focuses after launch and whenever the quick-launch shortcut summons hajimi.
 - i18n: add Ukrainian language support and translations
 
 ## 0.1.2 — 2025-11-07
-- feat(shortcut&tray): support global shortcut to toggle cardinal by [@Binlogo](https://github.com/Binlogo)
+- feat(shortcut&tray): support global shortcut to toggle hajimi by [@Binlogo](https://github.com/Binlogo)
 - feat(theme): implement theme switching functionality with user preferences
 - feat(context-menu): add “copy filename” option and update translations
 - feat(i18n): add Russian language support and translations

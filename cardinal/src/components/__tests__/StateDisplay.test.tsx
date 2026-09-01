@@ -16,6 +16,10 @@ vi.mock('react-i18next', () => ({
           return options?.query ? `No results for "${options.query}"` : 'No recent results';
         case 'stateDisplay.emptyMessage':
           return 'Try adjusting your filters.';
+        case 'stateDisplay.emptyQueryTitle':
+          return 'Search results are hidden';
+        case 'stateDisplay.emptyQueryMessage':
+          return 'Enter a file or folder name to begin searching.';
         default:
           return key;
       }
@@ -57,6 +61,7 @@ describe('StateDisplay', () => {
 
   it('shows generic empty-state copy when no query is present', () => {
     render(<StateDisplay state="empty" />);
-    expect(screen.getByText('No recent results')).toBeInTheDocument();
+    expect(screen.getByText('Search results are hidden')).toBeInTheDocument();
+    expect(screen.getByText('Enter a file or folder name to begin searching.')).toBeInTheDocument();
   });
 });

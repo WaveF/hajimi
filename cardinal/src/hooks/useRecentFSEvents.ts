@@ -18,23 +18,27 @@ type RecentEventsOptions = {
   caseSensitive: boolean;
   isActive: boolean;
   eventFilterQuery: string;
+  refreshWhenInactive: boolean;
 };
 
 export function useRecentFSEvents({
   caseSensitive,
   isActive,
   eventFilterQuery,
+  refreshWhenInactive,
 }: RecentEventsOptions) {
   const eventsRef = useRef<RecentEventRecord[]>([]);
   const isActiveRef = useRef(isActive);
+  const refreshWhenInactiveRef = useRef(refreshWhenInactive);
   const [bufferVersion, bumpBufferVersion] = useReducer((count: number) => count + 1, 0);
 
   useEffect(() => {
     isActiveRef.current = isActive;
-    if (isActive) {
+    refreshWhenInactiveRef.current = refreshWhenInactive;
+    if (isActive || refreshWhenInactive) {
       bumpBufferVersion();
     }
-  }, [isActive]);
+  }, [isActive, refreshWhenInactive]);
 
   useEffect(() => {
     const unlistenEvents = subscribeFSEventsBatch((payload: RecentEventPayload[]) => {
@@ -48,7 +52,7 @@ export function useRecentFSEvents({
       }
       eventsRef.current = updated;
 
-      if (isActiveRef.current) {
+      if (isActiveRef.current || refreshWhenInactiveRef.current) {
         bumpBufferVersion();
       }
     });

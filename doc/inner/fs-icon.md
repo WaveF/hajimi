@@ -31,11 +31,11 @@ Flow:
 
 If any step fails, the function returns `None` and callers can fall back to `icon_of_path_ns(...)`.
 
-## Integration in Cardinal
+## Integration in hajimi
 - `get_nodes_info` uses `icon_of_path_ns(...)` for baseline row icons.
 - Background viewport prefetch uses `icon_of_path_ql(...)` for richer thumbnails on visible rows.
 - The UI only consumes `data:image/png;base64,...` strings; it does not know or care which native path produced the bytes.
 
 ## Practical caveats
 - `icon_of_path_ql(...)` is intentionally narrow and will return `None` for many non-image files.
-- The crate does not cache results on its own; Cardinal handles batching and dedup higher up.
+- The crate does not cache results on its own; hajimi handles batching and dedup higher up.

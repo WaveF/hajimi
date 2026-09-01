@@ -1,6 +1,6 @@
-# Синтаксис пошуку Cardinal
+# Синтаксис пошуку hajimi
 
-Мова запитів Cardinal навмисно наближена до синтаксису Everything, але відображає те, що поточний рушій справді реалізує. Ця сторінка — еталонна довідка про те, що сьогодні розуміє бекенд на Rust.
+Мова запитів hajimi навмисно наближена до синтаксису Everything, але відображає те, що поточний рушій справді реалізує. Ця сторінка — еталонна довідка про те, що сьогодні розуміє бекенд на Rust.
 
 [English](search-syntax.md) · [Español](search-syntax.es-ES.md) · [한국어](search-syntax.ko-KR.md) · [Русский](search-syntax.ru-RU.md) · [简体中文](search-syntax.zh-CN.md) · [繁體中文](search-syntax.zh-TW.md) · [Português](search-syntax.pt-BR.md) · [Italiano](search-syntax.it-IT.md) · [日本語](search-syntax.ja-JP.md) · [Français](search-syntax.fr-FR.md) · [Deutsch](search-syntax.de-DE.md) · [Українська](search-syntax.uk-UA.md) · [العربية](search-syntax.ar-SA.md) · [हिन्दी](search-syntax.hi-IN.md) · [Türkçe](search-syntax.tr-TR.md)
 
@@ -37,7 +37,7 @@ ext:png;jpg travel|vacation   # PNG або JPG, чиї назви містять
 
 - Токен без лапок і без `/` — це **пошук за підрядком** в одному компоненті шляху:
   - `demo` збігається з папкою `/Users/demo` і з `/Users/alice/demo-notes.md`.
-  - Він не збігається з `/Users/demo/Projects/cardinal.md` лише тому, що предок називається `demo`; використовуйте `demo/**`, щоб шукати нащадків.
+  - Він не збігається з `/Users/demo/Projects/hajimi.md` лише тому, що предок називається `demo`; використовуйте `demo/**`, щоб шукати нащадків.
 - Фрази в подвійних лапках збігаються з точною послідовністю, включно з пробілами:
   - `"Application Support"` збігається з `/Library/Application Support`.
 - Перемикач регістру в UI застосовується до обох.
@@ -57,7 +57,7 @@ ext:png;jpg travel|vacation   # PNG або JPG, чиї назви містять
 
 ### 2.3 Сегментація шляхів з `/`
 
-Cardinal розуміє “сегменти зі слешем” у токені та класифікує кожен сегмент як префіксне/суфіксне/точне/підрядкове зіставлення для компонентів шляху. Приклади:
+hajimi розуміє “сегменти зі слешем” у токені та класифікує кожен сегмент як префіксне/суфіксне/точне/підрядкове зіставлення для компонентів шляху. Приклади:
 
 ```text
 elloworl        → Substring("elloworl")
@@ -81,7 +81,7 @@ bab/bob/        → Suffix("bab"), Exact("bob")
 
 ## 3. Булева логіка та групування
 
-Cardinal дотримується пріоритетів Everything:
+hajimi дотримується пріоритетів Everything:
 
 - `NOT` / `!` має найвищий пріоритет,
 - `OR` / `|` — наступний,
@@ -115,7 +115,7 @@ good (<src|tests> ext:rs)
 
 У цьому розділі перелічено лише фільтри, які поточний рушій справді обчислює.
 
-> **Примітка**: аргументи фільтра мають іти одразу після двокрапки (`ext:jpg`, `parent:/Users/demo`). Запис `file: *.md` вставляє пробіл, тож Cardinal трактує це як фільтр `file:` (без аргументу), за яким іде окремий токен `*.md`.
+> **Примітка**: аргументи фільтра мають іти одразу після двокрапки (`ext:jpg`, `parent:/Users/demo`). Запис `file: *.md` вставляє пробіл, тож hajimi трактує це як фільтр `file:` (без аргументу), за яким іде окремий токен `*.md`.
 
 ### 4.1 Фільтри файлів / папок
 
@@ -173,7 +173,7 @@ ext:png;jpg travel|vacation
 Приклади:
 ```text
 type:picture vacation
-type:code "Cardinal"
+type:code "hajimi"
 type:archive dm:pastmonth
 ```
 
@@ -186,7 +186,7 @@ type:archive dm:pastmonth
 | `audio:` | `type:audio`     | `audio: piano`         |
 | `video:` | `type:video`     | `video: tutorial`      |
 | `doc:`   | `type:doc`       | `doc: invoice dm:2024` |
-| `exe:`   | `type:exe`       | `exe: "Cardinal"`     |
+| `exe:`   | `type:exe`       | `exe: "hajimi"`     |
 
 Макроси приймають необов’язковий аргумент:
 ```text
@@ -275,7 +275,7 @@ type:doc content:"Q4 budget"
 
 ### 4.10 Фільтр тегів: `tag:` / `t:`
 
-Фільтрує за тегами Finder (macOS). Cardinal підтягує теги за потреби з метаданих файлу (без кешу) і для великих наборів результатів використовує `mdfind`, щоб звузити кандидатів перед застосуванням зіставлення тегів.
+Фільтрує за тегами Finder (macOS). hajimi підтягує теги за потреби з метаданих файлу (без кешу) і для великих наборів результатів використовує `mdfind`, щоб звузити кандидатів перед застосуванням зіставлення тегів.
 
 - Приймає один або кілька тегів, розділених `;` (логічне OR): `tag:ProjectA;ProjectB`.
 - Можна ланцюжити кілька фільтрів `tag:` (логічне AND) для збігів за кількома тегами: `tag:Project tag:Important`.

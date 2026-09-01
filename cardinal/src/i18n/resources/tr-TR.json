@@ -22,6 +22,7 @@
   },
   "columns": {
     "filename": "Dosya adı",
+    "extension": "Uzantı",
     "path": "Yol",
     "size": "Boyut",
     "modified": "Değiştirildi",
@@ -71,7 +72,7 @@
       "settings": "Tercihleri aç"
     },
     "rescan": {
-      "disabledHint": "Cardinal hazır olduğunda yeniden tarama kullanılabilir.",
+      "disabledHint": "hajimi hazır olduğunda yeniden tarama kullanılabilir.",
       "enabledHint": "Dosya sistemini tamamen tara.",
       "errorCountSuffix": " Şu ana kadar {{formatted}} dosya sistemi hatası oluştu, yeniden tarama önerilir."
     },
@@ -86,11 +87,11 @@
   "app": {
     "fullDiskAccess": {
       "title": "Tam Disk Erişimi gerekli",
-      "description": "Cardinal'in sistem genelindeki dosyaları dizine ekleyip izlemesi için macOS Tam Disk Erişimi gerekir. Lütfen Sistem Ayarları'nda Cardinal'e izin verin.",
+      "description": "hajimi'in sistem genelindeki dosyaları dizine ekleyip izlemesi için macOS Tam Disk Erişimi gerekir. Lütfen Sistem Ayarları'nda hajimi'e izin verin.",
       "steps": {
         "one": "Sistem Ayarları > Gizlilik ve Güvenlik > Tam Disk Erişimi'ni açın.",
-        "two": "Kilidi açıp değişikliklere izin verin ve Cardinal'i etkinleştirin.",
-        "three": "İstendiğinde macOS'un Cardinal'i yeniden başlatmasına izin verin."
+        "two": "Kilidi açıp değişikliklere izin verin ve hajimi'i etkinleştirin.",
+        "three": "İstendiğinde macOS'un hajimi'i yeniden başlatmasına izin verin."
       },
       "status": {
         "checking": "İzin durumu kontrol ediliyor...",
@@ -122,17 +123,21 @@
   },
   "preferences": {
     "title": "Tercihler",
-    "heading": "Cardinal'i kişiselleştir",
-    "subtitle": "Görünüm ve dili istediğiniz gibi ayarlayın.",
     "appearance": "Görünüm",
-    "themeHint": "Açık, koyu veya sistem varsayılanını seç.",
     "language": "Dil",
-    "languageHint": "Arayüz dilini anında değiştir.",
     "trayIcon": {
       "label": "Tepsi simgesini göster"
     },
     "sortingLimit": {
       "label": "Sıralama sınırı"
+    },
+    "globalShortcut": {
+      "label": "Global shortcut",
+      "placeholder": "Press a key combination",
+      "clear": "Clear",
+      "errors": {
+        "unavailable": "This shortcut is unavailable or already in use."
+      }
     },
     "save": "Kaydet",
     "reset": "Varsayılanlara döndür",
@@ -152,8 +157,8 @@
     }
   },
   "tray": {
-    "open": "Cardinal'i Aç",
-    "quit": "Cardinal'den çık"
+    "open": "hajimi'i Aç",
+    "quit": "hajimi'den çık"
   },
   "watchRoot": {
     "label": "İzleme kök yolu",
@@ -163,14 +168,14 @@
       "absolute": "Lütfen '/' veya '~' ile başlayan mutlak bir yol girin."
     },
     "title": "İzleme kök yolunu seçin",
-    "description": "Cardinal bu dizin altındaki dosyaları indeksler ve izler. Bunu daha sonra Tercihler'den değiştirebilirsiniz.",
+    "description": "hajimi bu dizin altındaki dosyaları indeksler ve izler. Bunu daha sonra Tercihler'den değiştirebilirsiniz.",
     "action": "Dizinlemeyi başlat"
   },
   "ignorePaths": {
     "label": "Yok sayılan yollar",
-    "help": "Her satıra bir yol; yok sayılan yollar dizinleme sırasında atlanır.",
+    "help": "Her satıra bir kural; node_modules/, .git/ ve target/ gibi gitignore tarzı kalıplar desteklenir.",
     "errors": {
-      "absolute": "Her yol '/' veya '~' ile başlamalıdır."
+      "pattern": "Bir yok sayma kalıbı kullanın; '!' ile başlayan olumsuz kurallar desteklenmez."
     }
   },
   "includePaths": {

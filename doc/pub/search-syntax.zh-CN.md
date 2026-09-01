@@ -1,6 +1,6 @@
-# Cardinal 搜索语法
+# hajimi 搜索语法
 
-Cardinal 的查询语言有意贴近 Everything 的语法，同时反映当前引擎实际实现的内容。本页是 Rust 后端目前支持能力的权威参考。
+hajimi 的查询语言有意贴近 Everything 的语法，同时反映当前引擎实际实现的内容。本页是 Rust 后端目前支持能力的权威参考。
 
 [English](search-syntax.md) · [Español](search-syntax.es-ES.md) · [한국어](search-syntax.ko-KR.md) · [Русский](search-syntax.ru-RU.md) · [简体中文](search-syntax.zh-CN.md) · [繁體中文](search-syntax.zh-TW.md) · [Português](search-syntax.pt-BR.md) · [Italiano](search-syntax.it-IT.md) · [日本語](search-syntax.ja-JP.md) · [Français](search-syntax.fr-FR.md) · [Deutsch](search-syntax.de-DE.md) · [Українська](search-syntax.uk-UA.md) · [العربية](search-syntax.ar-SA.md) · [हिन्दी](search-syntax.hi-IN.md) · [Türkçe](search-syntax.tr-TR.md)
 
@@ -37,7 +37,7 @@ ext:png;jpg travel|vacation   # 文件名包含 “travel” 或 “vacation” 
 
 - 不带引号且不含 `/` 的词元，会匹配文件或文件夹名中包含该子串的项：
   - `demo` 匹配 `/Users/demo` 文件夹和 `/Users/alice/demo-notes.md`。
-  - 它不会仅因为祖先目录名为 `demo` 就匹配 `/Users/demo/Projects/cardinal.md`；如果需要匹配子孙项，请使用 `demo/**`。
+  - 它不会仅因为祖先目录名为 `demo` 就匹配 `/Users/demo/Projects/hajimi.md`；如果需要匹配子孙项，请使用 `demo/**`。
 - 双引号短语在单个文件或文件夹名内匹配包含空格在内的精确序列：
   - `"Application Support"` 匹配 `/Library/Application Support` 文件夹。
 - UI 的大小写开关对两者都生效。
@@ -57,7 +57,7 @@ ext:png;jpg travel|vacation   # 文件名包含 “travel” 或 “vacation” 
 
 ### 2.3 使用 `/` 的路径式分段
 
-Cardinal 能理解词元中的“斜杠分段”，并将每个分段归类为文件或文件夹名的前缀/后缀/精确/子串匹配。示例：
+hajimi 能理解词元中的“斜杠分段”，并将每个分段归类为文件或文件夹名的前缀/后缀/精确/子串匹配。示例：
 
 ```text
 elloworl        → Substring("elloworl")
@@ -83,7 +83,7 @@ bab/bob/        → Suffix("bab"), Exact("bob")
 
 ## 3. 布尔逻辑与分组
 
-Cardinal 遵循 Everything 的优先级：
+hajimi 遵循 Everything 的优先级：
 
 - `NOT` / `!` 结合最紧，
 - `OR` / `|` 次之，
@@ -117,7 +117,7 @@ good (<src|tests> ext:rs)
 
 本节只列出当前引擎确实会计算的过滤器。
 
-> **注意**：过滤器参数必须紧跟冒号（`ext:jpg`, `parent:/Users/demo`）。写成 `file: *.md` 会插入空格，Cardinal 会将其视为 `file:` 过滤器（无参数），后面跟一个独立词元 `*.md`。
+> **注意**：过滤器参数必须紧跟冒号（`ext:jpg`, `parent:/Users/demo`）。写成 `file: *.md` 会插入空格，hajimi 会将其视为 `file:` 过滤器（无参数），后面跟一个独立词元 `*.md`。
 
 ### 4.1 文件 / 文件夹过滤器
 
@@ -175,7 +175,7 @@ ext:png;jpg travel|vacation
 示例：
 ```text
 type:picture vacation
-type:code "Cardinal"
+type:code "hajimi"
 type:archive dm:pastmonth
 ```
 
@@ -188,7 +188,7 @@ type:archive dm:pastmonth
 | `audio:` | `type:audio`    | `audio: piano`        |
 | `video:` | `type:video`    | `video: tutorial`     |
 | `doc:`   | `type:doc`      | `doc: invoice dm:2024` |
-| `exe:`   | `type:exe`      | `exe: "Cardinal"`    |
+| `exe:`   | `type:exe`      | `exe: "hajimi"`    |
 
 宏可接受可选参数：
 ```text
@@ -277,7 +277,7 @@ type:doc content:"Q4 budget"
 
 ### 4.10 标签过滤器：`tag:` / `t:`
 
-按 Finder 标签（macOS）过滤。Cardinal 按需从文件元数据获取标签（不缓存），并在结果集很大时使用 `mdfind` 缩小候选，再进行标签匹配。
+按 Finder 标签（macOS）过滤。hajimi 按需从文件元数据获取标签（不缓存），并在结果集很大时使用 `mdfind` 缩小候选，再进行标签匹配。
 
 - 接受一个或多个用 `;` 分隔的标签（逻辑 OR）：`tag:ProjectA;ProjectB`。
 - 可串联多个 `tag:` 过滤器（逻辑 AND）进行多标签匹配：`tag:Project tag:Important`。

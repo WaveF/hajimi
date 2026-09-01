@@ -1,6 +1,7 @@
 mod background;
 mod commands;
 mod lifecycle;
+mod mcp;
 mod quicklook;
 mod search_activity;
 mod sort;
@@ -11,15 +12,15 @@ use background::{
     BackgroundLoopChannels, IconPayload, build_search_cache, emit_status_bar_update,
     run_background_event_loop,
 };
-use cardinal_sdk::EventWatcher;
 use commands::{
     NodeInfoRequest, SearchJob, SearchState, WatchConfigUpdate, activate_main_window,
-    close_quicklook, copy_files_to_clipboard, get_app_status, get_nodes_info, get_sorted_view,
-    hide_main_window, normalize_watch_config, open_in_finder, open_path, search,
-    set_tray_activation_policy, set_watch_config, start_logic, toggle_main_window,
-    toggle_quicklook, trigger_rescan, update_icon_viewport, update_quicklook,
+    close_quicklook, copy_files_to_clipboard, get_app_status, get_mcp_connection_info,
+    get_nodes_info, get_sorted_view, hide_main_window, normalize_watch_config, open_in_finder,
+    open_path, quit_app, search, set_tray_activation_policy, set_watch_config, start_logic,
+    toggle_main_window, toggle_quicklook, trigger_rescan, update_icon_viewport, update_quicklook,
 };
 use crossbeam_channel::{Receiver, RecvTimeoutError, Sender, bounded, unbounded};
+use hajimi_sdk::EventWatcher;
 use lifecycle::{
     APP_QUIT, AppLifecycleState, EXIT_REQUESTED, emit_app_state, load_app_state, update_app_state,
 };
@@ -105,7 +106,7 @@ pub fn run() -> Result<()> {
 
                     if hide_window(&window) {
                         let _ = update_window_state_tx_for_window.try_send(());
-                        info!("Main window hidden; Cardinal keeps running in the background");
+                        info!("Main window hidden; hajimi keeps running in the background");
                     }
                 }
                 _ => {}
@@ -133,6 +134,8 @@ pub fn run() -> Result<()> {
             open_path,
             toggle_quicklook,
             close_quicklook,
+            quit_app,
+            get_mcp_connection_info,
             update_quicklook,
             start_logic,
             hide_main_window,
@@ -144,8 +147,19 @@ pub fn run() -> Result<()> {
         .build(tauri::generate_context!())
         .expect("error while running tauri application");
 
+    let mcp_bridge = match mcp::McpBridge::start(app.handle().clone()) {
+        Ok(bridge) => {
+            info!("Started local MCP bridge");
+            Some(bridge)
+        }
+        Err(error) => {
+            warn!("MCP bridge unavailable: {error:#}");
+            None
+        }
+    };
+
     let db_path = DB_PATH
-        .get_or_try_init(|| app.path().app_config_dir().map(|p| p.join("cardinal.db")))
+        .get_or_try_init(|| app.path().app_config_dir().map(|p| p.join("hajimi.db")))
         .expect("Failed to initialize database path");
 
     let app_handle = &app.handle().to_owned();
@@ -185,10 +199,16 @@ pub fn run() -> Result<()> {
 
         app.run(move |app_handle, event| match event {
             RunEvent::Exit => {
+                if let Some(bridge) = &mcp_bridge {
+                    bridge.stop();
+                }
                 APP_QUIT.store(true, Ordering::Relaxed);
                 flush_cache_to_file_once(&finish_tx, db_path);
             }
             RunEvent::ExitRequested { api, code, .. } => {
+                if let Some(bridge) = &mcp_bridge {
+                    bridge.stop();
+                }
                 let already_requested = EXIT_REQUESTED.swap(true, Ordering::Relaxed);
                 APP_QUIT.store(true, Ordering::Relaxed);
                 if !already_requested {
@@ -219,6 +239,10 @@ pub fn run() -> Result<()> {
     });
 
     Ok(())
+}
+
+pub fn run_mcp(discovery_path: &Path) -> Result<()> {
+    mcp::run_stdio(discovery_path)
 }
 
 fn run_logic_thread(

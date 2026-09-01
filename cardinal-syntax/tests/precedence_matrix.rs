@@ -1,4 +1,4 @@
-use cardinal_syntax::*;
+use hajimi_syntax::*;
 
 fn w(s: &str) -> Expr {
     Expr::Term(Term::Word(s.to_string()))

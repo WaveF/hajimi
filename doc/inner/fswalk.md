@@ -25,19 +25,20 @@ Node {
 - `num_files`
 - `num_dirs`
 - `root_path`
-- `ignore_directories`
+- `ignore_directories` (gitignore-style patterns; relative names match at any depth)
+- `include_paths` (explicit absolute-path exceptions)
 - `need_metadata`
 - `cancel: F` where `F: Fn() -> bool`
 
 Constructors:
 - `WalkData::simple(root_path, need_metadata)`
-- `WalkData::new(root_path, ignore_directories, need_metadata, cancel)`
+- `WalkData::new(root_path, ignore_directories, include_paths, need_metadata, cancel)`
 
 This is why callers in `search-cache` can use either `CancellationToken`-aware scans or simple non-cancellable walks without a different API surface.
 
 ## Entry points
 - `walk_it_without_root_chain(...)` returns a tree rooted exactly at `root_path`.
-- `walk_it(...)` wraps that tree with the full parent chain back to `/`. Cardinal uses this form for the initial cache build so absolute paths can be reconstructed cheaply from parent pointers.
+- `walk_it(...)` wraps that tree with the full parent chain back to `/`. hajimi uses this form for the initial cache build so absolute paths can be reconstructed cheaply from parent pointers.
 
 Both functions return:
 - `Some(Node)` for success
@@ -54,7 +55,7 @@ For each visited path:
    - process entries in parallel via Rayon `par_bridge()`
 3. For each child entry:
    - abort the whole branch if `cancel()` returns true
-   - skip ignored descendants with `should_ignore_path(...)`
+   - skip ignored descendants with the compiled `PathFilter`
    - use `DirEntry::file_type()` to avoid extra metadata calls when deciding whether to recurse
    - recurse only into real directories
    - treat non-directories, including symlink entries, as leaf nodes
@@ -72,3 +73,12 @@ When `need_metadata` is `true`, leaf entries fetch `entry.metadata()` and direct
 - Initial full builds typically use `need_metadata = false` for speed.
 - Incremental subtree rescans in `SearchCache::scan_path_recursive(...)` use `walk_it_without_root_chain(...)` with `need_metadata = true`.
 - `num_files` and `num_dirs` are polled by the Tauri backend to emit `status_bar_update` progress during long scans.
+
+## Ignore pattern syntax
+Ignore entries follow the core gitignore-style rules used by hajimi:
+- blank lines and lines beginning with `#` are ignored
+- a pattern without `/`, such as `node_modules/`, matches that name at any depth
+- `*` and `?` match within one path component, while `**` spans components
+- a leading `/` anchors a pattern to the filesystem root; `~/` is expanded by the Tauri layer
+- a trailing `/` marks a directory-only rule
+- negated rules beginning with `!` are not supported; use `include_paths` for explicit exceptions

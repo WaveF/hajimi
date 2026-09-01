@@ -1,4 +1,4 @@
-use cardinal_syntax::*;
+use hajimi_syntax::*;
 
 fn parse_filter(name: &str, arg: Option<&str>) -> Filter {
     let q = if let Some(a) = arg {

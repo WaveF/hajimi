@@ -225,4 +225,31 @@ describe('useFileSearch', () => {
       expect(result.current.state.currentQuery).toBe('   ');
     });
   });
+
+  it('hides results and skips the backend search when empty-query hiding is enabled', async () => {
+    const backendResults = [1, 2, 3] as SlabIndex[];
+    mockSearchSuccess(backendResults);
+    const { result } = renderHook(() => useFileSearch({ hideResultsWhenQueryEmpty: true }));
+
+    await waitFor(() => expect(result.current.state.initialFetchCompleted).toBe(true));
+
+    expect(result.current.state.results).toEqual([]);
+    expect(mockedInvoke).not.toHaveBeenCalledWith('search', expect.anything());
+  });
+
+  it('restores the empty-query search when the setting is disabled', async () => {
+    mockSearchSuccess();
+    const { result, rerender } = renderHook(
+      ({ hideResultsWhenQueryEmpty }: { hideResultsWhenQueryEmpty: boolean }) =>
+        useFileSearch({ hideResultsWhenQueryEmpty }),
+      { initialProps: { hideResultsWhenQueryEmpty: true } },
+    );
+
+    await waitFor(() => expect(result.current.state.initialFetchCompleted).toBe(true));
+    mockedInvoke.mockClear();
+
+    rerender({ hideResultsWhenQueryEmpty: false });
+
+    await waitFor(() => expect(mockedInvoke).toHaveBeenCalledWith('search', expect.anything()));
+  });
 });

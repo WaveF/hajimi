@@ -22,6 +22,7 @@
   },
   "columns": {
     "filename": "檔名",
+    "extension": "副檔名",
     "path": "路徑",
     "size": "大小",
     "modified": "修改時間",
@@ -71,7 +72,7 @@
       "settings": "打開偏好設定"
     },
     "rescan": {
-      "disabledHint": "Cardinal 就緒後即可重新掃描。",
+      "disabledHint": "hajimi 就緒後即可重新掃描。",
       "enabledHint": "觸發一次完整的檔案系統重新掃描。",
       "errorCountSuffix": " 已出現{{formatted}}次檔案系統錯誤，建議重新掃描。"
     },
@@ -85,11 +86,11 @@
   "app": {
     "fullDiskAccess": {
       "title": "需要完整磁碟存取權",
-      "description": "Cardinal 需要 macOS 的「完整磁碟存取」權限才能索引並監控系統中的檔案。請在系統設定中為 Cardinal 啟用完整磁碟存取。",
+      "description": "hajimi 需要 macOS 的「完整磁碟存取」權限才能索引並監控系統中的檔案。請在系統設定中為 hajimi 啟用完整磁碟存取。",
       "steps": {
         "one": "打開 系統設定 > 隱私權與安全性 > 完整磁碟存取。",
-        "two": "點擊鎖頭圖示以允許變更，並啟用 Cardinal。",
-        "three": "依提示允許 macOS 重新啟動 Cardinal。"
+        "two": "點擊鎖頭圖示以允許變更，並啟用 hajimi。",
+        "three": "依提示允許 macOS 重新啟動 hajimi。"
       },
       "status": {
         "checking": "正在檢查權限狀態…",
@@ -121,17 +122,21 @@
   },
   "preferences": {
     "title": "偏好設定",
-    "heading": "自訂 Cardinal",
-    "subtitle": "隨心調整外觀與語言。",
     "appearance": "外觀",
-    "themeHint": "選擇淺色、深色或跟隨系統。",
     "language": "語言",
-    "languageHint": "立即切換介面語言。",
     "trayIcon": {
       "label": "顯示托盤圖示"
     },
     "sortingLimit": {
       "label": "排序上限"
+    },
+    "globalShortcut": {
+      "label": "全域 顯示/隱藏 熱鍵",
+      "placeholder": "按下快捷鍵組合",
+      "clear": "清除",
+      "errors": {
+        "unavailable": "此快捷鍵無法使用或已被佔用。"
+      }
     },
     "save": "儲存",
     "reset": "恢復預設設定",
@@ -151,8 +156,8 @@
     }
   },
   "tray": {
-    "open": "打開 Cardinal",
-    "quit": "結束 Cardinal"
+    "open": "打開 hajimi",
+    "quit": "結束 hajimi"
   },
   "watchRoot": {
     "label": "監控根路徑",
@@ -162,14 +167,14 @@
       "absolute": "請輸入以「/」或「~」開頭的絕對路徑。"
     },
     "title": "選擇監控根路徑",
-    "description": "Cardinal 只會索引並監控該目錄下的檔案。你之後可以在偏好設定中更改。",
+    "description": "hajimi 只會索引並監控該目錄下的檔案。你之後可以在偏好設定中更改。",
     "action": "開始初始化"
   },
   "ignorePaths": {
     "label": "忽略路徑",
-    "help": "每行一個路徑；這些路徑將在索引時被跳過。",
+    "help": "每行一個規則；支援類似 .gitignore 的寫法，例如 node_modules/、.git/ 和 target/。",
     "errors": {
-      "absolute": "每個路徑需以「/」或「~」開頭。"
+      "pattern": "請輸入忽略規則；目前不支援以「!」開頭的反向規則。"
     }
   },
   "includePaths": {

@@ -6,11 +6,9 @@ use crate::{
     query_preprocessor::{expand_query_home_dirs, strip_query_quotes},
 };
 use anyhow::{Context, Result, anyhow};
-use cardinal_sdk::{EventFlag, FsEvent, ScanType, current_event_id};
-use cardinal_syntax::{Expr, Filter, FilterKind, Term, optimize_query, parse_query};
-use fswalk::{
-    Node, NodeMetadata, WalkData, should_ignore_path, walk_it, walk_it_without_root_chain,
-};
+use fswalk::{Node, NodeMetadata, WalkData, walk_it, walk_it_without_root_chain};
+use hajimi_sdk::{EventFlag, FsEvent, ScanType, current_event_id};
+use hajimi_syntax::{Expr, Filter, FilterKind, Term, optimize_query, parse_query};
 use hashbrown::HashSet;
 use namepool::NamePool;
 use search_cancel::CancellationToken;
@@ -665,11 +663,7 @@ impl SearchCache {
     }
 
     fn should_ignore(&self, path: &Path) -> bool {
-        should_ignore_path(
-            path,
-            self.file_nodes.ignore_paths(),
-            self.file_nodes.include_paths(),
-        )
+        self.file_nodes.path_filter().should_ignore(path)
     }
 
     // `Self::scan_path_recursive`function returns index of the constructed node(with metadata provided).

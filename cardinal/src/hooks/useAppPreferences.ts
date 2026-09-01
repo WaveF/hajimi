@@ -4,8 +4,13 @@ import type { i18n as I18nInstance } from 'i18next';
 import { OPEN_PREFERENCES_EVENT } from '../constants/appEvents';
 import { getBrowserLanguage } from '../i18n/config';
 import { applyThemePreference, persistThemePreference } from '../theme';
-import { setTrayEnabled } from '../tray';
+import { setTrayEnabled, setTrayGlobalShortcut } from '../tray';
 import { getStoredTrayIconEnabled, persistTrayIconEnabled } from '../trayIconPreference';
+import {
+  DEFAULT_GLOBAL_SHORTCUT,
+  getStoredGlobalShortcut,
+  updateGlobalShortcut,
+} from '../utils/globalShortcuts';
 import { setWatchConfig } from '../utils/watchConfig';
 import type { FullDiskAccessStatus } from './useFullDiskAccessPermission';
 import { useIgnorePaths } from './useIgnorePaths';
@@ -30,6 +35,9 @@ type UseAppPreferencesResult = {
   closePreferences: () => void;
   trayIconEnabled: boolean;
   setTrayIconEnabled: (enabled: boolean) => void;
+  globalShortcut: string;
+  defaultGlobalShortcut: string;
+  handleGlobalShortcutChange: (next: string) => Promise<void>;
   watchRoot: string;
   defaultWatchRoot: string;
   ignorePaths: string[];
@@ -60,6 +68,7 @@ export function useAppPreferences({
   const logicStartedRef = useRef(false);
   const [isPreferencesOpen, setIsPreferencesOpen] = useState(false);
   const [trayIconEnabled, setTrayIconEnabled] = useState<boolean>(() => getStoredTrayIconEnabled());
+  const [globalShortcut, setGlobalShortcut] = useState<string>(() => getStoredGlobalShortcut());
   const [preferencesResetToken, setPreferencesResetToken] = useState(0);
 
   useEffect(() => {
@@ -145,6 +154,12 @@ export function useAppPreferences({
     setPreferencesResetToken((token) => token + 1);
   }, [i18n]);
 
+  const handleGlobalShortcutChange = useCallback(async (next: string) => {
+    await updateGlobalShortcut(next);
+    setGlobalShortcut(next.trim());
+    await setTrayGlobalShortcut(next.trim());
+  }, []);
+
   const closePreferences = useCallback(() => setIsPreferencesOpen(false), []);
 
   return {
@@ -152,6 +167,9 @@ export function useAppPreferences({
     closePreferences,
     trayIconEnabled,
     setTrayIconEnabled,
+    globalShortcut,
+    defaultGlobalShortcut: DEFAULT_GLOBAL_SHORTCUT,
+    handleGlobalShortcutChange,
     watchRoot,
     defaultWatchRoot,
     ignorePaths,

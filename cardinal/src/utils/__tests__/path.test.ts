@@ -1,6 +1,18 @@
 import { describe, expect, it } from 'vitest';
 
-import { splitPath } from '../path';
+import { getFileExtension, splitPath } from '../path';
+
+describe('getFileExtension', () => {
+  it('returns the final extension without the dot', () => {
+    expect(getFileExtension('archive.tar.gz')).toBe('gz');
+  });
+
+  it('returns an empty string for dotfiles and extensionless names', () => {
+    expect(getFileExtension('README')).toBe('');
+    expect(getFileExtension('.gitignore')).toBe('');
+    expect(getFileExtension('folder.')).toBe('');
+  });
+});
 
 describe('splitPath', () => {
   it('returns empty values for undefined path', () => {

@@ -1,6 +1,6 @@
-# FS Events SDK (cardinal-sdk)
+# FS Events SDK (hajimi-sdk)
 
-`cardinal-sdk/` is the macOS-only wrapper around FSEvents used by Cardinal's background loop.
+`hajimi-sdk/` is the macOS-only wrapper around FSEvents used by hajimi's background loop.
 
 ## Public surface
 Re-exports from `cardinal-sdk/src/lib.rs`:
@@ -12,7 +12,7 @@ Re-exports from `cardinal-sdk/src/lib.rs`:
 
 ## Event semantics
 - `EventFlag::event_type()` classifies a batch item as file, dir, symlink, hardlink, or unknown.
-- `EventFlag::scan_type()` reduces raw FSEvent flags to Cardinal's four-way handling model:
+- `EventFlag::scan_type()` reduces raw FSEvent flags to hajimi's four-way handling model:
   - `SingleNode`
   - `Folder`
   - `ReScan`
@@ -48,13 +48,13 @@ Current rules are intentionally simple:
 - keeps `HistoryDone` even when the path itself would otherwise be ignored
 - returns `(dev_t, EventWatcher)`
 
-`EventWatcher::noop()` returns a shared inert watcher whose receiver times out instead of disconnecting. Cardinal uses it during cancelled scans and temporary watcher shutdowns.
+`EventWatcher::noop()` returns a shared inert watcher whose receiver times out instead of disconnecting. hajimi uses it during cancelled scans and temporary watcher shutdowns.
 
 ## Helpers
 - `current_event_id()` captures the system-wide current event id.
 - `event_id_to_timestamp()` uses repeated `FSEventsGetLastEventIdForDeviceBeforeTime(...)` calls to approximate a wall-clock time for diagnostics.
 
-## Integration with Cardinal
+## Integration with hajimi
 - `lib.rs` / `background.rs` start the watcher at `cache.last_event_id()`.
 - `background.rs` consumes batches directly in `crossbeam_channel::select!`.
 - `search-cache` decides whether a batch can be handled incrementally or must surface `HandleFSEError::Rescan`.

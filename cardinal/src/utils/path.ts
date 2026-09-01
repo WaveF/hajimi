@@ -3,6 +3,14 @@ export type SplitPathResult = {
   directory: string;
 };
 
+export const getFileExtension = (filename: string): string => {
+  const dotIndex = filename.lastIndexOf('.');
+  if (dotIndex <= 0 || dotIndex === filename.length - 1) {
+    return '';
+  }
+  return filename.slice(dotIndex + 1);
+};
+
 export const splitPath = (path: string | undefined): SplitPathResult => {
   if (!path) {
     return { name: '', directory: '' };

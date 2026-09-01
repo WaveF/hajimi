@@ -18,10 +18,13 @@
     "error": "搜索出现错误",
     "emptyTitle": "\"{{query}}\" 没有匹配结果",
     "emptyMessage": "尝试调整关键字或筛选条件。",
+    "emptyQueryTitle": "暂不显示搜索结果",
+    "emptyQueryMessage": "输入文件或文件夹名称开始搜索。",
     "emptyTitleWithDirectory": "在文件夹范围 \"{{directoryQuery}}\" 中没有找到 \"{{query}}\""
   },
   "columns": {
     "filename": "文件名",
+    "extension": "后缀",
     "path": "路径",
     "size": "大小",
     "modified": "修改时间",
@@ -71,7 +74,7 @@
       "settings": "打开偏好设置"
     },
     "rescan": {
-      "disabledHint": "Cardinal 准备就绪后即可重新扫描。",
+      "disabledHint": "hajimi 准备就绪后即可重新扫描。",
       "enabledHint": "触发一次完整的文件系统重新扫描。",
       "errorCountSuffix": " 已出现{{formatted}}次文件系统错误，建议重新扫描。"
     },
@@ -85,11 +88,11 @@
   "app": {
     "fullDiskAccess": {
       "title": "需要完全磁盘访问权限",
-      "description": "Cardinal 需要 macOS 的完全磁盘访问权限才能索引并监控系统中的文件。请在系统设置中为 Cardinal 启用完全磁盘访问。",
+      "description": "hajimi 需要 macOS 的完全磁盘访问权限才能索引并监控系统中的文件。请在系统设置中为 hajimi 启用完全磁盘访问。",
       "steps": {
         "one": "打开 系统设置 > 隐私与安全性 > 完全磁盘访问。",
-        "two": "点击锁形图标以允许更改，并启用 Cardinal。",
-        "three": "按提示允许 macOS 重新启动 Cardinal。"
+        "two": "点击锁形图标以允许更改，并启用 hajimi。",
+        "three": "按提示允许 macOS 重新启动 hajimi。"
       },
       "status": {
         "checking": "正在检查权限状态…",
@@ -121,19 +124,46 @@
   },
   "preferences": {
     "title": "偏好设置",
-    "heading": "自定义 Cardinal",
-    "subtitle": "随心调整外观和语言。",
+    "nav": {
+      "general": "通用",
+      "search": "搜索",
+      "indexing": "索引",
+      "mcp": "MCP"
+    },
     "appearance": "外观",
-    "themeHint": "选择浅色、深色或跟随系统。",
     "language": "语言",
-    "languageHint": "立即切换界面语言。",
     "trayIcon": {
       "label": "显示托盘图标"
+    },
+    "mcp": {
+      "description": "通过本地 MCP 服务让第三方 AI Agent 使用 hajimi 搜索和打开文件。",
+      "status": {
+        "label": "连接状态",
+        "ready": "可用",
+        "unavailable": "不可用"
+      },
+      "promptLabel": "给 Agent 的使用说明",
+      "copy": "复制给 AI",
+      "copied": "已复制"
+    },
+    "hideEmptyResults": {
+      "label": "搜索为空时隐藏结果"
+    },
+    "refreshEventsOnlyWhenActive": {
+      "label": "仅在“事件”标签激活时刷新事件"
     },
     "sortingLimit": {
       "label": "排序上限"
     },
-    "save": "保存",
+    "globalShortcut": {
+      "label": "全局 唤起/隐藏 热键",
+      "placeholder": "按下快捷键组合",
+      "clear": "清除",
+      "errors": {
+        "unavailable": "该快捷键不可用或已被占用。"
+      }
+    },
+    "save": "保存设置",
     "reset": "恢复默认设置",
     "close": "关闭"
   },
@@ -151,8 +181,8 @@
     }
   },
   "tray": {
-    "open": "打开 Cardinal",
-    "quit": "退出 Cardinal"
+    "open": "打开 hajimi",
+    "quit": "退出 hajimi"
   },
   "watchRoot": {
     "label": "监控根路径",
@@ -162,14 +192,14 @@
       "absolute": "请输入以“/”或“~”开头的绝对路径。"
     },
     "title": "选择监控根路径",
-    "description": "Cardinal 将只索引并监控该目录下的文件。你之后可以在偏好设置中更改。",
+    "description": "hajimi 将只索引并监控该目录下的文件。你之后可以在偏好设置中更改。",
     "action": "开始初始化"
   },
   "ignorePaths": {
     "label": "忽略路径",
-    "help": "每行一个路径；这些目录将不会被索引。",
+    "help": "每行一个规则；支持类似 .gitignore 的写法，例如 node_modules/、.git/ 和 target/。",
     "errors": {
-      "absolute": "每个路径需以“/”或“~”开头。"
+      "pattern": "请输入忽略规则；暂不支持以“!”开头的反向规则。"
     }
   },
   "includePaths": {

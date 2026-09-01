@@ -130,7 +130,7 @@ impl QuickLookKeyModifiers {
 define_class!(
     #[unsafe(super(NSObject))]
     #[thread_kind = MainThreadOnly]
-    #[name = "CardinalPreviewItem"]
+    #[name = "hajimiPreviewItem"]
     #[ivars = PreviewItemState]
     struct PreviewItemImpl;
 
@@ -181,7 +181,7 @@ impl PreviewControllerState {
 define_class!(
     #[unsafe(super(NSObject))]
     #[thread_kind = MainThreadOnly]
-    #[name = "CardinalPreviewController"]
+    #[name = "hajimiPreviewController"]
     #[ivars = PreviewControllerState]
     struct PreviewController;
 

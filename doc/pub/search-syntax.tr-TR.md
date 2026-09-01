@@ -1,6 +1,6 @@
-# Cardinal Arama Sözdizimi
+# hajimi Arama Sözdizimi
 
-Cardinal'ın sorgu dili Everything sözdizimine bilinçli olarak yakındır, ancak mevcut motorun gerçekten uyguladıklarını yansıtır. Bu sayfa, Rust arka ucunun bugün anladıklarına ilişkin resmi referanstır.
+hajimi'ın sorgu dili Everything sözdizimine bilinçli olarak yakındır, ancak mevcut motorun gerçekten uyguladıklarını yansıtır. Bu sayfa, Rust arka ucunun bugün anladıklarına ilişkin resmi referanstır.
 
 [English](search-syntax.md) · [Español](search-syntax.es-ES.md) · [한국어](search-syntax.ko-KR.md) · [Русский](search-syntax.ru-RU.md) · [简体中文](search-syntax.zh-CN.md) · [繁體中文](search-syntax.zh-TW.md) · [Português](search-syntax.pt-BR.md) · [Italiano](search-syntax.it-IT.md) · [日本語](search-syntax.ja-JP.md) · [Français](search-syntax.fr-FR.md) · [Deutsch](search-syntax.de-DE.md) · [Українська](search-syntax.uk-UA.md) · [العربية](search-syntax.ar-SA.md) · [हिन्दी](search-syntax.hi-IN.md) · [Türkçe](search-syntax.tr-TR.md)
 
@@ -37,7 +37,7 @@ ext:png;jpg travel|vacation   # adı “travel” veya “vacation” içeren PN
 
 - Tırnaksız ve `/` içermeyen bir belirteç, tek bir yol bileşeninde **alt dize eşleşmesidir**:
   - `demo`, `/Users/demo` klasörü ve `/Users/alice/demo-notes.md` ile eşleşir.
-  - Sadece bir üst klasörün adı `demo` olduğu için `/Users/demo/Projects/cardinal.md` ile eşleşmez; alt öğeleri aramak için `demo/**` kullanın.
+  - Sadece bir üst klasörün adı `demo` olduğu için `/Users/demo/Projects/hajimi.md` ile eşleşmez; alt öğeleri aramak için `demo/**` kullanın.
 - Çift tırnaklı ifadeler, boşluklar dahil tam diziyi eşleştirir:
   - `"Application Support"`, `/Library/Application Support` ile eşleşir.
 - UI büyük/küçük harf anahtarı ikisine de uygulanır.
@@ -57,7 +57,7 @@ ext:png;jpg travel|vacation   # adı “travel” veya “vacation” içeren PN
 
 ### 2.3 `/` ile yol tarzı segmentasyon
 
-Cardinal, bir belirteç içindeki “eğik çizgi segmentlerini” anlar ve her segmenti yol bileşenlerinde önek/sonek/tam/alt dize eşleşmesi olarak sınıflandırır. Örnekler:
+hajimi, bir belirteç içindeki “eğik çizgi segmentlerini” anlar ve her segmenti yol bileşenlerinde önek/sonek/tam/alt dize eşleşmesi olarak sınıflandırır. Örnekler:
 
 ```text
 elloworl        → Substring("elloworl")
@@ -81,7 +81,7 @@ Bu sayede şunları ifade edebilirsiniz:
 
 ## 3. Mantıksal kurallar ve gruplama
 
-Cardinal, Everything'nin öncelik sırasını izler:
+hajimi, Everything'nin öncelik sırasını izler:
 
 - `NOT` / `!` en sıkı bağlanır,
 - `OR` / `|` sonraki,
@@ -115,7 +115,7 @@ Varsayılan önceliği değiştirmek istediğinizde parantez veya `<...>` kullan
 
 Bu bölüm yalnızca mevcut motorun gerçekten değerlendirdiği filtreleri listeler.
 
-> **Not**: filtre argümanları iki noktadan hemen sonra gelmelidir (`ext:jpg`, `parent:/Users/demo`). `file: *.md` yazmak boşluk ekler; bu yüzden Cardinal bunu `file:` filtresi (argüman yok) ve ardından ayrı bir `*.md` belirteci olarak yorumlar.
+> **Not**: filtre argümanları iki noktadan hemen sonra gelmelidir (`ext:jpg`, `parent:/Users/demo`). `file: *.md` yazmak boşluk ekler; bu yüzden hajimi bunu `file:` filtresi (argüman yok) ve ardından ayrı bir `*.md` belirteci olarak yorumlar.
 
 ### 4.1 Dosya / klasör filtreleri
 
@@ -173,7 +173,7 @@ Bu filtreler argüman olarak mutlak yol alır; baştaki `~` kullanıcı ana dizi
 Örnekler:
 ```text
 type:picture vacation
-type:code "Cardinal"
+type:code "hajimi"
 type:archive dm:pastmonth
 ```
 
@@ -186,7 +186,7 @@ Yaygın `type:` durumları için kısayollar:
 | `audio:` | `type:audio`       | `audio: piano`       |
 | `video:` | `type:video`       | `video: tutorial`    |
 | `doc:`   | `type:doc`         | `doc: invoice dm:2024` |
-| `exe:`   | `type:exe`         | `exe: "Cardinal"`   |
+| `exe:`   | `type:exe`         | `exe: "hajimi"`   |
 
 Makrolar isteğe bağlı bir argüman kabul eder:
 ```text
@@ -275,7 +275,7 @@ type:doc content:"Q4 budget"
 
 ### 4.10 Etiket filtresi: `tag:` / `t:`
 
-Finder etiketlerine (macOS) göre filtreler. Cardinal, etiketleri dosyanın meta verilerinden istek üzerine alır (önbellek yoktur) ve büyük sonuç kümelerinde etiket eşleşmesini uygulamadan önce adayları daraltmak için `mdfind` kullanır.
+Finder etiketlerine (macOS) göre filtreler. hajimi, etiketleri dosyanın meta verilerinden istek üzerine alır (önbellek yoktur) ve büyük sonuç kümelerinde etiket eşleşmesini uygulamadan önce adayları daraltmak için `mdfind` kullanır.
 
 - `;` ile ayrılmış bir veya daha fazla etiket kabul eder (mantıksal OR): `tag:ProjectA;ProjectB`.
 - Birden fazla `tag:` filtresini (mantıksal AND) zincirleyerek çoklu etiket eşleşmesi yapabilirsiniz: `tag:Project tag:Important`.

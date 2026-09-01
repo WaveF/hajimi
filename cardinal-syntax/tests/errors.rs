@@ -17,7 +17,7 @@ fn missing_quote_is_reported() {
 fn colon_is_treated_as_word_not_error() {
     let expr = parse_ok(":");
     match expr {
-        cardinal_syntax::Expr::Term(cardinal_syntax::Term::Word(w)) => assert_eq!(w, ":"),
+        hajimi_syntax::Expr::Term(hajimi_syntax::Term::Word(w)) => assert_eq!(w, ":"),
         other => panic!("unexpected: {other:?}"),
     }
 }

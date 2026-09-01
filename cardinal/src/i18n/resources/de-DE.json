@@ -22,6 +22,7 @@
   },
   "columns": {
     "filename": "Dateiname",
+    "extension": "Erweiterung",
     "path": "Pfad",
     "size": "Größe",
     "modified": "Geändert",
@@ -71,7 +72,7 @@
       "settings": "Einstellungen öffnen"
     },
     "rescan": {
-      "disabledHint": "Der erneute Scan ist verfügbar, sobald Cardinal bereit ist.",
+      "disabledHint": "Der erneute Scan ist verfügbar, sobald hajimi bereit ist.",
       "enabledHint": "Einen vollständigen Scan des Dateisystems starten.",
       "errorCountSuffix": " Es sind {{formatted}} Dateisystemfehler aufgetreten, ein erneuter Scan wird empfohlen."
     },
@@ -86,11 +87,11 @@
   "app": {
     "fullDiskAccess": {
       "title": "Voller Festplattenzugriff erforderlich",
-      "description": "Cardinal benötigt den vollen Festplattenzugriff von macOS, um Dateien auf deinem System zu indexieren und zu überwachen. Aktiviere den vollen Festplattenzugriff für Cardinal in den Systemeinstellungen.",
+      "description": "hajimi benötigt den vollen Festplattenzugriff von macOS, um Dateien auf deinem System zu indexieren und zu überwachen. Aktiviere den vollen Festplattenzugriff für hajimi in den Systemeinstellungen.",
       "steps": {
         "one": "Öffne Systemeinstellungen > Datenschutz & Sicherheit > Voller Festplattenzugriff.",
-        "two": "Klicke auf das Schloss, erlaube Änderungen und aktiviere Cardinal.",
-        "three": "Erlaube macOS, Cardinal bei Aufforderung neu zu starten."
+        "two": "Klicke auf das Schloss, erlaube Änderungen und aktiviere hajimi.",
+        "three": "Erlaube macOS, hajimi bei Aufforderung neu zu starten."
       },
       "status": {
         "checking": "Berechtigungsstatus wird überprüft...",
@@ -122,17 +123,21 @@
   },
   "preferences": {
     "title": "Einstellungen",
-    "heading": "Passe Cardinal an",
-    "subtitle": "Stelle Erscheinungsbild und Sprache ein.",
     "appearance": "Darstellung",
-    "themeHint": "Wähle Hell, Dunkel oder Systemstandard.",
     "language": "Sprache",
-    "languageHint": "Wechsle die Oberflächensprache sofort.",
     "trayIcon": {
       "label": "Tray-Symbol anzeigen"
     },
     "sortingLimit": {
       "label": "Sortierlimit"
+    },
+    "globalShortcut": {
+      "label": "Global shortcut",
+      "placeholder": "Press a key combination",
+      "clear": "Clear",
+      "errors": {
+        "unavailable": "This shortcut is unavailable or already in use."
+      }
     },
     "save": "Speichern",
     "reset": "Standardwerte wiederherstellen",
@@ -152,8 +157,8 @@
     }
   },
   "tray": {
-    "open": "Cardinal öffnen",
-    "quit": "Cardinal beenden"
+    "open": "hajimi öffnen",
+    "quit": "hajimi beenden"
   },
   "watchRoot": {
     "label": "Überwachungs-Stammverzeichnis",
@@ -163,14 +168,14 @@
       "absolute": "Bitte einen absoluten Pfad angeben, der mit '/' oder '~' beginnt."
     },
     "title": "Überwachungs-Stammverzeichnis wählen",
-    "description": "Cardinal indiziert und überwacht Dateien in diesem Verzeichnis. Sie können es später in den Einstellungen ändern.",
+    "description": "hajimi indiziert und überwacht Dateien in diesem Verzeichnis. Sie können es später in den Einstellungen ändern.",
     "action": "Indexierung starten"
   },
   "ignorePaths": {
     "label": "Pfade ignorieren",
-    "help": "Ein Pfad pro Zeile; ignorierte Pfade werden bei der Indexierung übersprungen.",
+    "help": "Eine Regel pro Zeile; unterstützt gitignore-ähnliche Muster wie node_modules/, .git/ und target/.",
     "errors": {
-      "absolute": "Jeder Pfad muss mit '/' oder '~' beginnen."
+      "pattern": "Verwende ein Ignoriermuster; negierte Regeln mit '!' werden nicht unterstützt."
     }
   },
   "includePaths": {

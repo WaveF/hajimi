@@ -57,6 +57,22 @@ describe('useRemoteSort', () => {
     });
   });
 
+  it('passes extension sorting to the backend', async () => {
+    const results = toSlabIndices([0, 1, 2]);
+    const { result } = renderHook(() => useRemoteSort(results, 1, 'en-US', () => null));
+
+    act(() => {
+      result.current.handleSortToggle('extension');
+    });
+
+    await waitFor(() => {
+      expect(mockedInvoke).toHaveBeenCalledWith('get_sorted_view', {
+        results,
+        sort: { key: 'extension', direction: 'asc' },
+      });
+    });
+  });
+
   it('bumps displayedResultsVersion when backend resultsVersion increments', async () => {
     const first = toSlabIndices([0, 1, 2]);
     const next = toSlabIndices([10, 11, 12]);
@@ -91,7 +107,7 @@ describe('useRemoteSort', () => {
   });
 
   it('does not sort remotely when the result count exceeds threshold', async () => {
-    window.localStorage.setItem('cardinal.sortThreshold', '2');
+    window.localStorage.setItem('hajimi.sortThreshold', '2');
     const results = toSlabIndices([0, 1, 2]);
     const { result } = renderHook(() => useRemoteSort(results, 1, 'en-US', () => null));
 
@@ -162,7 +178,7 @@ describe('useRemoteSort', () => {
   });
 
   it('clears current sort state when result count exceeds threshold', async () => {
-    window.localStorage.setItem('cardinal.sortThreshold', '2');
+    window.localStorage.setItem('hajimi.sortThreshold', '2');
     const initial = toSlabIndices([0, 1]);
     const overLimit = toSlabIndices([0, 1, 2]);
 

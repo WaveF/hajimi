@@ -1,13 +1,13 @@
-//! # Cardinal's Everything-like Syntax Parser
+//! # hajimi's Everything-like Syntax Parser
 //!
-//! `cardinal-syntax` turns raw Everything-style queries into a structured AST so
-//! the rest of Cardinal can reason about filters, boolean logic, and phrases
+//! `hajimi-syntax` turns raw Everything-style queries into a structured AST so
+//! the rest of hajimi can reason about filters, boolean logic, and phrases
 //! without duplicating the parsing rules from the original Windows tool. Any
 //! example shown in that manual should be accepted by [`parse_query`].
 //!
 //! ## Example
 //! ```
-//! use cardinal_syntax::{optimize_query, parse_query, Expr, FilterKind, Term};
+//! use hajimi_syntax::{optimize_query, parse_query, Expr, FilterKind, Term};
 //!
 //! let parsed = parse_query("folder: dm:pastmonth ext:docx report").unwrap();
 //! if let Expr::And(parts) = &parsed.expr {
@@ -58,7 +58,7 @@ impl Query {
 ///   other filters next, and `tag:` always last. Non-filters stay between the
 ///   scope filters and the remaining filter tail.
 /// - Collapses any OR chain containing `Expr::Empty` into a single
-///   `Expr::Empty`, matching Cardinal's "empty means whole universe" semantics.
+///   `Expr::Empty`, matching hajimi's "empty means whole universe" semantics.
 ///
 /// The function never mutates the input query in place; a new tree is returned
 /// so upstream caches can keep the parsed form if needed.
@@ -166,14 +166,14 @@ pub enum Expr {
     /// Returned when a query (or sub query) only contains whitespace.
     ///
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr};
+    /// use hajimi_syntax::{parse_query, Expr};
     /// assert!(matches!(parse_query("   ").unwrap().expr, Expr::Empty));
     /// ```
     Empty,
     /// Wraps a [`Term`] so it can participate in boolean expressions.
     ///
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term};
+    /// use hajimi_syntax::{parse_query, Expr, Term};
     /// let expr = parse_query("report").unwrap().expr;
     /// assert!(matches!(expr, Expr::Term(Term::Word(word)) if word == "report"));
     /// ```
@@ -181,7 +181,7 @@ pub enum Expr {
     /// Logical negation. Multiple NOT prefixes collapse into a single node.
     ///
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term};
+    /// use hajimi_syntax::{parse_query, Expr, Term};
     /// let expr = parse_query("!temp").unwrap().expr;
     /// if let Expr::Not(inner) = expr {
     ///     assert!(matches!(&*inner, Expr::Term(Term::Word(word)) if word == "temp"));
@@ -191,7 +191,7 @@ pub enum Expr {
     /// Conjunction (implicit via whitespace in Everything syntax).
     ///
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr};
+    /// use hajimi_syntax::{parse_query, Expr};
     /// let Expr::And(parts) = parse_query("foo bar").unwrap().expr else { panic!() };
     /// assert_eq!(parts.len(), 2);
     /// ```
@@ -199,7 +199,7 @@ pub enum Expr {
     /// Disjunction triggered by the `|` operator.
     ///
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr};
+    /// use hajimi_syntax::{parse_query, Expr};
     /// let Expr::Or(parts) = parse_query("foo|bar").unwrap().expr else { panic!() };
     /// assert_eq!(parts.len(), 2);
     /// ```
@@ -215,7 +215,7 @@ pub enum Term {
     /// Quoted phrases are preserved as `"`-wrapped text (e.g., `"summer holiday"`).
     ///
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term};
+    /// use hajimi_syntax::{parse_query, Expr, Term};
     /// let Expr::Term(Term::Word(word)) = parse_query("*.mp3").unwrap().expr else { panic!() };
     /// assert_eq!(word, "*.mp3");
     /// ```
@@ -223,7 +223,7 @@ pub enum Term {
     /// `name:argument` style filters (`size:>1GB`, `folder:` ...).
     ///
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("size:>1GB").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Size));
     /// ```
@@ -232,7 +232,7 @@ pub enum Term {
     /// string as a regular expression.
     ///
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term};
+    /// use hajimi_syntax::{parse_query, Expr, Term};
     /// let Expr::Term(Term::Regex(pattern)) = parse_query("regex:^Report").unwrap().expr else { panic!() };
     /// assert_eq!(pattern, "^Report");
     /// ```
@@ -252,280 +252,280 @@ pub struct Filter {
 pub enum FilterKind {
     /// Only match files (`file:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("file:report").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::File));
     /// ```
     File,
     /// Only match folders (`folder:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("folder:Projects").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Folder));
     /// ```
     Folder,
     /// Extension filter (`ext:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("ext:txt").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Ext));
     /// ```
     Ext,
     /// File type categories (`type:` such as `type:picture`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("type:picture").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Type));
     /// ```
     Type,
     /// Audio macro (`audio:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("audio:").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Audio));
     /// ```
     Audio,
     /// Video macro (`video:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("video:").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Video));
     /// ```
     Video,
     /// Document macro (`doc:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("doc:").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Doc));
     /// ```
     Doc,
     /// Executable macro (`exe:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("exe:").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Exe));
     /// ```
     Exe,
     /// Size comparisons or ranges (`size:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("size:>1GB").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Size));
     /// ```
     Size,
     /// Date modified (`dm:` / `datemodified:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("dm:today").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::DateModified));
     /// ```
     DateModified,
     /// Date created (`dc:` / `datecreated:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("dc:thisweek").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::DateCreated));
     /// ```
     DateCreated,
     /// Date accessed (`da:` / `dateaccessed:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("da:yesterday").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::DateAccessed));
     /// ```
     DateAccessed,
     /// Date run (`dr:` / `daterun:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("dr:today").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::DateRun));
     /// ```
     DateRun,
     /// Restrict to direct children of a folder (`parent:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("parent:/Users").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Parent));
     /// ```
     Parent,
     /// Restrict to descendants of a folder (`infolder:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("infolder:/Users/demo").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::InFolder));
     /// ```
     InFolder,
     /// Limit to the folder itself (`nosubfolders:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("nosubfolders:/Users/demo").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::NoSubfolders));
     /// ```
     NoSubfolders,
     /// Require a folder containing matching children (`child:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("child:*.mp3").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Child));
     /// ```
     Child,
     /// Match file-system attributes (`attrib:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("attrib:H").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Attribute));
     /// ```
     Attribute,
     /// Attribute duplicate detection (`attribdupe:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("attribdupe:").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::AttributeDuplicate));
     /// ```
     AttributeDuplicate,
     /// Date-modified duplicate detection (`dmdupe:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("dmdupe:").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::DateModifiedDuplicate));
     /// ```
     DateModifiedDuplicate,
     /// Name duplicate detection (`dupe:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("dupe:").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Duplicate));
     /// ```
     Duplicate,
     /// Duplicate detection ignoring extensions (`namepartdupe:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("namepartdupe:").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::NamePartDuplicate));
     /// ```
     NamePartDuplicate,
     /// Duplicate detection by size (`sizedupe:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("sizedupe:").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::SizeDuplicate));
     /// ```
     SizeDuplicate,
     /// Audio metadata—artist (`artist:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("artist:Daft").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Artist));
     /// ```
     Artist,
     /// Audio metadata—album (`album:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("album:Discovery").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Album));
     /// ```
     Album,
     /// Audio metadata—title (`title:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("title:OneMoreTime").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Title));
     /// ```
     Title,
     /// Audio metadata—genre (`genre:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("genre:house").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Genre));
     /// ```
     Genre,
     /// Audio metadata—year (`year:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("year:2024").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Year));
     /// ```
     Year,
     /// Audio metadata—track number (`track:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("track:01").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Track));
     /// ```
     Track,
     /// Audio metadata—comment (`comment:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("comment:live").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Comment));
     /// ```
     Comment,
     /// Image width comparisons (`width:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("width:>4000").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Width));
     /// ```
     Width,
     /// Image height comparisons (`height:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("height:<=2000").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Height));
     /// ```
     Height,
     /// Combined dimensions (`dimensions:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("dimensions:1920x1080").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Dimensions));
     /// ```
     Dimensions,
     /// Orientation filter (`orientation:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("orientation:horizontal").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Orientation));
     /// ```
     Orientation,
     /// Bit depth filter (`bitdepth:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("bitdepth:24").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::BitDepth));
     /// ```
     BitDepth,
     /// Case-sensitive search toggle (`case:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("case:ABC").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::CaseSensitive));
     /// ```
     CaseSensitive,
     /// Finder tag filter (`tag:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("tag:Project").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Tag));
     /// ```
     Tag,
     /// Content search (`content:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("content:error").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Content));
     /// ```
     Content,
     /// Temporarily disable whole filename matching (`nowholefilename:`).
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("nowholefilename:report").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::NoWholeFilename));
     /// ```
     NoWholeFilename,
     /// User-defined macro or unrecognized filter name.
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, FilterKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, FilterKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("proj:").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.kind, FilterKind::Custom(name) if name == "proj"));
     /// ```
@@ -595,7 +595,7 @@ pub enum ArgumentKind {
     /// Plain argument with no additional structure.
     ///
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, ArgumentKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, ArgumentKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("folder:Projects").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.argument.unwrap().kind, ArgumentKind::Bare));
     /// ```
@@ -603,7 +603,7 @@ pub enum ArgumentKind {
     /// Double quoted value (Everything keeps the text verbatim).
     ///
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, ArgumentKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, ArgumentKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("parent:\"/Users/demo\"").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.argument.unwrap().kind, ArgumentKind::Phrase));
     /// ```
@@ -611,7 +611,7 @@ pub enum ArgumentKind {
     /// Semicolon-delimited list such as `ext:jpg;png`.
     ///
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, ArgumentKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, ArgumentKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("ext:jpg;png").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.argument.unwrap().kind, ArgumentKind::List(values) if values == ["jpg", "png"]));
     /// ```
@@ -619,7 +619,7 @@ pub enum ArgumentKind {
     /// Numeric/date range (dotted or hyphenated).
     ///
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, ArgumentKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, ArgumentKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("size:1mb..10mb").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.argument.unwrap().kind, ArgumentKind::Range(_)));
     /// ```
@@ -627,7 +627,7 @@ pub enum ArgumentKind {
     /// Comparison like `>1GB`, `<=4000`, etc.
     ///
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, ArgumentKind};
+    /// use hajimi_syntax::{parse_query, Expr, Term, ArgumentKind};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("size:>1GB").unwrap().expr else { panic!() };
     /// assert!(matches!(filter.argument.unwrap().kind, ArgumentKind::Comparison(_)));
     /// ```
@@ -648,7 +648,7 @@ pub enum RangeSeparator {
     /// Range expressed with `..` such as `size:1..10`.
     ///
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, ArgumentKind, RangeSeparator};
+    /// use hajimi_syntax::{parse_query, Expr, Term, ArgumentKind, RangeSeparator};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("size:1..10").unwrap().expr else { panic!() };
     /// let ArgumentKind::Range(range) = filter.argument.unwrap().kind else { panic!() };
     /// assert!(matches!(range.separator, RangeSeparator::Dots));
@@ -657,7 +657,7 @@ pub enum RangeSeparator {
     /// Range expressed with `-` (dates such as `dc:2024/1/1-2024/12/31`).
     ///
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, ArgumentKind, RangeSeparator};
+    /// use hajimi_syntax::{parse_query, Expr, Term, ArgumentKind, RangeSeparator};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("dc:2024/01/01-2024/12/31").unwrap().expr else { panic!() };
     /// let ArgumentKind::Range(range) = filter.argument.unwrap().kind else { panic!() };
     /// assert!(matches!(range.separator, RangeSeparator::Hyphen));
@@ -677,7 +677,7 @@ pub enum ComparisonOp {
     /// `< value` comparison.
     ///
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, ArgumentKind, ComparisonOp};
+    /// use hajimi_syntax::{parse_query, Expr, Term, ArgumentKind, ComparisonOp};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("size:<10mb").unwrap().expr else { panic!() };
     /// let ArgumentKind::Comparison(value) = filter.argument.unwrap().kind else { panic!() };
     /// assert!(matches!(value.op, ComparisonOp::Lt));
@@ -686,7 +686,7 @@ pub enum ComparisonOp {
     /// `<= value` comparison.
     ///
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, ArgumentKind, ComparisonOp};
+    /// use hajimi_syntax::{parse_query, Expr, Term, ArgumentKind, ComparisonOp};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("width:<=4000").unwrap().expr else { panic!() };
     /// let ArgumentKind::Comparison(value) = filter.argument.unwrap().kind else { panic!() };
     /// assert!(matches!(value.op, ComparisonOp::Lte));
@@ -695,7 +695,7 @@ pub enum ComparisonOp {
     /// `> value` comparison.
     ///
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, ArgumentKind, ComparisonOp};
+    /// use hajimi_syntax::{parse_query, Expr, Term, ArgumentKind, ComparisonOp};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("size:>1GB").unwrap().expr else { panic!() };
     /// let ArgumentKind::Comparison(value) = filter.argument.unwrap().kind else { panic!() };
     /// assert!(matches!(value.op, ComparisonOp::Gt));
@@ -704,7 +704,7 @@ pub enum ComparisonOp {
     /// `>= value` comparison.
     ///
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, ArgumentKind, ComparisonOp};
+    /// use hajimi_syntax::{parse_query, Expr, Term, ArgumentKind, ComparisonOp};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("size:>=1GB").unwrap().expr else { panic!() };
     /// let ArgumentKind::Comparison(value) = filter.argument.unwrap().kind else { panic!() };
     /// assert!(matches!(value.op, ComparisonOp::Gte));
@@ -713,7 +713,7 @@ pub enum ComparisonOp {
     /// `= value` comparison.
     ///
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, ArgumentKind, ComparisonOp};
+    /// use hajimi_syntax::{parse_query, Expr, Term, ArgumentKind, ComparisonOp};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("size:=10mb").unwrap().expr else { panic!() };
     /// let ArgumentKind::Comparison(value) = filter.argument.unwrap().kind else { panic!() };
     /// assert!(matches!(value.op, ComparisonOp::Eq));
@@ -722,7 +722,7 @@ pub enum ComparisonOp {
     /// `!= value` comparison.
     ///
     /// ```
-    /// use cardinal_syntax::{parse_query, Expr, Term, ArgumentKind, ComparisonOp};
+    /// use hajimi_syntax::{parse_query, Expr, Term, ArgumentKind, ComparisonOp};
     /// let Expr::Term(Term::Filter(filter)) = parse_query("size:!=10mb").unwrap().expr else { panic!() };
     /// let ArgumentKind::Comparison(value) = filter.argument.unwrap().kind else { panic!() };
     /// assert!(matches!(value.op, ComparisonOp::Ne));

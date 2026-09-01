@@ -1,19 +1,22 @@
-import { defaultWindowIcon } from '@tauri-apps/api/app';
 import { invoke } from '@tauri-apps/api/core';
 import { Menu, MenuItem, PredefinedMenuItem } from '@tauri-apps/api/menu';
+import { resolveResource } from '@tauri-apps/api/path';
 import { TrayIcon, type TrayIconOptions } from '@tauri-apps/api/tray';
 import i18n from './i18n/config';
-import { QUICK_LAUNCH_SHORTCUT } from './utils/globalShortcuts';
+import { getStoredGlobalShortcut } from './utils/globalShortcuts';
 
-const TRAY_ID = 'cardinal.tray';
+const TRAY_ID = 'hajimi.tray';
+const TRAY_ICON_RESOURCE = 'icons/tray-search.png';
 
 let trayInitPromise: Promise<void> | null = null;
 let trayIcon: TrayIcon | null = null;
+let trayOpenItem: MenuItem | null = null;
+let trayGlobalShortcut = getStoredGlobalShortcut();
 
 export function initializeTray(): Promise<void> {
   if (!trayInitPromise) {
     trayInitPromise = createTray().catch((error) => {
-      console.error('Failed to initialize Cardinal tray', error);
+      console.error('Failed to initialize hajimi tray', error);
       trayInitPromise = null;
     });
   }
@@ -38,15 +41,27 @@ export async function setTrayEnabled(enabled: boolean): Promise<void> {
 
   const current = trayIcon;
   trayIcon = null;
+  trayOpenItem = null;
 
   await Promise.allSettled([current?.close(), TrayIcon.removeById(TRAY_ID)]);
+}
+
+export async function setTrayGlobalShortcut(shortcut: string): Promise<void> {
+  trayGlobalShortcut = shortcut;
+  if (!trayOpenItem) {
+    return;
+  }
+
+  await trayOpenItem.setAccelerator(shortcut || null).catch((error) => {
+    console.error('Failed to update tray shortcut', error);
+  });
 }
 
 async function createTray(): Promise<void> {
   const openItem = await MenuItem.new({
     id: 'tray.open',
     text: i18n.t('tray.open'),
-    accelerator: QUICK_LAUNCH_SHORTCUT,
+    accelerator: trayGlobalShortcut || undefined,
     action: () => {
       void activateMainWindow();
     },
@@ -58,10 +73,14 @@ async function createTray(): Promise<void> {
       await PredefinedMenuItem.new({ item: 'Quit', text: i18n.t('tray.quit') }),
     ],
   });
+  trayOpenItem = openItem;
+  await setTrayGlobalShortcut(trayGlobalShortcut);
+  const trayIconPath = await resolveResource(TRAY_ICON_RESOURCE);
   const options: TrayIconOptions = {
     id: TRAY_ID,
-    tooltip: 'Cardinal',
-    icon: (await defaultWindowIcon()) ?? undefined,
+    tooltip: 'hajimi',
+    icon: trayIconPath,
+    iconAsTemplate: true,
     menu,
   };
 

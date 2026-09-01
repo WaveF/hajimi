@@ -1,29 +1,29 @@
 <div align="center">
-  <img src="../../cardinal/mac-icon_1024x1024.png" alt="Ícono de Cardinal" width="120" height="120">
-  <h1>Cardinal</h1>
+  <img src="../../app-icon.png" alt="Ícono de hajimi" width="120" height="120">
+  <h1>hajimi</h1>
   <p>Aplicación de búsqueda de archivos para macOS más rápida y precisa.</p>
   <p>
-    <a href="#usar-cardinal">Usar Cardinal</a> ·
-    <a href="#compilar-cardinal">Compilar Cardinal</a>
+    <a href="#usar-hajimi">Usar hajimi</a> ·
+    <a href="#compilar-hajimi">Compilar hajimi</a>
   </p>
-  <img src="UI.gif" alt="Vista previa de la interfaz de Cardinal" width="720">
+  <img src="UI.gif" alt="Vista previa de la interfaz de hajimi" width="720">
 </div>
 
 ---
 
 [English](../../README.md) · [Español](README.es-ES.md) · [한국어](README.ko-KR.md) · [Русский](README.ru-RU.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [Português](README.pt-BR.md) · [Italiano](README.it-IT.md) · [日本語](README.ja-JP.md) · [Français](README.fr-FR.md) · [Deutsch](README.de-DE.md) · [Українська](README.uk-UA.md) · [العربية](README.ar-SA.md) · [हिन्दी](README.hi-IN.md) · [Türkçe](README.tr-TR.md)
 
-## Usar Cardinal
+## Usar hajimi
 
 ### Descarga
 
 Instala con Homebrew:
 
 ```bash
-brew install --cask cardinal-search
+brew install --cask hajimi
 ```
 
-También puedes descargar los últimos paquetes desde [GitHub Releases](https://github.com/cardisoft/cardinal/releases/).
+También puedes descargar los últimos paquetes desde [GitHub Releases de hajimi](https://github.com/WaveF/hajimi/releases/).
 
 ### Soporte de i18n
 
@@ -31,7 +31,7 @@ También puedes descargar los últimos paquetes desde [GitHub Releases](https://
 
 ### Conceptos básicos de búsqueda
 
-Cardinal ahora incorpora una capa de sintaxis compatible con Everything sobre las coincidencias clásicas por subcadena/prefijo:
+hajimi ahora incorpora una capa de sintaxis compatible con Everything sobre las coincidencias clásicas por subcadena/prefijo:
 
 - `report draft` – el espacio actúa como `AND`, solo verás archivos cuyos nombres contengan ambos términos.
 - `*.pdf briefing` – limita los resultados a PDF cuyo nombre incluya “briefing”.
@@ -48,12 +48,12 @@ Consulta el catálogo completo de operadores (agrupación booleana, alcance por 
 
 ### Atajos de teclado y previsualizaciones
 
-- `Cmd+Shift+Space` – activa o cierra la ventana de Cardinal globalmente mediante el atajo rápido.
+- `Cmd+Shift+Space` – activa o cierra la ventana de hajimi globalmente mediante el atajo rápido.
 - `Cmd+,` – abre Preferencias.
-- `Esc` – oculta la ventana de Cardinal.
+- `Esc` – oculta la ventana de hajimi.
 - `ArrowUp`/`ArrowDown` – mueve la selección.
 - `Shift+ArrowUp`/`Shift+ArrowDown` – amplía la selección.
-- `Space` – Quick Look de la fila seleccionada sin salir de Cardinal.
+- `Space` – Quick Look de la fila seleccionada sin salir de hajimi.
 - `Cmd+O` – abre el resultado seleccionado.
 - `Cmd+R` – revela el resultado resaltado en Finder.
 - `Cmd+C` – copia los archivos seleccionados al portapapeles.
@@ -65,7 +65,7 @@ Consulta el catálogo completo de operadores (agrupación booleana, alcance por 
 
 ---
 
-## Compilar Cardinal
+## Compilar hajimi
 
 ### Requisitos
 
@@ -87,3 +87,7 @@ npm run tauri dev -- --release --features dev
 cd cardinal
 npm run tauri build
 ```
+
+## Agradecimientos
+
+hajimi se basa en [Cardinal](https://github.com/cardisoft/cardinal). Agradecemos sinceramente a los autores y colaboradores del proyecto original por su inspiración y trabajo fundacional.

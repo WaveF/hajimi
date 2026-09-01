@@ -1,10 +1,10 @@
 import React, { memo, useCallback, DragEvent, useRef } from 'react';
 import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
 import { MiddleEllipsisHighlight } from './MiddleEllipsisHighlight';
-import { formatKB, formatTimestamp } from '../utils/format';
+import { formatFileSize, formatTimestamp } from '../utils/format';
 import type { SearchResultItem } from '../types/search';
 import { startNativeFileDrag } from '../utils/drag';
-import { splitPath } from '../utils/path';
+import { getFileExtension, splitPath } from '../utils/path';
 import { hasModifierKey } from '../utils/keyboard';
 
 type FileRowProps = {
@@ -44,13 +44,14 @@ export const FileRow = memo(function FileRow({
   const path = item.path;
   const pathParts = splitPath(path);
   const filename = path === '/' ? '' : pathParts.name;
+  const extension = getFileExtension(filename);
   const directoryPath = pathParts.directory;
 
   const metadata = item.metadata;
   const mtimeSec = metadata?.mtime ?? item.mtime;
   const ctimeSec = metadata?.ctime ?? item.ctime;
   const sizeBytes = metadata?.size ?? item.size;
-  const sizeText = metadata?.type !== 1 ? formatKB(sizeBytes) : null;
+  const sizeText = metadata?.type !== 1 ? formatFileSize(sizeBytes) : null;
   const mtimeText = formatTimestamp(mtimeSec);
   const ctimeText = formatTimestamp(ctimeSec);
 
@@ -161,6 +162,7 @@ export const FileRow = memo(function FileRow({
           caseInsensitive={caseInsensitive}
         />
       </div>
+      <span className={`extension-text ${!extension ? 'muted' : ''}`}>{extension || '—'}</span>
       {/* Directory column renders the parent path (the filename column already shows the leaf). */}
       <span className="path-text" title={directoryPath}>
         {directoryPath}

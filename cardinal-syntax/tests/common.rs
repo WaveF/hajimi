@@ -1,7 +1,7 @@
 #![allow(dead_code)]
-//! Shared helpers for `cardinal-syntax` integration tests.
+//! Shared helpers for `hajimi-syntax` integration tests.
 
-use cardinal_syntax::*;
+use hajimi_syntax::*;
 
 pub fn parse_ok(input: &str) -> Expr {
     optimize_query(parse_query(input).unwrap()).expr

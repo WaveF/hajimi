@@ -2,7 +2,7 @@
 //! Focus: ensure parser stability across extensive operator permutations.
 //! This file intentionally verbose to provide >300 lines of diverse cases.
 
-use cardinal_syntax::{Expr, Term, parse_query};
+use hajimi_syntax::{Expr, Term, parse_query};
 
 fn assert_ok(query: &str) {
     if let Err(e) = parse_query(query) {

@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 const columns: Array<{ key: ColumnKey; labelKey: string; className: string }> = [
   { key: 'filename', labelKey: 'columns.filename', className: 'filename-text' },
+  { key: 'extension', labelKey: 'columns.extension', className: 'extension-text' },
   { key: 'path', labelKey: 'columns.path', className: 'path-text' },
   { key: 'size', labelKey: 'columns.size', className: 'size-text' },
   { key: 'modified', labelKey: 'columns.modified', className: 'mtime-text' },
@@ -14,6 +15,7 @@ const columns: Array<{ key: ColumnKey; labelKey: string; className: string }> = 
 
 const sortableColumns: Record<ColumnKey, SortKey> = {
   filename: 'filename',
+  extension: 'extension',
   path: 'fullPath',
   size: 'size',
   modified: 'mtime',

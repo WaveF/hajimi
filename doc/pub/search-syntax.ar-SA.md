@@ -1,6 +1,6 @@
-# صياغة البحث في Cardinal
+# صياغة البحث في hajimi
 
-لغة الاستعلام في Cardinal قريبة عمدًا من صياغة Everything، لكنها تعكس ما ينفّذه المحرك الحالي فعليًا. هذه الصفحة هي المرجع الموثوق لما تفهمه الواجهة الخلفية المكتوبة بـ Rust حاليًا.
+لغة الاستعلام في hajimi قريبة عمدًا من صياغة Everything، لكنها تعكس ما ينفّذه المحرك الحالي فعليًا. هذه الصفحة هي المرجع الموثوق لما تفهمه الواجهة الخلفية المكتوبة بـ Rust حاليًا.
 
 [English](search-syntax.md) · [Español](search-syntax.es-ES.md) · [한국어](search-syntax.ko-KR.md) · [Русский](search-syntax.ru-RU.md) · [简体中文](search-syntax.zh-CN.md) · [繁體中文](search-syntax.zh-TW.md) · [Português](search-syntax.pt-BR.md) · [Italiano](search-syntax.it-IT.md) · [日本語](search-syntax.ja-JP.md) · [Français](search-syntax.fr-FR.md) · [Deutsch](search-syntax.de-DE.md) · [Українська](search-syntax.uk-UA.md) · [العربية](search-syntax.ar-SA.md) · [हिन्दी](search-syntax.hi-IN.md) · [Türkçe](search-syntax.tr-TR.md)
 
@@ -37,7 +37,7 @@ ext:png;jpg travel|vacation   # PNG أو JPG أسماؤها تحتوي على �
 
 - الرمز بدون اقتباس ومن دون `/` هو **مطابقة جزء من السلسلة** في مكوّن مسار واحد:
   - `demo` يطابق مجلد `/Users/demo` و`/Users/alice/demo-notes.md`.
-  - لا يطابق `/Users/demo/Projects/cardinal.md` لمجرد أن أحد أسلافه اسمه `demo`؛ استخدم `demo/**` للبحث في العناصر التابعة.
+  - لا يطابق `/Users/demo/Projects/hajimi.md` لمجرد أن أحد أسلافه اسمه `demo`؛ استخدم `demo/**` للبحث في العناصر التابعة.
 - العبارات بين علامتي اقتباس تطابق التسلسل الدقيق بما في ذلك المسافات:
   - `"Application Support"` يطابق `/Library/Application Support`.
 - ينطبق مفتاح حساسية الحالة في واجهة المستخدم على كليهما.
@@ -57,7 +57,7 @@ ext:png;jpg travel|vacation   # PNG أو JPG أسماؤها تحتوي على �
 
 ### 2.3 تقسيم بنمط المسار باستخدام `/`
 
-يفهم Cardinal “مقاطع الشرط المائل” داخل الرمز ويصنّف كل مقطع كمطابقة بادئة/لاحقة/مطابقة تامة/مطابقة جزء من المسار. أمثلة:
+يفهم hajimi “مقاطع الشرط المائل” داخل الرمز ويصنّف كل مقطع كمطابقة بادئة/لاحقة/مطابقة تامة/مطابقة جزء من المسار. أمثلة:
 
 ```text
 elloworl        → Substring("elloworl")
@@ -81,7 +81,7 @@ bab/bob/        → Suffix("bab"), Exact("bob")
 
 ## 3. المنطق البولياني والتجميع
 
-يتبع Cardinal أولوية Everything:
+يتبع hajimi أولوية Everything:
 
 - `NOT` / `!` أقوى ارتباطًا،
 - `OR` / `|` بعده،
@@ -115,7 +115,7 @@ good (<src|tests> ext:rs)
 
 هذا القسم يسرد فقط المرشحات التي يقيّمها المحرك الحالي فعليًا.
 
-> **ملاحظة**: يجب أن تأتي وسيطات المرشح مباشرة بعد النقطتين (`ext:jpg`, `parent:/Users/demo`). كتابة `file: *.md` تضيف مسافة، لذلك يعاملها Cardinal كمرشح `file:` (بدون وسيط) يليه الرمز المنفصل `*.md`.
+> **ملاحظة**: يجب أن تأتي وسيطات المرشح مباشرة بعد النقطتين (`ext:jpg`, `parent:/Users/demo`). كتابة `file: *.md` تضيف مسافة، لذلك يعاملها hajimi كمرشح `file:` (بدون وسيط) يليه الرمز المنفصل `*.md`.
 
 ### 4.1 مرشحات الملفات / المجلدات
 
@@ -173,7 +173,7 @@ ext:png;jpg travel|vacation
 أمثلة:
 ```text
 type:picture vacation
-type:code "Cardinal"
+type:code "hajimi"
 type:archive dm:pastmonth
 ```
 
@@ -186,7 +186,7 @@ type:archive dm:pastmonth
 | `audio:` | `type:audio`    | `audio: piano`       |
 | `video:` | `type:video`    | `video: tutorial`    |
 | `doc:`   | `type:doc`      | `doc: invoice dm:2024` |
-| `exe:`   | `type:exe`      | `exe: "Cardinal"`   |
+| `exe:`   | `type:exe`      | `exe: "hajimi"`   |
 
 تقبل الماكرو وسيطًا اختياريًا:
 ```text
@@ -275,7 +275,7 @@ type:doc content:"Q4 budget"
 
 ### 4.10 مرشح الوسوم: `tag:` / `t:`
 
-يُرشّح باستخدام وسوم Finder (macOS). يجلب Cardinal الوسوم عند الطلب من بيانات الملف (بدون تخزين مؤقت)، وللمجموعات الكبيرة يستخدم `mdfind` لتضييق المرشحين قبل تطبيق مطابقة الوسوم.
+يُرشّح باستخدام وسوم Finder (macOS). يجلب hajimi الوسوم عند الطلب من بيانات الملف (بدون تخزين مؤقت)، وللمجموعات الكبيرة يستخدم `mdfind` لتضييق المرشحين قبل تطبيق مطابقة الوسوم.
 
 - يقبل وسمًا واحدًا أو أكثر مفصولًا بـ `;` (OR منطقي): `tag:ProjectA;ProjectB`.
 - تسلسل عدة مرشحات `tag:` (AND منطقي) لمطابقة عدة وسوم: `tag:Project tag:Important`.

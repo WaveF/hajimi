@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Cardinal",
+  "productName": "hajimi",
   "version": "0.1.23",
-  "identifier": "com.cardinal.one",
+  "identifier": "com.hajimi.one",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "Cardinal",
+        "title": "hajimi",
         "width": 1200,
         "height": 800
       }
@@ -25,6 +25,7 @@
     "active": true,
     "targets": "all",
     "category": "Utilities",
+    "resources": ["icons/tray-search.png"],
     "macOS": {
       "signingIdentity": "-",
       "minimumSystemVersion": "12.0"

@@ -80,6 +80,337 @@ impl From<fs::FileType> for NodeFileType {
     }
 }
 
+#[derive(Debug, Clone)]
+enum PatternPart {
+    DoubleStar,
+    Segment(Vec<PatternToken>),
+}
+
+#[derive(Debug, Clone)]
+enum PatternToken {
+    Literal(char),
+    AnyChar,
+    AnyString,
+    CharacterClass {
+        negated: bool,
+        ranges: Vec<(char, char)>,
+    },
+}
+
+#[derive(Debug, Clone)]
+struct IgnorePattern {
+    parts: Vec<PatternPart>,
+    /// A pattern without a slash matches a path component at any depth.
+    any_component: bool,
+    /// A leading slash makes a pattern relative to the filesystem root.
+    absolute: bool,
+    directory_only: bool,
+}
+
+impl IgnorePattern {
+    fn parse(raw: &Path) -> Option<Self> {
+        let mut value = raw.to_string_lossy().trim().to_string();
+        if value.is_empty() || value.starts_with('#') || value.starts_with('!') {
+            return None;
+        }
+
+        let directory_only = value.ends_with('/') && value != "/";
+        if directory_only {
+            value.pop();
+        }
+
+        let absolute = value.starts_with('/');
+        if absolute {
+            value.remove(0);
+        }
+
+        let any_component = !value.contains('/');
+        let parts = if value.is_empty() {
+            Vec::new()
+        } else {
+            value
+                .split('/')
+                .map(|part| {
+                    if part == "**" {
+                        PatternPart::DoubleStar
+                    } else {
+                        PatternPart::Segment(parse_segment(part))
+                    }
+                })
+                .collect()
+        };
+
+        Some(Self {
+            parts,
+            any_component,
+            absolute,
+            directory_only,
+        })
+    }
+
+    fn matching_depth(&self, components: &[String]) -> Option<usize> {
+        if self.any_component {
+            return components
+                .iter()
+                .enumerate()
+                .rev()
+                .find_map(|(index, component)| {
+                    segment_matches(&self.parts, component).then_some(index + 1)
+                });
+        }
+
+        let mut memo = vec![vec![None; components.len() + 1]; self.parts.len() + 1];
+        self.matches_from(0, 0, components, &mut memo)
+            .then_some(components.len())
+    }
+
+    fn matches_from(
+        &self,
+        pattern_index: usize,
+        component_index: usize,
+        components: &[String],
+        memo: &mut [Vec<Option<bool>>],
+    ) -> bool {
+        if let Some(result) = memo[pattern_index][component_index] {
+            return result;
+        }
+
+        let result = if pattern_index == self.parts.len() {
+            component_index == components.len()
+        } else {
+            match &self.parts[pattern_index] {
+                PatternPart::DoubleStar => {
+                    self.matches_from(pattern_index + 1, component_index, components, memo)
+                        || (component_index < components.len()
+                            && self.matches_from(
+                                pattern_index,
+                                component_index + 1,
+                                components,
+                                memo,
+                            ))
+                }
+                PatternPart::Segment(tokens) => {
+                    component_index < components.len()
+                        && segment_tokens_match(tokens, &components[component_index])
+                        && self.matches_from(
+                            pattern_index + 1,
+                            component_index + 1,
+                            components,
+                            memo,
+                        )
+                }
+            }
+        };
+
+        memo[pattern_index][component_index] = Some(result);
+        result
+    }
+}
+
+fn parse_segment(segment: &str) -> Vec<PatternToken> {
+    let chars: Vec<_> = segment.chars().collect();
+    let mut tokens = Vec::new();
+    let mut index = 0;
+
+    while index < chars.len() {
+        match chars[index] {
+            '*' => {
+                if !matches!(tokens.last(), Some(PatternToken::AnyString)) {
+                    tokens.push(PatternToken::AnyString);
+                }
+            }
+            '?' => tokens.push(PatternToken::AnyChar),
+            '[' => {
+                let mut cursor = index + 1;
+                let negated = chars.get(cursor).is_some_and(|c| *c == '!' || *c == '^');
+                if negated {
+                    cursor += 1;
+                }
+                let class_start = cursor;
+                while cursor < chars.len() && chars[cursor] != ']' {
+                    cursor += 1;
+                }
+                if cursor == chars.len() || cursor == class_start {
+                    tokens.push(PatternToken::Literal('['));
+                } else {
+                    let class_chars = &chars[class_start..cursor];
+                    let mut ranges = Vec::new();
+                    let mut class_index = 0;
+                    while class_index < class_chars.len() {
+                        if class_index + 2 < class_chars.len()
+                            && class_chars[class_index + 1] == '-'
+                        {
+                            ranges.push((class_chars[class_index], class_chars[class_index + 2]));
+                            class_index += 3;
+                        } else {
+                            ranges.push((class_chars[class_index], class_chars[class_index]));
+                            class_index += 1;
+                        }
+                    }
+                    tokens.push(PatternToken::CharacterClass { negated, ranges });
+                    index = cursor;
+                }
+            }
+            character => tokens.push(PatternToken::Literal(character)),
+        }
+        index += 1;
+    }
+
+    tokens
+}
+
+fn segment_matches(parts: &[PatternPart], component: &str) -> bool {
+    match parts {
+        [PatternPart::Segment(tokens)] => segment_tokens_match(tokens, component),
+        _ => false,
+    }
+}
+
+fn segment_tokens_match(tokens: &[PatternToken], component: &str) -> bool {
+    let chars: Vec<_> = component.chars().collect();
+    let mut memo = vec![vec![None; chars.len() + 1]; tokens.len() + 1];
+
+    fn matches_from(
+        token_index: usize,
+        char_index: usize,
+        tokens: &[PatternToken],
+        chars: &[char],
+        memo: &mut [Vec<Option<bool>>],
+    ) -> bool {
+        if let Some(result) = memo[token_index][char_index] {
+            return result;
+        }
+
+        let result = if token_index == tokens.len() {
+            char_index == chars.len()
+        } else {
+            match &tokens[token_index] {
+                PatternToken::AnyString => {
+                    matches_from(token_index + 1, char_index, tokens, chars, memo)
+                        || (char_index < chars.len()
+                            && matches_from(token_index, char_index + 1, tokens, chars, memo))
+                }
+                PatternToken::AnyChar => {
+                    char_index < chars.len()
+                        && matches_from(token_index + 1, char_index + 1, tokens, chars, memo)
+                }
+                PatternToken::Literal(expected) => {
+                    char_index < chars.len()
+                        && *expected == chars[char_index]
+                        && matches_from(token_index + 1, char_index + 1, tokens, chars, memo)
+                }
+                PatternToken::CharacterClass { negated, ranges } => {
+                    if char_index >= chars.len() {
+                        false
+                    } else {
+                        let matched = ranges.iter().any(|(start, end)| {
+                            *start <= chars[char_index] && chars[char_index] <= *end
+                        });
+                        *negated != matched
+                            && matches_from(token_index + 1, char_index + 1, tokens, chars, memo)
+                    }
+                }
+            }
+        };
+
+        memo[token_index][char_index] = Some(result);
+        result
+    }
+
+    matches_from(0, 0, tokens, &chars, &mut memo)
+}
+
+fn path_components(path: &Path) -> Vec<String> {
+    path.components()
+        .filter_map(|component| match component {
+            std::path::Component::Normal(value) => Some(value.to_string_lossy().into_owned()),
+            _ => None,
+        })
+        .collect()
+}
+
+/// Compiled ignore/include rules shared by filesystem walking and event filtering.
+///
+/// Ignore rules use a gitignore-inspired syntax. Include paths intentionally remain
+/// concrete paths because they are the explicit exception mechanism exposed by the UI.
+#[derive(Debug, Clone)]
+pub struct PathFilter {
+    root_path: PathBuf,
+    ignore_patterns: Vec<IgnorePattern>,
+    include_paths: Vec<PathBuf>,
+}
+
+impl PathFilter {
+    pub fn new(root_path: &Path, ignore_paths: &[PathBuf], include_paths: &[PathBuf]) -> Self {
+        Self {
+            root_path: root_path.to_path_buf(),
+            ignore_patterns: ignore_paths
+                .iter()
+                .filter_map(|path| IgnorePattern::parse(path))
+                .collect(),
+            include_paths: include_paths.to_vec(),
+        }
+    }
+
+    pub fn should_ignore(&self, path: &Path) -> bool {
+        self.should_ignore_with_type(path, None)
+    }
+
+    pub fn should_ignore_with_type(&self, path: &Path, is_dir: Option<bool>) -> bool {
+        if self.ignore_patterns.is_empty() && self.include_paths.is_empty() {
+            return false;
+        }
+
+        // Keep ancestors of an explicit include path traversable so the walker can reach it.
+        if self
+            .include_paths
+            .iter()
+            .any(|include| include.starts_with(path) && include != path)
+        {
+            return false;
+        }
+
+        let relative_components = path.strip_prefix(&self.root_path).ok().map(path_components);
+        let absolute_components = path_components(path);
+
+        let ignore_depth = self
+            .ignore_patterns
+            .iter()
+            .filter_map(|pattern| {
+                let components = if pattern.absolute {
+                    &absolute_components
+                } else {
+                    relative_components.as_ref()?
+                };
+
+                (0..=components.len()).rev().find_map(|depth| {
+                    let matched_depth = pattern.matching_depth(&components[..depth])?;
+                    if pattern.directory_only
+                        && matched_depth == components.len()
+                        && is_dir == Some(false)
+                    {
+                        return None;
+                    }
+                    Some(matched_depth)
+                })
+            })
+            .max();
+
+        let include_depth = self
+            .include_paths
+            .iter()
+            .filter(|include| path.starts_with(include))
+            .map(|include| path_components(include).len())
+            .max();
+
+        match (ignore_depth, include_depth) {
+            (None, _) => false,
+            (Some(_), None) => true,
+            (Some(ignore_depth), Some(include_depth)) => ignore_depth > include_depth,
+        }
+    }
+}
+
 /// `path` is ignored under longest-prefix-match: among the entries in
 /// `ignore_directories` and `include_paths` that contain `path`, whichever
 /// sits deeper wins. Ties keep the path. This lets nested overrides compose
@@ -93,26 +424,16 @@ pub fn should_ignore_path(
     ignore_directories: &[PathBuf],
     include_paths: &[PathBuf],
 ) -> bool {
-    if include_paths
-        .iter()
-        .any(|include| include.starts_with(path) && include != path)
-    {
-        return false;
-    }
+    should_ignore_path_from_root(path, Path::new("/"), ignore_directories, include_paths)
+}
 
-    let deepest = |entries: &[PathBuf]| -> Option<usize> {
-        entries
-            .iter()
-            .filter(|entry| path.starts_with(entry))
-            .map(|entry| entry.components().count())
-            .max()
-    };
-
-    match (deepest(ignore_directories), deepest(include_paths)) {
-        (None, _) => false,
-        (Some(_), None) => true,
-        (Some(ignore_depth), Some(include_depth)) => ignore_depth > include_depth,
-    }
+pub fn should_ignore_path_from_root(
+    path: &Path,
+    root_path: &Path,
+    ignore_paths: &[PathBuf],
+    include_paths: &[PathBuf],
+) -> bool {
+    PathFilter::new(root_path, ignore_paths, include_paths).should_ignore(path)
 }
 
 pub struct WalkData<'w, F: Fn() -> bool> {
@@ -124,6 +445,7 @@ pub struct WalkData<'w, F: Fn() -> bool> {
     pub ignore_directories: &'w [PathBuf],
     /// Paths to include even when they fall under an ignored directory.
     pub include_paths: &'w [PathBuf],
+    path_filter: PathFilter,
     /// If set, metadata will be collected for each file node(folder node will get free metadata).
     need_metadata: bool,
 }
@@ -146,7 +468,7 @@ where
 }
 
 impl<'w> WalkData<'w, fn() -> bool> {
-    pub const fn simple(root_path: &'w Path, need_metadata: bool) -> Self {
+    pub fn simple(root_path: &'w Path, need_metadata: bool) -> Self {
         fn never_cancel() -> bool {
             false
         }
@@ -158,6 +480,7 @@ impl<'w> WalkData<'w, fn() -> bool> {
             root_path,
             ignore_directories: &[],
             include_paths: &[],
+            path_filter: PathFilter::new(root_path, &[], &[]),
             need_metadata,
         }
     }
@@ -178,12 +501,18 @@ impl<'w, F: Fn() -> bool> WalkData<'w, F> {
             root_path,
             ignore_directories,
             include_paths,
+            path_filter: PathFilter::new(root_path, ignore_directories, include_paths),
             need_metadata,
         }
     }
 
+    fn should_ignore_with_type(&self, path: &Path, is_dir: bool) -> bool {
+        self.path_filter.should_ignore_with_type(path, Some(is_dir))
+    }
+
+    #[cfg(test)]
     fn should_ignore(&self, path: &Path) -> bool {
-        should_ignore_path(path, self.ignore_directories, self.include_paths)
+        self.path_filter.should_ignore(path)
     }
 
     fn is_cancelled(&self) -> bool {
@@ -263,34 +592,31 @@ fn walk<F: Fn() -> bool + Send + Sync>(path: &Path, walk_data: &WalkData<'_, F>)
                                     return None;
                                 }
                                 let path = entry.path();
-                                if walk_data.should_ignore(&path) {
+                                let file_type = entry.file_type().ok()?;
+                                if walk_data.should_ignore_with_type(&path, file_type.is_dir()) {
                                     return None;
                                 }
                                 // doesn't traverse symlink
-                                if let Ok(data) = entry.file_type() {
-                                    if data.is_dir() {
-                                        walk(&path, walk_data)
-                                    } else {
-                                        walk_data.num_files.fetch_add(1, Ordering::Relaxed);
-                                        let name = entry
-                                            .file_name()
-                                            .to_string_lossy()
-                                            .into_owned()
-                                            .into_boxed_str();
-                                        Some(Node {
-                                            children: vec![],
-                                            name,
-                                            metadata: walk_data
-                                                .need_metadata
-                                                .then_some(entry)
-                                                .and_then(|entry| {
-                                                    // doesn't traverse symlink
-                                                    entry.metadata().ok().map(NodeMetadata::from)
-                                                }),
-                                        })
-                                    }
+                                if file_type.is_dir() {
+                                    walk(&path, walk_data)
                                 } else {
-                                    None
+                                    walk_data.num_files.fetch_add(1, Ordering::Relaxed);
+                                    let name = entry
+                                        .file_name()
+                                        .to_string_lossy()
+                                        .into_owned()
+                                        .into_boxed_str();
+                                    Some(Node {
+                                        children: vec![],
+                                        name,
+                                        metadata: walk_data
+                                            .need_metadata
+                                            .then_some(entry)
+                                            .and_then(|entry| {
+                                                // doesn't traverse symlink
+                                                entry.metadata().ok().map(NodeMetadata::from)
+                                            }),
+                                    })
                                 }
                             }
                             Err(_) => None,
@@ -526,7 +852,7 @@ mod tests {
         );
     }
 
-    // ── should_ignore tests (prefix-based matching) ──────────────────────
+    // ── should_ignore tests (gitignore-style matching) ────────────────────
 
     #[test]
     fn should_ignore_exact_match() {
@@ -580,6 +906,68 @@ mod tests {
         assert!(wd.should_ignore(Path::new("/x/y/z")));
         assert!(!wd.should_ignore(Path::new("/x")));
         assert!(!wd.should_ignore(Path::new("/b")));
+    }
+
+    #[test]
+    fn relative_directory_pattern_matches_at_any_depth() {
+        let ignore = vec![PathBuf::from("node_modules/")];
+        let wd = WalkData::new(Path::new("/root"), &ignore, &[], false, || false);
+
+        assert!(wd.should_ignore(Path::new("/root/node_modules")));
+        assert!(wd.should_ignore(Path::new("/root/project/node_modules")));
+        assert!(wd.should_ignore(Path::new("/root/project/node_modules/package.json")));
+        assert!(!wd.should_ignore(Path::new("/root/project/node_modules_backup")));
+    }
+
+    #[test]
+    fn wildcard_pattern_matches_components_without_crossing_directories() {
+        let ignore = vec![PathBuf::from("build/*/")];
+        let wd = WalkData::new(Path::new("/root"), &ignore, &[], false, || false);
+
+        assert!(wd.should_ignore(Path::new("/root/build/debug")));
+        assert!(wd.should_ignore(Path::new("/root/build/debug/output.o")));
+        assert!(wd.should_ignore(Path::new("/root/build/debug/nested")));
+        assert!(!wd.should_ignore(Path::new("/root/other/build/debug")));
+    }
+
+    #[test]
+    fn doublestar_pattern_matches_any_number_of_directories() {
+        let ignore = vec![PathBuf::from("**/vendor/")];
+        let wd = WalkData::new(Path::new("/root"), &ignore, &[], false, || false);
+
+        assert!(wd.should_ignore(Path::new("/root/vendor")));
+        assert!(wd.should_ignore(Path::new("/root/a/vendor")));
+        assert!(wd.should_ignore(Path::new("/root/a/b/vendor/file")));
+        assert!(!wd.should_ignore(Path::new("/root/a/vendorized")));
+    }
+
+    #[test]
+    fn character_class_pattern_matches_expected_names() {
+        let ignore = vec![PathBuf::from("cache[0-9]/")];
+        let wd = WalkData::new(Path::new("/root"), &ignore, &[], false, || false);
+
+        assert!(wd.should_ignore(Path::new("/root/cache1")));
+        assert!(!wd.should_ignore(Path::new("/root/cachex")));
+    }
+
+    #[test]
+    fn comments_and_blank_rules_are_ignored() {
+        let ignore = vec![PathBuf::from("# node dependencies"), PathBuf::from(" ")];
+        let wd = WalkData::new(Path::new("/root"), &ignore, &[], false, || false);
+
+        assert!(!wd.should_ignore(Path::new("/root/node_modules")));
+    }
+
+    #[test]
+    fn explicit_include_still_rescues_a_relative_ignore_pattern() {
+        let ignore = vec![PathBuf::from("node_modules/")];
+        let include = vec![PathBuf::from("/root/project/node_modules/keep")];
+        let wd = WalkData::new(Path::new("/root"), &ignore, &include, false, || false);
+
+        assert!(!wd.should_ignore(Path::new("/root/project")));
+        assert!(!wd.should_ignore(Path::new("/root/project/node_modules")));
+        assert!(!wd.should_ignore(Path::new("/root/project/node_modules/keep")));
+        assert!(!wd.should_ignore(Path::new("/root/project/node_modules/keep/file")));
     }
 
     #[test]

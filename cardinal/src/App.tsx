@@ -1,5 +1,6 @@
-import { useRef, useCallback, useEffect, useMemo } from 'react';
+import { useRef, useCallback, useEffect, useMemo, useState } from 'react';
 import type { ChangeEvent, CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
+import { invoke } from '@tauri-apps/api/core';
 import './App.css';
 import { FileRow } from './components/FileRow';
 import { SearchBar } from './components/SearchBar';
@@ -30,8 +31,22 @@ import { useAppPreferences } from './hooks/useAppPreferences';
 import { useAppWindowListeners } from './hooks/useAppWindowListeners';
 import { useFilesTabEffects } from './hooks/useFilesTabEffects';
 import { useFilesTabState } from './hooks/useFilesTabState';
+import { useSearchDisplayPreferences } from './hooks/useSearchDisplayPreferences';
 
 function App() {
+  const quitApp = useCallback(() => {
+    void invoke('quit_app').catch((error) => {
+      console.error('Failed to quit hajimi', error);
+    });
+  }, []);
+
+  const {
+    hideEmptyResults,
+    setHideEmptyResults,
+    refreshEventsOnlyWhenActive,
+    setRefreshEventsOnlyWhenActive,
+    resetSearchDisplayPreferences,
+  } = useSearchDisplayPreferences();
   const {
     state,
     searchParams,
@@ -42,7 +57,7 @@ function App() {
     handleStatusUpdate,
     setLifecycleState,
     requestRescan,
-  } = useFileSearch();
+  } = useFileSearch({ hideResultsWhenQueryEmpty: hideEmptyResults });
   const {
     results,
     resultsVersion,
@@ -132,7 +147,15 @@ function App() {
     caseSensitive,
     isActive: activeTab === 'events',
     eventFilterQuery,
+    refreshWhenInactive: !refreshEventsOnlyWhenActive,
   });
+
+  const [displayedProcessedEvents, setDisplayedProcessedEvents] = useState(processedEvents);
+  useEffect(() => {
+    if (activeTab === 'events' || !refreshEventsOnlyWhenActive) {
+      setDisplayedProcessedEvents(processedEvents);
+    }
+  }, [activeTab, processedEvents, refreshEventsOnlyWhenActive]);
 
   const getQuickLookPaths = useCallback(
     () => (activeTab === 'files' ? selectedPaths : []),
@@ -189,6 +212,9 @@ function App() {
     closePreferences,
     trayIconEnabled,
     setTrayIconEnabled,
+    globalShortcut,
+    defaultGlobalShortcut,
+    handleGlobalShortcutChange,
     watchRoot,
     defaultWatchRoot,
     ignorePaths,
@@ -197,13 +223,18 @@ function App() {
     defaultIncludePaths,
     preferencesResetToken,
     handleWatchConfigChange,
-    handleResetPreferences,
+    handleResetPreferences: handleResetPreferencesFromApp,
   } = useAppPreferences({
     fullDiskAccessStatus,
     isCheckingFullDiskAccess,
     refreshSearchResults,
     i18n,
   });
+
+  const handleResetPreferences = useCallback(() => {
+    resetSearchDisplayPreferences();
+    handleResetPreferencesFromApp();
+  }, [handleResetPreferencesFromApp, resetSearchDisplayPreferences]);
 
   useAppWindowListeners({
     activeTab,
@@ -334,6 +365,7 @@ function App() {
     () =>
       ({
         '--w-filename': `${colWidths.filename}px`,
+        '--w-extension': `${colWidths.extension}px`,
         '--w-path': `${colWidths.path}px`,
         '--w-size': `${colWidths.size}px`,
         '--w-modified': `${colWidths.modified}px`,
@@ -433,7 +465,7 @@ function App() {
         </div>
         <StatusBar
           scannedFiles={scannedFiles}
-          processedEvents={processedEvents}
+          processedEvents={displayedProcessedEvents}
           lifecycleState={lifecycleState}
           searchDurationMs={durationMs}
           resultCount={resultCount}
@@ -451,6 +483,14 @@ function App() {
         onSortThresholdChange={setSortThreshold}
         trayIconEnabled={trayIconEnabled}
         onTrayIconEnabledChange={setTrayIconEnabled}
+        hideEmptyResults={hideEmptyResults}
+        onHideEmptyResultsChange={setHideEmptyResults}
+        refreshEventsOnlyWhenActive={refreshEventsOnlyWhenActive}
+        onRefreshEventsOnlyWhenActiveChange={setRefreshEventsOnlyWhenActive}
+        globalShortcut={globalShortcut}
+        defaultGlobalShortcut={defaultGlobalShortcut}
+        onGlobalShortcutChange={handleGlobalShortcutChange}
+        onQuit={quitApp}
         watchRoot={watchRoot ?? defaultWatchRoot}
         defaultWatchRoot={defaultWatchRoot}
         onWatchConfigChange={handleWatchConfigChange}

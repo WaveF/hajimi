@@ -22,6 +22,7 @@
   },
   "columns": {
     "filename": "Nom de fichier",
+    "extension": "Extension",
     "path": "Chemin",
     "size": "Taille",
     "modified": "Modifié",
@@ -71,7 +72,7 @@
       "settings": "Ouvrir les préférences"
     },
     "rescan": {
-      "disabledHint": "Le nouveau scan sera disponible lorsque Cardinal sera prêt.",
+      "disabledHint": "Le nouveau scan sera disponible lorsque hajimi sera prêt.",
       "enabledHint": "Lancer un nouveau scan complet du système de fichiers.",
       "errorCountSuffix": " {{formatted}} erreurs du système de fichiers se sont produites, une nouvelle analyse est suggérée."
     },
@@ -86,11 +87,11 @@
   "app": {
     "fullDiskAccess": {
       "title": "Accès complet au disque requis",
-      "description": "Cardinal a besoin de l'accès complet au disque de macOS pour indexer et surveiller les fichiers de votre système. Activez l'accès complet au disque pour Cardinal dans Réglages système.",
+      "description": "hajimi a besoin de l'accès complet au disque de macOS pour indexer et surveiller les fichiers de votre système. Activez l'accès complet au disque pour hajimi dans Réglages système.",
       "steps": {
         "one": "Ouvrez Réglages système > Confidentialité et sécurité > Accès complet au disque.",
-        "two": "Cliquez sur le cadenas pour autoriser les modifications et activez Cardinal.",
-        "three": "Lorsque vous y êtes invité, autorisez macOS à redémarrer Cardinal."
+        "two": "Cliquez sur le cadenas pour autoriser les modifications et activez hajimi.",
+        "three": "Lorsque vous y êtes invité, autorisez macOS à redémarrer hajimi."
       },
       "status": {
         "checking": "Vérification de l'état des permissions...",
@@ -122,17 +123,21 @@
   },
   "preferences": {
     "title": "Préférences",
-    "heading": "Personnalisez Cardinal",
-    "subtitle": "Réglez l'apparence et la langue.",
     "appearance": "Apparence",
-    "themeHint": "Choisissez clair, sombre ou selon le système.",
     "language": "Langue",
-    "languageHint": "Changez la langue de l'interface instantanément.",
     "trayIcon": {
       "label": "Afficher l’icône dans la barre d’état"
     },
     "sortingLimit": {
       "label": "Limite de tri"
+    },
+    "globalShortcut": {
+      "label": "Global shortcut",
+      "placeholder": "Press a key combination",
+      "clear": "Clear",
+      "errors": {
+        "unavailable": "This shortcut is unavailable or already in use."
+      }
     },
     "save": "Enregistrer",
     "reset": "Rétablir les paramètres par défaut",
@@ -152,8 +157,8 @@
     }
   },
   "tray": {
-    "open": "Ouvrir Cardinal",
-    "quit": "Quitter Cardinal"
+    "open": "Ouvrir hajimi",
+    "quit": "Quitter hajimi"
   },
   "watchRoot": {
     "label": "Chemin racine de surveillance",
@@ -163,14 +168,14 @@
       "absolute": "Veuillez saisir un chemin absolu commençant par '/' ou '~'."
     },
     "title": "Choisir le chemin racine de surveillance",
-    "description": "Cardinal indexera et surveillera les fichiers sous ce dossier. Vous pourrez le modifier plus tard dans les Préférences.",
+    "description": "hajimi indexera et surveillera les fichiers sous ce dossier. Vous pourrez le modifier plus tard dans les Préférences.",
     "action": "Démarrer l'indexation"
   },
   "ignorePaths": {
     "label": "Chemins ignorés",
-    "help": "Un chemin par ligne ; les chemins ignorés sont exclus de l'indexation.",
+    "help": "Une règle par ligne ; prend en charge les motifs de type gitignore comme node_modules/, .git/ et target/.",
     "errors": {
-      "absolute": "Chaque chemin doit commencer par '/' ou '~'."
+      "pattern": "Utilisez un motif d'exclusion ; les règles inversées commençant par '!' ne sont pas prises en charge."
     }
   },
   "includePaths": {

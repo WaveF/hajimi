@@ -1,6 +1,6 @@
-# Cardinal Project Overview
+# hajimi Project Overview
 
-Cardinal is a macOS desktop file search app with a React/Tauri UI and a Rust indexing engine. The codebase splits cleanly into three layers: frontend UI, the Tauri command shell, and a long-lived background indexing loop.
+hajimi is a macOS desktop file search app with a React/Tauri UI and a Rust indexing engine. The codebase splits cleanly into three layers: frontend UI, the Tauri command shell, and a long-lived background indexing loop.
 
 ## High-level architecture
 - **Frontend (`cardinal/src`)**: search UI, files/events tabs, preferences, tray/menu integration, Quick Look coordination, and shared Tauri event subscriptions.
@@ -22,7 +22,7 @@ Tauri shell
         ▼
 Background loop
   ├─ SearchCache
-  ├─ cardinal-sdk EventWatcher
+  ├─ hajimi-sdk EventWatcher
   ├─ fswalk initial/full scan
   └─ fs-icon viewport thumbnail workers
 ```
@@ -44,10 +44,10 @@ Background loop
 
 ## Important workspace crates
 - `search-cache/`: slab-backed index, query evaluation, persistence, incremental updates.
-- `cardinal-sdk/`: macOS FSEvents wrapper (`EventStream`, `EventWatcher`, `EventFlag`).
+- `hajimi-sdk/`: macOS FSEvents wrapper (`EventStream`, `EventWatcher`, `EventFlag`).
 - `fswalk/`: parallel filesystem walk used for initial scans and full rescans.
 - `fs-icon/`: NSWorkspace icons and Quick Look thumbnails as PNG bytes.
-- `cardinal-syntax/`: Everything-style query parser and optimizer.
+- `hajimi-syntax/`: Everything-style query parser and optimizer.
 - `query-segmentation/`: slash-aware segment parsing for path-like matching.
 - `search-cancel/`: versioned cancellation tokens for searches and rescans.
 - `namepool/`: string interner used by `search-cache::NAME_POOL`.

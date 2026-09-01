@@ -6,7 +6,7 @@ edition = "2024"
 [dependencies]
 fswalk.path = "../fswalk"
 namepool.path = "../namepool"
-cardinal-sdk.path = "../cardinal-sdk"
+hajimi-sdk.path = "../cardinal-sdk"
 search-cache = { path = "../search-cache" }
 query-segmentation.path = "../query-segmentation"
 search-cancel = { path = "../search-cancel" }

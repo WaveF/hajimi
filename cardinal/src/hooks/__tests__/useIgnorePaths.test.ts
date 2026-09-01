@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useIgnorePaths } from '../useIgnorePaths';
 
-const STORAGE_KEY = 'cardinal.ignorePaths';
+const STORAGE_KEY = 'hajimi.ignorePaths';
 const EXPECTED_DEFAULT_IGNORE_PATHS = [
   '/Volumes',
   '~/Library/CloudStorage',

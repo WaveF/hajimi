@@ -1,5 +1,5 @@
-use cardinal_sdk::{EventFlag, EventWatcher, event_id_to_timestamp};
 use clap::Parser;
+use hajimi_sdk::{EventFlag, EventWatcher, event_id_to_timestamp};
 use std::time::Duration;
 
 #[derive(Parser)]

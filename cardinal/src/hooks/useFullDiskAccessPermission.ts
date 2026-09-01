@@ -12,6 +12,11 @@ type UseFullDiskAccessPermissionResult = {
   requestPermission: () => Promise<void>;
 };
 
+// This is intentionally limited to Vite dev builds so UI work can be done without
+// granting macOS Full Disk Access. Release builds always perform the real check.
+const skipPermissionCheck =
+  import.meta.env.DEV && import.meta.env.VITE_HAJIMI_SKIP_FULL_DISK_ACCESS === 'true';
+
 // Centralise macOS Full Disk Access state so App.tsx stays focused on UI concerns.
 export function useFullDiskAccessPermission(): UseFullDiskAccessPermissionResult {
   const [status, setStatus] = useState<FullDiskAccessStatus>('granted');
@@ -19,6 +24,12 @@ export function useFullDiskAccessPermission(): UseFullDiskAccessPermissionResult
   const hasLoggedPermissionStatusRef = useRef(false);
 
   const refreshStatus = useCallback(async () => {
+    if (skipPermissionCheck) {
+      setStatus('granted');
+      setIsChecking(false);
+      return;
+    }
+
     setIsChecking(true);
     try {
       const authorized = await checkFullDiskAccessPermission();

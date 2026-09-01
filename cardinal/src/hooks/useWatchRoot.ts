@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useStoredState } from './useStoredState';
 
-const STORAGE_KEY = 'cardinal.watchRoot';
+const STORAGE_KEY = 'hajimi.watchRoot';
 const DEFAULT_WATCH_ROOT = '/';
 
 export function useWatchRoot() {

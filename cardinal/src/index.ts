@@ -10,6 +10,6 @@ export { default as ThemeSwitcher } from './components/ThemeSwitcher';
 export { useColumnResize } from './hooks/useColumnResize';
 export { useContextMenu } from './hooks/useContextMenu';
 // Utils
-export { formatKB } from './utils/format';
+export { formatFileSize, formatKB } from './utils/format';
 // Constants
 export * from './constants';

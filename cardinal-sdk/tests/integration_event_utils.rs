@@ -1,4 +1,4 @@
-use cardinal_sdk::{EventFlag, EventType, ScanType, event_id_to_timestamp};
+use hajimi_sdk::{EventFlag, EventType, ScanType, event_id_to_timestamp};
 use std::collections::HashMap;
 
 // NOTE: Cannot deterministically assert macOS FSEvents ids; focus on logical properties of event_id_to_timestamp.
