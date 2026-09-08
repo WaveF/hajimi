@@ -188,6 +188,12 @@ Use search_files before opening a path when the exact path is unknown. Confirm a
     };
   }, [activeSection, open]);
 
+  useEffect(() => {
+    if (!open) {
+      setActiveSection('general');
+    }
+  }, [open]);
+
   const copyMcpPrompt = async (): Promise<void> => {
     try {
       if (!navigator.clipboard?.writeText) {
@@ -694,7 +700,7 @@ Use search_files before opening a path when the exact path is unknown. Confirm a
                       <span className="preferences-mcp__status-dot" aria-hidden="true" />
                       {mcpInfo?.available
                         ? t('preferences.mcp.status.ready')
-                        : t('preferences.mcp.status.unavailable')}
+                        : t('preferences.mcp.status.unavailableRestart')}
                     </span>
                   </div>
                   <div className="preferences-mcp__prompt-header">

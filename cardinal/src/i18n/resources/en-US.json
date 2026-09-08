@@ -141,7 +141,8 @@
       "status": {
         "label": "Connection status",
         "ready": "Available",
-        "unavailable": "Unavailable"
+        "unavailable": "Unavailable",
+        "unavailableRestart": "Unavailable (please restart the app)"
       },
       "promptLabel": "Agent instructions",
       "copy": "Copy for AI",

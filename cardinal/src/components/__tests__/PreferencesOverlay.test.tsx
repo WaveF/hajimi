@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { invoke } from '@tauri-apps/api/core';
 import { PreferencesOverlay } from '../PreferencesOverlay';
 
 vi.mock('react-i18next', () => ({
@@ -73,6 +74,39 @@ describe('PreferencesOverlay', () => {
 
     expect(searchNavigation).toHaveClass('is-active');
     expect(searchNavigation).toHaveAttribute('aria-current', 'page');
+  });
+
+  it('resets the active section when preferences are reopened', () => {
+    const { rerender } = render(<PreferencesOverlay {...baseProps} />);
+    const mcpNavigation = screen.getByRole('button', { name: 'preferences.nav.mcp' });
+
+    fireEvent.click(mcpNavigation);
+    expect(mcpNavigation).toHaveClass('is-active');
+
+    rerender(<PreferencesOverlay {...baseProps} open={false} />);
+    rerender(<PreferencesOverlay {...baseProps} open />);
+
+    expect(screen.getByRole('button', { name: 'preferences.nav.general' })).toHaveClass(
+      'is-active',
+    );
+    expect(screen.getByRole('button', { name: 'preferences.nav.mcp' })).not.toHaveClass(
+      'is-active',
+    );
+  });
+
+  it('asks users to restart when the MCP bridge is unavailable', async () => {
+    vi.mocked(invoke).mockResolvedValueOnce({
+      available: false,
+      discoveryPath: '/tmp/hajimi/mcp/bridge.json',
+      executablePath: '/Applications/hajimi.app/Contents/MacOS/hajimi',
+    });
+    render(<PreferencesOverlay {...baseProps} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'preferences.nav.mcp' }));
+
+    expect(
+      await screen.findByText('preferences.mcp.status.unavailableRestart'),
+    ).toBeInTheDocument();
   });
 
   it('shows the MCP connection prompt and copies it for an AI agent', async () => {

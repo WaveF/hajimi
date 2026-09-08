@@ -140,7 +140,8 @@
       "status": {
         "label": "连接状态",
         "ready": "可用",
-        "unavailable": "不可用"
+        "unavailable": "不可用",
+        "unavailableRestart": "不可用（请重启应用）"
       },
       "promptLabel": "给 Agent 的使用说明",
       "copy": "复制给 AI",
