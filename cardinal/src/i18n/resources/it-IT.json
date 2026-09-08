@@ -15,6 +15,7 @@
   },
   "stateDisplay": {
     "loading": "Ricerca in corso...",
+    "indexing": "Indicizzazione in corso, attendi...",
     "error": "Errore di ricerca",
     "emptyTitle": "Nessun risultato per \"{{query}}\"",
     "emptyMessage": "Prova a modificare parole chiave o filtri.",
@@ -172,14 +173,14 @@
     "action": "Avvia indicizzazione"
   },
   "ignorePaths": {
-    "label": "Percorsi ignorati",
+    "label": "Lista di blocco",
     "help": "Una regola per riga; supporta pattern simili a gitignore come node_modules/, .git/ e target/.",
     "errors": {
       "pattern": "Usa un pattern di esclusione; le regole negate che iniziano con '!' non sono supportate."
     }
   },
   "includePaths": {
-    "label": "Percorsi inclusi",
+    "label": "Lista consentita",
     "help": "Un percorso per riga; i percorsi inclusi restano indicizzati anche se un livello superiore è ignorato.",
     "errors": {
       "absolute": "Ogni percorso deve iniziare con '/' o '~'."

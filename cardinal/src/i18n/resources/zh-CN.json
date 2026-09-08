@@ -15,11 +15,12 @@
   },
   "stateDisplay": {
     "loading": "正在搜索…",
+    "indexing": "正在建立索引，请稍候…",
     "error": "搜索出现错误",
     "emptyTitle": "\"{{query}}\" 没有匹配结果",
     "emptyMessage": "尝试调整关键字或筛选条件。",
-    "emptyQueryTitle": "暂不显示搜索结果",
-    "emptyQueryMessage": "输入文件或文件夹名称开始搜索。",
+    "emptyQueryTitle": "请输入关键词",
+    "emptyQueryMessage": "支持文件或文件夹名称模糊搜索",
     "emptyTitleWithDirectory": "在文件夹范围 \"{{directoryQuery}}\" 中没有找到 \"{{query}}\""
   },
   "columns": {
@@ -197,15 +198,15 @@
     "action": "开始初始化"
   },
   "ignorePaths": {
-    "label": "忽略路径",
+    "label": "黑名单",
     "help": "每行一个规则；支持类似 .gitignore 的写法，例如 node_modules/、.git/ 和 target/。",
     "errors": {
       "pattern": "请输入忽略规则；暂不支持以“!”开头的反向规则。"
     }
   },
   "includePaths": {
-    "label": "包含路径",
-    "help": "每行一个路径；即使父级目录被忽略，这些路径仍会被索引。",
+    "label": "白名单",
+    "help": "每行一个绝对路径；即使父级目录被加入黑名单，这些路径仍会被索引。",
     "errors": {
       "absolute": "每个路径需以“/”或“~”开头。"
     }

@@ -33,6 +33,22 @@ const renderSearchBar = (overrides: Partial<ComponentProps<typeof SearchBar>> = 
 };
 
 describe('SearchBar', () => {
+  it('keeps the case sensitivity toggle inside the query field', () => {
+    const onToggleCaseSensitive = vi.fn();
+
+    renderSearchBar({ onToggleCaseSensitive });
+
+    const toggle = screen.getByRole('checkbox', { name: 'Case sensitive' });
+    const display = screen.getByText('Aa');
+
+    expect(toggle.closest('.query-search-segment')).not.toBeNull();
+    expect(document.querySelector('.search-options')).toBeNull();
+
+    fireEvent.click(display);
+
+    expect(onToggleCaseSensitive).toHaveBeenCalledTimes(1);
+  });
+
   it('does not mark the folder scope toggle as pressed while folded with a saved value', () => {
     const onToggleDirectoryScope = vi.fn();
     renderSearchBar({

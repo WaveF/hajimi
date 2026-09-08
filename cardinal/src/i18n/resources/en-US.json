@@ -15,11 +15,12 @@
   },
   "stateDisplay": {
     "loading": "Searching...",
+    "indexing": "Indexing, please wait...",
     "error": "Search Error",
     "emptyTitle": "No results for \"{{query}}\"",
     "emptyMessage": "Try adjusting your keywords or filters.",
-    "emptyQueryTitle": "Search results are hidden",
-    "emptyQueryMessage": "Enter a file or folder name to begin searching.",
+    "emptyQueryTitle": "Enter a keyword",
+    "emptyQueryMessage": "Supports fuzzy search by file or folder name",
     "emptyTitleWithDirectory": "No results for \"{{query}}\" in folder scope \"{{directoryQuery}}\""
   },
   "columns": {
@@ -198,15 +199,15 @@
     "action": "Start indexing"
   },
   "ignorePaths": {
-    "label": "Ignore paths",
+    "label": "Blocklist",
     "help": "One rule per line; supports gitignore-style patterns such as node_modules/, .git/, and target/.",
     "errors": {
       "pattern": "Use an ignore pattern; negated rules starting with '!' are not supported."
     }
   },
   "includePaths": {
-    "label": "Include paths",
-    "help": "One path per line; included paths stay indexed even under an ignored parent.",
+    "label": "Allowlist",
+    "help": "One absolute path per line; these paths stay indexed even under a blocklisted parent.",
     "errors": {
       "absolute": "Each path must start with '/' or '~'."
     }

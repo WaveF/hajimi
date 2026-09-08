@@ -7,7 +7,7 @@ type StateProps = {
   message?: React.ReactNode;
 };
 
-export type DisplayState = 'loading' | 'error' | 'empty' | 'results';
+export type DisplayState = 'indexing' | 'loading' | 'error' | 'empty' | 'results';
 type EmptyState = Exclude<DisplayState, 'results'>;
 
 type StateDisplayProps = {
@@ -35,6 +35,10 @@ export function StateDisplay({
   directoryQuery,
 }: StateDisplayProps): React.JSX.Element {
   const { t } = useTranslation();
+  if (state === 'indexing') {
+    return <State icon={<div className="spinner" />} title={t('stateDisplay.indexing')} />;
+  }
+
   if (state === 'loading') {
     return <State icon={<div className="spinner" />} title={t('stateDisplay.loading')} />;
   }
@@ -49,7 +53,23 @@ export function StateDisplay({
     );
   }
 
-  const icon = (
+  const emptyQueryIcon = (
+    <svg
+      width="72"
+      height="72"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+  );
+  const noResultsIcon = (
     <svg
       width="72"
       height="72"
@@ -71,7 +91,7 @@ export function StateDisplay({
   if (!hasSearchInput) {
     return (
       <State
-        icon={icon}
+        icon={emptyQueryIcon}
         title={t('stateDisplay.emptyQueryTitle')}
         message={t('stateDisplay.emptyQueryMessage')}
       />
@@ -82,5 +102,5 @@ export function StateDisplay({
     query && directoryQuery
       ? t('stateDisplay.emptyTitleWithDirectory', { query, directoryQuery })
       : t('stateDisplay.emptyTitle', { query: query || directoryQuery || '' });
-  return <State icon={icon} title={emptyTitle} message={t('stateDisplay.emptyMessage')} />;
+  return <State icon={noResultsIcon} title={emptyTitle} message={t('stateDisplay.emptyMessage')} />;
 }

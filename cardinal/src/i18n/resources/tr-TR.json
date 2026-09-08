@@ -15,6 +15,7 @@
   },
   "stateDisplay": {
     "loading": "Aranıyor...",
+    "indexing": "Dizin oluşturuluyor, lütfen bekleyin...",
     "error": "Arama hatası",
     "emptyTitle": "\"{{query}}\" için sonuç yok",
     "emptyMessage": "Anahtar kelimeleri veya filtreleri değiştirmeyi deneyin.",
@@ -172,14 +173,14 @@
     "action": "Dizinlemeyi başlat"
   },
   "ignorePaths": {
-    "label": "Yok sayılan yollar",
+    "label": "Kara liste",
     "help": "Her satıra bir kural; node_modules/, .git/ ve target/ gibi gitignore tarzı kalıplar desteklenir.",
     "errors": {
       "pattern": "Bir yok sayma kalıbı kullanın; '!' ile başlayan olumsuz kurallar desteklenmez."
     }
   },
   "includePaths": {
-    "label": "Dahil edilen yollar",
+    "label": "Beyaz liste",
     "help": "Her satıra bir yol; dahil edilen yollar, üst dizini yok sayılsa bile dizinde kalır.",
     "errors": {
       "absolute": "Her yol '/' veya '~' ile başlamalıdır."

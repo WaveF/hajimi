@@ -15,6 +15,7 @@
   },
   "stateDisplay": {
     "loading": "Suche läuft...",
+    "indexing": "Index wird erstellt, bitte warten...",
     "error": "Suchfehler",
     "emptyTitle": "Keine Ergebnisse für \"{{query}}\"",
     "emptyMessage": "Passe deine Suchbegriffe oder Filter an.",
@@ -172,14 +173,14 @@
     "action": "Indexierung starten"
   },
   "ignorePaths": {
-    "label": "Pfade ignorieren",
+    "label": "Sperrliste",
     "help": "Eine Regel pro Zeile; unterstützt gitignore-ähnliche Muster wie node_modules/, .git/ und target/.",
     "errors": {
       "pattern": "Verwende ein Ignoriermuster; negierte Regeln mit '!' werden nicht unterstützt."
     }
   },
   "includePaths": {
-    "label": "Pfade einschließen",
+    "label": "Positivliste",
     "help": "Ein Pfad pro Zeile; eingeschlossene Pfade bleiben indexiert, auch wenn ein übergeordneter Pfad ignoriert wird.",
     "errors": {
       "absolute": "Jeder Pfad muss mit '/' oder '~' beginnen."

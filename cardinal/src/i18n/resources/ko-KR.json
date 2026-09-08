@@ -15,6 +15,7 @@
   },
   "stateDisplay": {
     "loading": "검색 중...",
+    "indexing": "색인을 만드는 중입니다. 잠시만 기다려 주세요…",
     "error": "검색 오류",
     "emptyTitle": "\"{{query}}\"에 대한 결과가 없습니다",
     "emptyMessage": "키워드나 필터를 조정해 보세요.",
@@ -172,14 +173,14 @@
     "action": "색인 시작"
   },
   "ignorePaths": {
-    "label": "무시할 경로",
+    "label": "블랙리스트",
     "help": "한 줄에 하나의 규칙; node_modules/, .git/, target/ 같은 gitignore 스타일 패턴을 지원합니다.",
     "errors": {
       "pattern": "무시 패턴을 사용하세요. '!'로 시작하는 반전 규칙은 지원되지 않습니다."
     }
   },
   "includePaths": {
-    "label": "포함할 경로",
+    "label": "화이트리스트",
     "help": "한 줄에 하나의 경로; 포함할 경로는 상위 경로가 무시되더라도 색인됩니다.",
     "errors": {
       "absolute": "각 경로는 '/' 또는 '~'로 시작해야 합니다."

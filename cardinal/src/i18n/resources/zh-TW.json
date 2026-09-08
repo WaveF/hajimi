@@ -15,6 +15,7 @@
   },
   "stateDisplay": {
     "loading": "正在搜尋…",
+    "indexing": "正在建立索引，請稍候…",
     "error": "搜尋發生錯誤",
     "emptyTitle": "「{{query}}」沒有符合結果",
     "emptyMessage": "試著調整關鍵字或篩選條件。",
@@ -171,15 +172,15 @@
     "action": "開始初始化"
   },
   "ignorePaths": {
-    "label": "忽略路徑",
+    "label": "黑名單",
     "help": "每行一個規則；支援類似 .gitignore 的寫法，例如 node_modules/、.git/ 和 target/。",
     "errors": {
       "pattern": "請輸入忽略規則；目前不支援以「!」開頭的反向規則。"
     }
   },
   "includePaths": {
-    "label": "包含路徑",
-    "help": "每行一個路徑；即使上層目錄被忽略，這些路徑仍會被索引。",
+    "label": "白名單",
+    "help": "每行一個絕對路徑；即使上層目錄被加入黑名單，這些路徑仍會被索引。",
     "errors": {
       "absolute": "每個路徑需以「/」或「~」開頭。"
     }

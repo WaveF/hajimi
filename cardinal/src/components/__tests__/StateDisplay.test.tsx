@@ -8,6 +8,8 @@ vi.mock('react-i18next', () => ({
       switch (key) {
         case 'stateDisplay.loading':
           return 'Loading...';
+        case 'stateDisplay.indexing':
+          return 'Indexing, please wait...';
         case 'stateDisplay.error':
           return 'Something went wrong';
         case 'stateDisplay.emptyTitleWithDirectory':
@@ -17,9 +19,9 @@ vi.mock('react-i18next', () => ({
         case 'stateDisplay.emptyMessage':
           return 'Try adjusting your filters.';
         case 'stateDisplay.emptyQueryTitle':
-          return 'Search results are hidden';
+          return 'Enter a keyword';
         case 'stateDisplay.emptyQueryMessage':
-          return 'Enter a file or folder name to begin searching.';
+          return 'Supports fuzzy search by file or folder name';
         default:
           return key;
       }
@@ -28,6 +30,12 @@ vi.mock('react-i18next', () => ({
 }));
 
 describe('StateDisplay', () => {
+  it('shows the indexing copy when the index is being rebuilt', () => {
+    const { container } = render(<StateDisplay state="indexing" />);
+    expect(screen.getByText('Indexing, please wait...')).toBeInTheDocument();
+    expect(container.querySelector('.spinner')).not.toBeNull();
+  });
+
   it('shows a spinner when in loading state', () => {
     const { container } = render(<StateDisplay state="loading" />);
     expect(screen.getByText('Loading...')).toBeInTheDocument();
@@ -60,8 +68,15 @@ describe('StateDisplay', () => {
   });
 
   it('shows generic empty-state copy when no query is present', () => {
-    render(<StateDisplay state="empty" />);
-    expect(screen.getByText('Search results are hidden')).toBeInTheDocument();
-    expect(screen.getByText('Enter a file or folder name to begin searching.')).toBeInTheDocument();
+    const { container } = render(<StateDisplay state="empty" />);
+    expect(screen.getByText('Enter a keyword')).toBeInTheDocument();
+    expect(screen.getByText('Supports fuzzy search by file or folder name')).toBeInTheDocument();
+    expect(container.querySelectorAll('line')).toHaveLength(1);
+  });
+
+  it('keeps the no-results icon when a query has no matches', () => {
+    const { container } = render(<StateDisplay state="empty" query="report" />);
+
+    expect(container.querySelectorAll('line')).toHaveLength(3);
   });
 });

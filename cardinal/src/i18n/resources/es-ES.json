@@ -15,6 +15,7 @@
   },
   "stateDisplay": {
     "loading": "Buscando...",
+    "indexing": "Creando el índice, espera...",
     "error": "Error de búsqueda",
     "emptyTitle": "Sin resultados para \"{{query}}\"",
     "emptyMessage": "Prueba ajustando tus palabras clave o filtros.",
@@ -172,14 +173,14 @@
     "action": "Iniciar indexación"
   },
   "ignorePaths": {
-    "label": "Rutas ignoradas",
+    "label": "Lista de bloqueo",
     "help": "Una regla por línea; admite patrones similares a gitignore como node_modules/, .git/ y target/.",
     "errors": {
       "pattern": "Usa un patrón de exclusión; las reglas negadas que empiezan por '!' no son compatibles."
     }
   },
   "includePaths": {
-    "label": "Rutas incluidas",
+    "label": "Lista de permitidos",
     "help": "Una ruta por línea; las rutas incluidas se mantienen indexadas aunque un ancestro esté ignorado.",
     "errors": {
       "absolute": "Cada ruta debe empezar por '/' o '~'."

@@ -352,6 +352,7 @@ function App() {
   );
 
   const displayState: DisplayState = (() => {
+    if (lifecycleState === 'Initializing') return 'indexing';
     if (!initialFetchCompleted) return 'loading';
     if (showLoadingUI) return 'loading';
     if (searchError) return 'error';

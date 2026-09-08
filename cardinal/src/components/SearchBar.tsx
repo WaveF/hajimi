@@ -174,8 +174,6 @@ export function SearchBar({
             onFocus={onFocus}
             onBlur={onBlur}
           />
-        </div>
-        <div className="search-segment search-options">
           <label className="search-option" title={caseSensitiveLabel}>
             <input
               type="checkbox"
