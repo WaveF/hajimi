@@ -54,7 +54,7 @@ const baseProps = {
   onReset: vi.fn(),
   themeResetToken: 0,
   onWatchConfigChange: vi.fn(),
-  appVersion: '0.1.23',
+  appVersion: '0.1.24',
   autoUpdateEnabled: true,
   onAutoUpdateEnabledChange: vi.fn(),
   updateCheckFrequency: 'weekly' as const,

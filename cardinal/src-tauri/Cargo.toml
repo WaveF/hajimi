@@ -1,6 +1,6 @@
 [package]
 name = "hajimi"
-version = "0.1.23"
+version = "0.1.24"
 description = "hajimi is a cross platform file searching tool"
 authors = ["ldm2993593805@163.com"]
 edition = "2024"

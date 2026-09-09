@@ -79,7 +79,7 @@ const INITIAL_STATE: AppUpdateState = {
 };
 
 export function useAppUpdate(): UseAppUpdateResult {
-  const [appVersion, setAppVersion] = useState('0.1.23');
+  const [appVersion, setAppVersion] = useState('0.1.24');
   const [autoUpdateEnabled, setAutoUpdateEnabledState] = useState(() =>
     readBoolean(AUTO_UPDATE_STORAGE_KEY, true),
   );

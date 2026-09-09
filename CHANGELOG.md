@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.24 — 2026-09-09
+- Add an About page with app information and original Cardinal attribution.
+- Add scheduled and manual update checks with GitHub release links.
+- Improve update dialog states and preferences navigation.
+
 ## 0.1.23 — 2026-03-25
 - Reduce power consumption by expanding the default ignored paths to cover more macOS cache, log, metadata, and runtime directories.
 - Further reduce background work by making the filesystem event watcher honor ignored paths.
