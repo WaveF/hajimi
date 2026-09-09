@@ -11,9 +11,7 @@ type QueueSearchOptions = {
 
 type UseFilesTabStateOptions = {
   searchQuery: string;
-  directoryQuery: string;
   queueSearch: (query: string, options?: QueueSearchOptions) => void;
-  queueDirectorySearch: (directoryQuery: string, options?: QueueSearchOptions) => void;
   maxSearchHistoryEntries?: number;
   onNavigateFromSearchToResults?: () => void;
 };
@@ -28,10 +26,7 @@ type UseFilesTabStateResult = {
   eventFilterQuery: string;
   setEventFilterQuery: (value: string) => void;
   searchInputValue: string;
-  directoryInputValue: string;
   onQueryChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  onDirectoryQueryChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  onDirectoryInputKeyDown: (event: ReactKeyboardEvent<HTMLInputElement>) => void;
   onSearchInputKeyDown: (event: ReactKeyboardEvent<HTMLInputElement>) => void;
   submitFilesQuery: (query: string, options?: { immediate?: boolean }) => void;
 };
@@ -41,9 +36,7 @@ type UseFilesTabStateResult = {
  */
 export function useFilesTabState({
   searchQuery,
-  directoryQuery,
   queueSearch,
-  queueDirectorySearch,
   maxSearchHistoryEntries = 50,
   onNavigateFromSearchToResults,
 }: UseFilesTabStateOptions): UseFilesTabStateResult {
@@ -119,17 +112,6 @@ export function useFilesTabState({
     [activeTab, handleHistoryNavigation, submitFilesQuery],
   );
 
-  const onDirectoryInputKeyDown = useCallback(
-    (event: ReactKeyboardEvent<HTMLInputElement>) => {
-      if (activeTab !== 'files' || event.key !== 'Enter') {
-        return;
-      }
-
-      queueDirectorySearch(event.currentTarget.value, { immediate: true });
-    },
-    [activeTab, queueDirectorySearch],
-  );
-
   const onQueryChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       const inputValue = event.target.value;
@@ -142,17 +124,6 @@ export function useFilesTabState({
       submitFilesQuery(inputValue);
     },
     [activeTab, setEventFilterQuery, submitFilesQuery],
-  );
-
-  const onDirectoryQueryChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      if (activeTab !== 'files') {
-        return;
-      }
-
-      queueDirectorySearch(event.target.value);
-    },
-    [activeTab, queueDirectorySearch],
   );
 
   const onTabChange = useCallback(
@@ -172,7 +143,6 @@ export function useFilesTabState({
   );
 
   const searchInputValue = activeTab === 'events' ? eventFilterQuery : searchQuery;
-  const directoryInputValue = activeTab === 'files' ? directoryQuery : '';
 
   return {
     activeTab,
@@ -184,10 +154,7 @@ export function useFilesTabState({
     eventFilterQuery,
     setEventFilterQuery,
     searchInputValue,
-    directoryInputValue,
     onQueryChange,
-    onDirectoryQueryChange,
-    onDirectoryInputKeyDown,
     onSearchInputKeyDown,
     submitFilesQuery,
   };

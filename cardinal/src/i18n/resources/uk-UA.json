@@ -2,15 +2,19 @@
   "search": {
     "placeholder": {
       "files": "Пошук файлів і папок...",
-      "events": "Фільтруйте події за шляхом чи назвою...",
-      "directory": "Область папок..."
+      "events": "Фільтруйте події за шляхом чи назвою..."
     },
     "options": {
       "caseSensitive": "Перемкнути врахування регістру",
-      "directoryScope": "Перемкнути область папок"
+      "directoryScope": "Перемкнути область папок",
+      "selectDirectory": "Вибрати область папок",
+      "collapseDirectoryScope": "Згорнути область папок"
     },
     "aria": {
       "searchInput": "Поле пошуку"
+    },
+    "errors": {
+      "directorySelection": "Не вдалося вибрати папку. Спробуйте ще раз."
     }
   },
   "stateDisplay": {
@@ -131,6 +135,9 @@
     },
     "sortingLimit": {
       "label": "Ліміт сортування"
+    },
+    "openDirectoryOnPathDoubleClick": {
+      "label": "Подвійне клацання стовпця шляху відкриває батьківську папку"
     },
     "globalShortcut": {
       "label": "Global shortcut",

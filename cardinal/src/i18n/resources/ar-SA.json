@@ -2,15 +2,19 @@
   "search": {
     "placeholder": {
       "files": "ابحث عن الملفات والمجلدات...",
-      "events": "رشّح الأحداث حسب المسار أو الاسم...",
-      "directory": "نطاق المجلد..."
+      "events": "رشّح الأحداث حسب المسار أو الاسم..."
     },
     "options": {
       "caseSensitive": "تفعيل/إيقاف حساسية حالة الأحرف",
-      "directoryScope": "تبديل نطاق المجلد"
+      "directoryScope": "تبديل نطاق المجلد",
+      "selectDirectory": "اختيار نطاق المجلد",
+      "collapseDirectoryScope": "طي نطاق المجلد"
     },
     "aria": {
       "searchInput": "إدخال البحث"
+    },
+    "errors": {
+      "directorySelection": "تعذر اختيار مجلد. حاول مرة أخرى."
     }
   },
   "stateDisplay": {
@@ -131,6 +135,9 @@
     },
     "sortingLimit": {
       "label": "حد الفرز"
+    },
+    "openDirectoryOnPathDoubleClick": {
+      "label": "يؤدي النقر المزدوج على عمود المسار إلى فتح المجلد المحتوي"
     },
     "globalShortcut": {
       "label": "Global shortcut",

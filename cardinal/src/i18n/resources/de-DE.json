@@ -2,15 +2,19 @@
   "search": {
     "placeholder": {
       "files": "Nach Dateien und Ordnern suchen...",
-      "events": "Ereignisse nach Pfad oder Name filtern...",
-      "directory": "Ordnerbereich..."
+      "events": "Ereignisse nach Pfad oder Name filtern..."
     },
     "options": {
       "caseSensitive": "Groß-/Kleinschreibung beachten",
-      "directoryScope": "Ordnerbereich umschalten"
+      "directoryScope": "Ordnerbereich umschalten",
+      "selectDirectory": "Ordnerbereich auswählen",
+      "collapseDirectoryScope": "Ordnerbereich einklappen"
     },
     "aria": {
       "searchInput": "Sucheingabe"
+    },
+    "errors": {
+      "directorySelection": "Ordner konnte nicht ausgewählt werden. Bitte erneut versuchen."
     }
   },
   "stateDisplay": {
@@ -131,6 +135,9 @@
     },
     "sortingLimit": {
       "label": "Sortierlimit"
+    },
+    "openDirectoryOnPathDoubleClick": {
+      "label": "Doppelklick auf die Pfadspalte öffnet den übergeordneten Ordner"
     },
     "globalShortcut": {
       "label": "Global shortcut",

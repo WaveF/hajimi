@@ -2,15 +2,19 @@
   "search": {
     "placeholder": {
       "files": "Buscar archivos y carpetas...",
-      "events": "Filtrar eventos por ruta o nombre...",
-      "directory": "Ámbito de carpeta..."
+      "events": "Filtrar eventos por ruta o nombre..."
     },
     "options": {
       "caseSensitive": "Activar coincidencia sensible a mayúsculas",
-      "directoryScope": "Alternar ámbito de carpeta"
+      "directoryScope": "Alternar ámbito de carpeta",
+      "selectDirectory": "Elegir ámbito de carpeta",
+      "collapseDirectoryScope": "Contraer ámbito de carpeta"
     },
     "aria": {
       "searchInput": "Entrada de búsqueda"
+    },
+    "errors": {
+      "directorySelection": "No se pudo elegir la carpeta. Inténtalo de nuevo."
     }
   },
   "stateDisplay": {
@@ -131,6 +135,9 @@
     },
     "sortingLimit": {
       "label": "Límite de ordenación"
+    },
+    "openDirectoryOnPathDoubleClick": {
+      "label": "Al hacer doble clic en la columna de ruta se abre la carpeta contenedora"
     },
     "globalShortcut": {
       "label": "Global shortcut",

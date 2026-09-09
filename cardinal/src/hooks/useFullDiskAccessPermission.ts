@@ -50,6 +50,27 @@ export function useFullDiskAccessPermission(): UseFullDiskAccessPermissionResult
     void refreshStatus();
   }, [refreshStatus]);
 
+  useEffect(() => {
+    const refreshWhenAppReturns = () => {
+      void refreshStatus();
+    };
+    const refreshWhenVisible = () => {
+      if (document.visibilityState === 'visible') {
+        void refreshStatus();
+      }
+    };
+
+    // System Settings is a separate app. Re-check when the user returns so a
+    // newly granted permission is reflected without requiring a restart.
+    window.addEventListener('focus', refreshWhenAppReturns);
+    document.addEventListener('visibilitychange', refreshWhenVisible);
+
+    return () => {
+      window.removeEventListener('focus', refreshWhenAppReturns);
+      document.removeEventListener('visibilitychange', refreshWhenVisible);
+    };
+  }, [refreshStatus]);
+
   const requestPermission = useCallback(async () => {
     try {
       await requestNativeFullDiskAccessPermission();

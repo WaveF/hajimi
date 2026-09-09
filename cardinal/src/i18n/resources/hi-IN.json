@@ -2,15 +2,19 @@
   "search": {
     "placeholder": {
       "files": "फ़ाइलों और फ़ोल्डरों में खोजें...",
-      "events": "पथ या नाम से ईवेंट फ़िल्टर करें...",
-      "directory": "फ़ोल्डर स्कोप..."
+      "events": "पथ या नाम से ईवेंट फ़िल्टर करें..."
     },
     "options": {
       "caseSensitive": "केस-सेंसिटिव मिलान टॉगल करें",
-      "directoryScope": "फ़ोल्डर स्कोप टॉगल करें"
+      "directoryScope": "फ़ोल्डर स्कोप टॉगल करें",
+      "selectDirectory": "फ़ोल्डर स्कोप चुनें",
+      "collapseDirectoryScope": "फ़ोल्डर स्कोप संक्षिप्त करें"
     },
     "aria": {
       "searchInput": "खोज इनपुट"
+    },
+    "errors": {
+      "directorySelection": "फ़ोल्डर नहीं चुना जा सका। फिर से प्रयास करें।"
     }
   },
   "stateDisplay": {
@@ -121,6 +125,9 @@
     },
     "sortingLimit": {
       "label": "सॉर्टिंग सीमा"
+    },
+    "openDirectoryOnPathDoubleClick": {
+      "label": "पथ कॉलम पर डबल-क्लिक करने से फ़ाइल वाला फ़ोल्डर खुलता है"
     },
     "globalShortcut": {
       "label": "Global shortcut",

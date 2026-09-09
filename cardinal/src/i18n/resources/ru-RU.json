@@ -2,15 +2,19 @@
   "search": {
     "placeholder": {
       "files": "Поиск файлов и папок...",
-      "events": "Фильтруйте события по пути или имени...",
-      "directory": "Область папок..."
+      "events": "Фильтруйте события по пути или имени..."
     },
     "options": {
       "caseSensitive": "Включить учет регистра",
-      "directoryScope": "Переключить область папок"
+      "directoryScope": "Переключить область папок",
+      "selectDirectory": "Выбрать область папок",
+      "collapseDirectoryScope": "Свернуть область папок"
     },
     "aria": {
       "searchInput": "Поле поиска"
+    },
+    "errors": {
+      "directorySelection": "Не удалось выбрать папку. Попробуйте еще раз."
     }
   },
   "stateDisplay": {
@@ -131,6 +135,9 @@
     },
     "sortingLimit": {
       "label": "Порог сортировки"
+    },
+    "openDirectoryOnPathDoubleClick": {
+      "label": "Двойной щелчок по столбцу пути открывает содержащую папку"
     },
     "globalShortcut": {
       "label": "Global shortcut",

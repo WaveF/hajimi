@@ -2,15 +2,19 @@
   "search": {
     "placeholder": {
       "files": "Search for files and folders...",
-      "events": "Filter events by path or name...",
-      "directory": "Folder scope..."
+      "events": "Filter events by path or name..."
     },
     "options": {
       "caseSensitive": "Toggle case-sensitive matching",
-      "directoryScope": "Toggle folder scope"
+      "directoryScope": "Toggle folder scope",
+      "selectDirectory": "Choose folder scope",
+      "collapseDirectoryScope": "Collapse folder scope"
     },
     "aria": {
       "searchInput": "Search input"
+    },
+    "errors": {
+      "directorySelection": "Unable to choose a folder. Please try again."
     }
   },
   "stateDisplay": {
@@ -154,6 +158,9 @@
     },
     "refreshEventsOnlyWhenActive": {
       "label": "Refresh events only when the Events tab is active"
+    },
+    "openDirectoryOnPathDoubleClick": {
+      "label": "Double-clicking the path column opens its containing folder"
     },
     "sortingLimit": {
       "label": "Sorting limit"

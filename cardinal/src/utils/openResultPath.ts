@@ -7,3 +7,11 @@ export const openResultPath = (path: string | null | undefined): void => {
 
   void invoke('open_path', { path });
 };
+
+export const openResultDirectory = (path: string | null | undefined): void => {
+  if (!path) {
+    return;
+  }
+
+  void invoke('open_path', { path });
+};

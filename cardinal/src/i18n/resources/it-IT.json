@@ -2,15 +2,19 @@
   "search": {
     "placeholder": {
       "files": "Cerca file e cartelle...",
-      "events": "Filtra eventi per percorso o nome...",
-      "directory": "Ambito cartella..."
+      "events": "Filtra eventi per percorso o nome..."
     },
     "options": {
       "caseSensitive": "Attiva/disattiva distinzione tra maiuscole e minuscole",
-      "directoryScope": "Mostra ambito cartella"
+      "directoryScope": "Mostra ambito cartella",
+      "selectDirectory": "Scegli ambito cartella",
+      "collapseDirectoryScope": "Comprimi ambito cartella"
     },
     "aria": {
       "searchInput": "Input di ricerca"
+    },
+    "errors": {
+      "directorySelection": "Impossibile scegliere la cartella. Riprova."
     }
   },
   "stateDisplay": {
@@ -131,6 +135,9 @@
     },
     "sortingLimit": {
       "label": "Limite ordinamento"
+    },
+    "openDirectoryOnPathDoubleClick": {
+      "label": "Un doppio clic sulla colonna del percorso apre la cartella contenitore"
     },
     "globalShortcut": {
       "label": "Global shortcut",

@@ -18,6 +18,8 @@ type PreferencesOverlayProps = {
   onHideEmptyResultsChange: (enabled: boolean) => void;
   refreshEventsOnlyWhenActive: boolean;
   onRefreshEventsOnlyWhenActiveChange: (enabled: boolean) => void;
+  openDirectoryOnPathDoubleClick: boolean;
+  onOpenDirectoryOnPathDoubleClickChange: (enabled: boolean) => void;
   globalShortcut: string;
   defaultGlobalShortcut: string;
   onGlobalShortcutChange: (shortcut: string) => Promise<void> | void;
@@ -115,6 +117,8 @@ export function PreferencesOverlay({
   onHideEmptyResultsChange,
   refreshEventsOnlyWhenActive,
   onRefreshEventsOnlyWhenActiveChange,
+  openDirectoryOnPathDoubleClick,
+  onOpenDirectoryOnPathDoubleClickChange,
   globalShortcut,
   defaultGlobalShortcut,
   onGlobalShortcutChange,
@@ -574,6 +578,25 @@ Use search_files before opening a path when the exact path is unknown. Confirm a
                             onRefreshEventsOnlyWhenActiveChange(event.target.checked)
                           }
                           aria-label={t('preferences.refreshEventsOnlyWhenActive.label')}
+                        />
+                        <span className="preferences-switch__track" aria-hidden="true" />
+                      </label>
+                    </div>
+                  </div>
+                  <div className="preferences-row">
+                    <p className="preferences-label">
+                      {t('preferences.openDirectoryOnPathDoubleClick.label')}
+                    </p>
+                    <div className="preferences-control">
+                      <label className="preferences-switch">
+                        <input
+                          className="preferences-switch__input"
+                          type="checkbox"
+                          checked={openDirectoryOnPathDoubleClick}
+                          onChange={(event) =>
+                            onOpenDirectoryOnPathDoubleClickChange(event.target.checked)
+                          }
+                          aria-label={t('preferences.openDirectoryOnPathDoubleClick.label')}
                         />
                         <span className="preferences-switch__track" aria-hidden="true" />
                       </label>

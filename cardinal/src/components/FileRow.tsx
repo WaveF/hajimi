@@ -13,6 +13,8 @@ type FileRowProps = {
   style?: CSSProperties;
   onContextMenu?: (event: ReactMouseEvent<HTMLDivElement>, path: string, rowIndex: number) => void;
   onOpen?: (path: string) => void;
+  onOpenDirectory?: (path: string) => void;
+  openDirectoryOnPathDoubleClick?: boolean;
   onSelect: (
     rowIndex: number,
     options: { isShift: boolean; isMeta: boolean; isCtrl: boolean },
@@ -29,6 +31,8 @@ export const FileRow = memo(function FileRow({
   style,
   onContextMenu,
   onOpen,
+  onOpenDirectory,
+  openDirectoryOnPathDoubleClick = true,
   onSelect,
   isSelected = false,
   selectedPathsForDrag = [],
@@ -103,6 +107,16 @@ export const FileRow = memo(function FileRow({
     }
   };
 
+  const handlePathDoubleClick = (e: ReactMouseEvent<HTMLSpanElement>) => {
+    if (!openDirectoryOnPathDoubleClick || !directoryPath || !onOpenDirectory) {
+      return;
+    }
+
+    e.preventDefault();
+    e.stopPropagation();
+    onOpenDirectory(directoryPath);
+  };
+
   const handleDragStart = useCallback(
     (e: DragEvent<HTMLDivElement>) => {
       if (!path) {
@@ -164,7 +178,11 @@ export const FileRow = memo(function FileRow({
       </div>
       <span className={`extension-text ${!extension ? 'muted' : ''}`}>{extension || '—'}</span>
       {/* Directory column renders the parent path (the filename column already shows the leaf). */}
-      <span className="path-text" title={directoryPath}>
+      <span
+        className={`path-text ${openDirectoryOnPathDoubleClick ? 'path-text--directory-action' : ''}`}
+        title={directoryPath}
+        onDoubleClick={handlePathDoubleClick}
+      >
         {directoryPath}
       </span>
       <span className={`size-text ${!sizeText ? 'muted' : ''}`}>{sizeText || '—'}</span>

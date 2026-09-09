@@ -2,15 +2,19 @@
   "search": {
     "placeholder": {
       "files": "Rechercher des fichiers et des dossiers...",
-      "events": "Filtrer les événements par chemin ou nom...",
-      "directory": "Portée du dossier..."
+      "events": "Filtrer les événements par chemin ou nom..."
     },
     "options": {
       "caseSensitive": "Activer la correspondance sensible à la casse",
-      "directoryScope": "Afficher la portée du dossier"
+      "directoryScope": "Afficher la portée du dossier",
+      "selectDirectory": "Choisir la portée du dossier",
+      "collapseDirectoryScope": "Réduire la portée du dossier"
     },
     "aria": {
       "searchInput": "Entrée de recherche"
+    },
+    "errors": {
+      "directorySelection": "Impossible de choisir le dossier. Réessayez."
     }
   },
   "stateDisplay": {
@@ -131,6 +135,9 @@
     },
     "sortingLimit": {
       "label": "Limite de tri"
+    },
+    "openDirectoryOnPathDoubleClick": {
+      "label": "Un double-clic sur la colonne du chemin ouvre le dossier parent"
     },
     "globalShortcut": {
       "label": "Global shortcut",

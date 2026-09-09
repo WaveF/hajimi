@@ -2,15 +2,19 @@
   "search": {
     "placeholder": {
       "files": "搜索文件和文件夹…",
-      "events": "按路径或名称筛选事件…",
-      "directory": "限定文件夹范围…"
+      "events": "按路径或名称筛选事件…"
     },
     "options": {
       "caseSensitive": "切换区分大小写匹配",
-      "directoryScope": "切换文件夹范围"
+      "directoryScope": "切换目录范围",
+      "selectDirectory": "选择目录范围",
+      "collapseDirectoryScope": "收起目录范围"
     },
     "aria": {
       "searchInput": "搜索输入"
+    },
+    "errors": {
+      "directorySelection": "无法选择目录，请重试。"
     }
   },
   "stateDisplay": {
@@ -153,6 +157,9 @@
     },
     "refreshEventsOnlyWhenActive": {
       "label": "仅在“事件”标签激活时刷新事件"
+    },
+    "openDirectoryOnPathDoubleClick": {
+      "label": "双击路径列打开所在目录"
     },
     "sortingLimit": {
       "label": "排序上限"

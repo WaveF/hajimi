@@ -3,9 +3,12 @@ import { useCallback, useState } from 'react';
 export const HIDE_EMPTY_RESULTS_STORAGE_KEY = 'hajimi.search.hideEmptyResults';
 export const REFRESH_EVENTS_ONLY_WHEN_ACTIVE_STORAGE_KEY =
   'hajimi.search.refreshEventsOnlyWhenActive';
+export const OPEN_DIRECTORY_ON_PATH_DOUBLE_CLICK_STORAGE_KEY =
+  'hajimi.search.openDirectoryOnPathDoubleClick';
 
 export const DEFAULT_HIDE_EMPTY_RESULTS = true;
 export const DEFAULT_REFRESH_EVENTS_ONLY_WHEN_ACTIVE = true;
+export const DEFAULT_OPEN_DIRECTORY_ON_PATH_DOUBLE_CLICK = true;
 
 const readStoredBoolean = (key: string, defaultValue: boolean): boolean => {
   if (typeof window === 'undefined') {
@@ -37,6 +40,8 @@ export type SearchDisplayPreferences = {
   setHideEmptyResults: (enabled: boolean) => void;
   refreshEventsOnlyWhenActive: boolean;
   setRefreshEventsOnlyWhenActive: (enabled: boolean) => void;
+  openDirectoryOnPathDoubleClick: boolean;
+  setOpenDirectoryOnPathDoubleClick: (enabled: boolean) => void;
   resetSearchDisplayPreferences: () => void;
 };
 
@@ -50,6 +55,12 @@ export function useSearchDisplayPreferences(): SearchDisplayPreferences {
       DEFAULT_REFRESH_EVENTS_ONLY_WHEN_ACTIVE,
     ),
   );
+  const [openDirectoryOnPathDoubleClick, setOpenDirectoryOnPathDoubleClickState] = useState(() =>
+    readStoredBoolean(
+      OPEN_DIRECTORY_ON_PATH_DOUBLE_CLICK_STORAGE_KEY,
+      DEFAULT_OPEN_DIRECTORY_ON_PATH_DOUBLE_CLICK,
+    ),
+  );
 
   const setHideEmptyResults = useCallback((enabled: boolean) => {
     setHideEmptyResultsState(enabled);
@@ -61,13 +72,23 @@ export function useSearchDisplayPreferences(): SearchDisplayPreferences {
     persistBoolean(REFRESH_EVENTS_ONLY_WHEN_ACTIVE_STORAGE_KEY, enabled);
   }, []);
 
+  const setOpenDirectoryOnPathDoubleClick = useCallback((enabled: boolean) => {
+    setOpenDirectoryOnPathDoubleClickState(enabled);
+    persistBoolean(OPEN_DIRECTORY_ON_PATH_DOUBLE_CLICK_STORAGE_KEY, enabled);
+  }, []);
+
   const resetSearchDisplayPreferences = useCallback(() => {
     setHideEmptyResultsState(DEFAULT_HIDE_EMPTY_RESULTS);
     setRefreshEventsOnlyWhenActiveState(DEFAULT_REFRESH_EVENTS_ONLY_WHEN_ACTIVE);
+    setOpenDirectoryOnPathDoubleClickState(DEFAULT_OPEN_DIRECTORY_ON_PATH_DOUBLE_CLICK);
     persistBoolean(HIDE_EMPTY_RESULTS_STORAGE_KEY, DEFAULT_HIDE_EMPTY_RESULTS);
     persistBoolean(
       REFRESH_EVENTS_ONLY_WHEN_ACTIVE_STORAGE_KEY,
       DEFAULT_REFRESH_EVENTS_ONLY_WHEN_ACTIVE,
+    );
+    persistBoolean(
+      OPEN_DIRECTORY_ON_PATH_DOUBLE_CLICK_STORAGE_KEY,
+      DEFAULT_OPEN_DIRECTORY_ON_PATH_DOUBLE_CLICK,
     );
   }, []);
 
@@ -76,6 +97,8 @@ export function useSearchDisplayPreferences(): SearchDisplayPreferences {
     setHideEmptyResults,
     refreshEventsOnlyWhenActive,
     setRefreshEventsOnlyWhenActive,
+    openDirectoryOnPathDoubleClick,
+    setOpenDirectoryOnPathDoubleClick,
     resetSearchDisplayPreferences,
   };
 }

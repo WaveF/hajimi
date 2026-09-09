@@ -39,6 +39,8 @@ const baseProps = {
   onHideEmptyResultsChange: vi.fn(),
   refreshEventsOnlyWhenActive: true,
   onRefreshEventsOnlyWhenActiveChange: vi.fn(),
+  openDirectoryOnPathDoubleClick: true,
+  onOpenDirectoryOnPathDoubleClickChange: vi.fn(),
   globalShortcut: '',
   defaultGlobalShortcut: '',
   onGlobalShortcutChange: vi.fn(),
@@ -137,11 +139,13 @@ describe('PreferencesOverlay', () => {
   it('renders and updates search display switches', () => {
     const onHideEmptyResultsChange = vi.fn();
     const onRefreshEventsOnlyWhenActiveChange = vi.fn();
+    const onOpenDirectoryOnPathDoubleClickChange = vi.fn();
     render(
       <PreferencesOverlay
         {...baseProps}
         onHideEmptyResultsChange={onHideEmptyResultsChange}
         onRefreshEventsOnlyWhenActiveChange={onRefreshEventsOnlyWhenActiveChange}
+        onOpenDirectoryOnPathDoubleClickChange={onOpenDirectoryOnPathDoubleClickChange}
       />,
     );
 
@@ -149,14 +153,20 @@ describe('PreferencesOverlay', () => {
     const refreshEventsOnlyWhenActive = screen.getByLabelText(
       'preferences.refreshEventsOnlyWhenActive.label',
     );
+    const openDirectoryOnPathDoubleClick = screen.getByLabelText(
+      'preferences.openDirectoryOnPathDoubleClick.label',
+    );
     expect(hideEmptyResults).toBeChecked();
     expect(refreshEventsOnlyWhenActive).toBeChecked();
+    expect(openDirectoryOnPathDoubleClick).toBeChecked();
 
     fireEvent.click(hideEmptyResults);
     fireEvent.click(refreshEventsOnlyWhenActive);
+    fireEvent.click(openDirectoryOnPathDoubleClick);
 
     expect(onHideEmptyResultsChange).toHaveBeenCalledWith(false);
     expect(onRefreshEventsOnlyWhenActiveChange).toHaveBeenCalledWith(false);
+    expect(onOpenDirectoryOnPathDoubleClickChange).toHaveBeenCalledWith(false);
   });
 
   it('saves watch root updates via onWatchConfigChange', () => {

@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { forwardRef } from 'react';
 import type { CSSProperties, ChangeEvent, FocusEventHandler, KeyboardEvent, Ref } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -8,6 +8,12 @@ const mocks = vi.hoisted(() => ({
   filesTabContentProps: vi.fn(),
   navigateSearchHistory: vi.fn(),
   selectSingleRow: vi.fn(),
+  queueDirectorySearch: vi.fn(),
+  openDirectoryDialog: vi.fn(),
+}));
+
+vi.mock('@tauri-apps/plugin-dialog', () => ({
+  open: mocks.openDirectoryDialog,
 }));
 
 vi.mock('react-i18next', () => ({
@@ -28,6 +34,8 @@ vi.mock('../components/SearchBar', () => ({
     onKeyDown,
     onFocus,
     onBlur,
+    onSelectDirectory,
+    directorySelectionError,
   }: {
     inputRef: Ref<HTMLInputElement>;
     value: string;
@@ -35,16 +43,22 @@ vi.mock('../components/SearchBar', () => ({
     onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => void;
     onFocus: FocusEventHandler<HTMLInputElement>;
     onBlur: FocusEventHandler<HTMLInputElement>;
+    onSelectDirectory: () => void;
+    directorySelectionError?: string | null;
   }) => (
-    <input
-      data-testid="search-input"
-      ref={inputRef}
-      value={value}
-      onChange={onChange}
-      onKeyDown={onKeyDown}
-      onFocus={onFocus}
-      onBlur={onBlur}
-    />
+    <>
+      <input
+        data-testid="search-input"
+        ref={inputRef}
+        value={value}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+        onFocus={onFocus}
+        onBlur={onBlur}
+      />
+      <button data-testid="directory-picker" onClick={onSelectDirectory} />
+      {directorySelectionError ? <div role="status">{directorySelectionError}</div> : null}
+    </>
   ),
 }));
 
@@ -119,7 +133,7 @@ vi.mock('../hooks/useFileSearch', () => ({
     },
     updateSearchParams: vi.fn(),
     queueSearch: vi.fn(),
-    queueDirectorySearch: vi.fn(),
+    queueDirectorySearch: mocks.queueDirectorySearch,
     queueDirectoryScopeOpen: vi.fn(),
     handleStatusUpdate: vi.fn(),
     setLifecycleState: vi.fn(),
@@ -286,5 +300,39 @@ describe('App search result keyboard navigation', () => {
     expect(mocks.navigateSearchHistory).toHaveBeenCalledWith('newer');
     expect(mocks.selectSingleRow).toHaveBeenCalledWith(0);
     expect(document.activeElement).not.toBe(input);
+  });
+
+  it('passes a selected directory to the existing directory search queue', async () => {
+    mocks.openDirectoryDialog.mockResolvedValueOnce('/Users/wavef/Documents/Projects');
+    render(<App />);
+
+    fireEvent.click(screen.getByTestId('directory-picker'));
+
+    await waitFor(() => {
+      expect(mocks.openDirectoryDialog).toHaveBeenCalledWith({ directory: true, multiple: false });
+      expect(mocks.queueDirectorySearch).toHaveBeenCalledWith('/Users/wavef/Documents/Projects', {
+        immediate: true,
+      });
+    });
+  });
+
+  it('does not change the directory search when the native picker is cancelled', async () => {
+    mocks.openDirectoryDialog.mockResolvedValueOnce(null);
+    render(<App />);
+
+    fireEvent.click(screen.getByTestId('directory-picker'));
+
+    await waitFor(() => expect(mocks.openDirectoryDialog).toHaveBeenCalledTimes(1));
+    expect(mocks.queueDirectorySearch).not.toHaveBeenCalled();
+  });
+
+  it('shows a non-blocking error when the native picker fails', async () => {
+    mocks.openDirectoryDialog.mockRejectedValueOnce(new Error('permission denied'));
+    render(<App />);
+
+    fireEvent.click(screen.getByTestId('directory-picker'));
+
+    expect(await screen.findByRole('status')).toHaveTextContent('search.errors.directorySelection');
+    expect(mocks.queueDirectorySearch).not.toHaveBeenCalled();
   });
 });

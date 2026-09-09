@@ -2,15 +2,19 @@
   "search": {
     "placeholder": {
       "files": "Buscar por arquivos e pastas...",
-      "events": "Filtrar eventos por caminho ou nome...",
-      "directory": "Escopo de pasta..."
+      "events": "Filtrar eventos por caminho ou nome..."
     },
     "options": {
       "caseSensitive": "Alternar correspondência sensível a maiúsculas",
-      "directoryScope": "Alternar escopo de pasta"
+      "directoryScope": "Alternar escopo de pasta",
+      "selectDirectory": "Escolher escopo de pasta",
+      "collapseDirectoryScope": "Recolher escopo de pasta"
     },
     "aria": {
       "searchInput": "Entrada de pesquisa"
+    },
+    "errors": {
+      "directorySelection": "Não foi possível escolher a pasta. Tente novamente."
     }
   },
   "stateDisplay": {
@@ -131,6 +135,9 @@
     },
     "sortingLimit": {
       "label": "Limite de ordenação"
+    },
+    "openDirectoryOnPathDoubleClick": {
+      "label": "Clique duas vezes na coluna de caminho para abrir a pasta contêiner"
     },
     "globalShortcut": {
       "label": "Global shortcut",

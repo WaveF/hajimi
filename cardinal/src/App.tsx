@@ -24,7 +24,7 @@ import type { FSEventsPanelHandle } from './components/FSEventsPanel';
 import { useTranslation } from 'react-i18next';
 import { useFullDiskAccessPermission } from './hooks/useFullDiskAccessPermission';
 import type { DisplayState } from './components/StateDisplay';
-import { openResultPath } from './utils/openResultPath';
+import { openResultDirectory, openResultPath } from './utils/openResultPath';
 import { useStableEvent } from './hooks/useStableEvent';
 import { useAppHotkeys } from './hooks/useAppHotkeys';
 import { useAppPreferences } from './hooks/useAppPreferences';
@@ -32,6 +32,7 @@ import { useAppWindowListeners } from './hooks/useAppWindowListeners';
 import { useFilesTabEffects } from './hooks/useFilesTabEffects';
 import { useFilesTabState } from './hooks/useFilesTabState';
 import { useSearchDisplayPreferences } from './hooks/useSearchDisplayPreferences';
+import { open as openDirectoryDialog } from '@tauri-apps/plugin-dialog';
 
 function App() {
   const quitApp = useCallback(() => {
@@ -45,6 +46,8 @@ function App() {
     setHideEmptyResults,
     refreshEventsOnlyWhenActive,
     setRefreshEventsOnlyWhenActive,
+    openDirectoryOnPathDoubleClick,
+    setOpenDirectoryOnPathDoubleClick,
     resetSearchDisplayPreferences,
   } = useSearchDisplayPreferences();
   const {
@@ -79,6 +82,7 @@ function App() {
   const headerRef = useRef<HTMLDivElement | null>(null);
   const virtualListRef = useRef<VirtualListHandle | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const [directorySelectionError, setDirectorySelectionError] = useState<string | null>(null);
 
   const { colWidths, onResizeStart, autoFitColumns } = useColumnResize();
   const { caseSensitive, directoryQuery, directoryScopeOpen } = searchParams;
@@ -130,17 +134,12 @@ function App() {
     setEventFilterQuery,
     onTabChange,
     searchInputValue,
-    directoryInputValue,
     onQueryChange,
-    onDirectoryQueryChange,
-    onDirectoryInputKeyDown,
     onSearchInputKeyDown,
     submitFilesQuery,
   } = useFilesTabState({
     searchQuery: searchParams.query,
-    directoryQuery,
     queueSearch,
-    queueDirectorySearch,
     onNavigateFromSearchToResults: navigateFromSearchToResults,
   });
   const { filteredEvents } = useRecentFSEvents({
@@ -282,8 +281,27 @@ function App() {
   );
 
   const toggleDirectoryScope = useCallback(() => {
+    setDirectorySelectionError(null);
     queueDirectoryScopeOpen(!directoryScopeOpen);
   }, [directoryScopeOpen, queueDirectoryScopeOpen]);
+
+  const selectDirectoryScope = useCallback(async () => {
+    setDirectorySelectionError(null);
+
+    try {
+      const selection = await openDirectoryDialog({ directory: true, multiple: false });
+      const selectedPath = Array.isArray(selection) ? selection[0] : selection;
+
+      if (!selectedPath) {
+        return;
+      }
+
+      queueDirectorySearch(selectedPath, { immediate: true });
+    } catch (error) {
+      console.error('Failed to select directory scope', error);
+      setDirectorySelectionError(t('search.errors.directorySelection'));
+    }
+  }, [queueDirectorySearch, t]);
 
   const handleHorizontalSync = useCallback((scrollLeft: number) => {
     // VirtualList drives the scroll position; mirror it onto the sticky header for alignment.
@@ -338,6 +356,8 @@ function App() {
           onContextMenu={handleRowContextMenu}
           onSelect={handleRowSelect}
           onOpen={openResultPath}
+          onOpenDirectory={openResultDirectory}
+          openDirectoryOnPathDoubleClick={openDirectoryOnPathDoubleClick}
         />
       );
     },
@@ -348,6 +368,7 @@ function App() {
       caseSensitive,
       selectedIndexSet,
       selectedPaths,
+      openDirectoryOnPathDoubleClick,
     ],
   );
 
@@ -388,9 +409,10 @@ function App() {
     : t('app.fullDiskAccess.status.disabled');
   const caseSensitiveLabel = t('search.options.caseSensitive');
   const directoryScopeLabel = t('search.options.directoryScope');
+  const directorySelectLabel = t('search.options.selectDirectory');
+  const directoryCollapseLabel = t('search.options.collapseDirectoryScope');
   const searchPlaceholder =
     activeTab === 'files' ? t('search.placeholder.files') : t('search.placeholder.events');
-  const directorySearchPlaceholder = t('search.placeholder.directory');
   const searchAriaLabel = t('search.aria.searchInput');
   const permissionSteps = [
     t('app.fullDiskAccess.steps.one'),
@@ -415,11 +437,12 @@ function App() {
           directoryScopeEnabled={activeTab === 'files'}
           directoryScopeOpen={directoryScopeOpen}
           directoryScopeLabel={directoryScopeLabel}
-          directoryPlaceholder={directorySearchPlaceholder}
-          directoryValue={directoryInputValue}
+          directoryValue={directoryQuery}
+          directorySelectLabel={directorySelectLabel}
+          directoryCollapseLabel={directoryCollapseLabel}
+          directorySelectionError={directorySelectionError}
           onToggleDirectoryScope={toggleDirectoryScope}
-          onDirectoryChange={onDirectoryQueryChange}
-          onDirectoryKeyDown={onDirectoryInputKeyDown}
+          onSelectDirectory={selectDirectoryScope}
           caseSensitive={caseSensitive}
           onToggleCaseSensitive={onToggleCaseSensitive}
           caseSensitiveLabel={caseSensitiveLabel}
@@ -488,6 +511,8 @@ function App() {
         onHideEmptyResultsChange={setHideEmptyResults}
         refreshEventsOnlyWhenActive={refreshEventsOnlyWhenActive}
         onRefreshEventsOnlyWhenActiveChange={setRefreshEventsOnlyWhenActive}
+        openDirectoryOnPathDoubleClick={openDirectoryOnPathDoubleClick}
+        onOpenDirectoryOnPathDoubleClickChange={setOpenDirectoryOnPathDoubleClick}
         globalShortcut={globalShortcut}
         defaultGlobalShortcut={defaultGlobalShortcut}
         onGlobalShortcutChange={handleGlobalShortcutChange}
