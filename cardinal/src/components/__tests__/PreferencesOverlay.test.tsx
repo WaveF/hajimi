@@ -54,6 +54,12 @@ const baseProps = {
   onReset: vi.fn(),
   themeResetToken: 0,
   onWatchConfigChange: vi.fn(),
+  appVersion: '0.1.23',
+  autoUpdateEnabled: true,
+  onAutoUpdateEnabledChange: vi.fn(),
+  updateCheckFrequency: 'weekly' as const,
+  onUpdateCheckFrequencyChange: vi.fn(),
+  onCheckForUpdates: vi.fn(),
 };
 
 describe('PreferencesOverlay', () => {
@@ -76,6 +82,33 @@ describe('PreferencesOverlay', () => {
 
     expect(searchNavigation).toHaveClass('is-active');
     expect(searchNavigation).toHaveAttribute('aria-current', 'page');
+  });
+
+  it('shows update settings in the about section', () => {
+    const onAutoUpdateEnabledChange = vi.fn();
+    const onUpdateCheckFrequencyChange = vi.fn();
+    const onCheckForUpdates = vi.fn();
+    render(
+      <PreferencesOverlay
+        {...baseProps}
+        onAutoUpdateEnabledChange={onAutoUpdateEnabledChange}
+        onUpdateCheckFrequencyChange={onUpdateCheckFrequencyChange}
+        onCheckForUpdates={onCheckForUpdates}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'preferences.nav.about' }));
+
+    expect(screen.getByText('preferences.about.version')).toBeInTheDocument();
+    const autoCheck = screen.getByLabelText('preferences.about.autoCheck');
+    const frequency = screen.getByLabelText('preferences.about.frequency');
+    fireEvent.click(autoCheck);
+    fireEvent.change(frequency, { target: { value: 'daily' } });
+    fireEvent.click(screen.getByRole('button', { name: 'preferences.about.checkUpdates' }));
+
+    expect(onAutoUpdateEnabledChange).toHaveBeenCalledWith(false);
+    expect(onUpdateCheckFrequencyChange).toHaveBeenCalledWith('daily');
+    expect(onCheckForUpdates).toHaveBeenCalledTimes(1);
   });
 
   it('resets the active section when preferences are reopened', () => {

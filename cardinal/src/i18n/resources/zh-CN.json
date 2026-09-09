@@ -133,7 +133,8 @@
       "general": "通用",
       "search": "搜索",
       "indexing": "索引",
-      "mcp": "MCP"
+      "mcp": "MCP",
+      "about": "关于"
     },
     "appearance": "外观",
     "language": "语言",
@@ -151,6 +152,21 @@
       "promptLabel": "给 Agent 的使用说明",
       "copy": "复制给 AI",
       "copied": "已复制"
+    },
+    "about": {
+      "iconAlt": "hajimi 应用图标",
+      "version": "版本 {{version}}",
+      "description": "一款快速、本地优先的文件搜索工具，帮助你在 Mac 上查找文件和文件夹。",
+      "attributionPrefix": "hajimi 基于 cardisoft 及其贡献者开发的 ",
+      "attributionProject": "Cardinal",
+      "attributionSuffix": "，并在其基础上进行了功能扩展与优化。",
+      "autoCheck": "自动检查更新",
+      "frequency": "检查频率",
+      "daily": "每天",
+      "weekly": "每周",
+      "monthly": "每月",
+      "github": "在 GitHub 上 Star",
+      "checkUpdates": "检查更新"
     },
     "hideEmptyResults": {
       "label": "搜索为空时隐藏结果"
@@ -175,6 +191,18 @@
     "save": "保存设置",
     "reset": "恢复默认设置",
     "close": "关闭"
+  },
+  "updates": {
+    "title": "软件更新",
+    "checking": "正在检查更新…",
+    "availableTitle": "发现新版本",
+    "availableDescription": "hajimi {{version}} 已发布，你当前使用的是 {{currentVersion}}。",
+    "upToDate": "当前已是最新版本。",
+    "error": "暂时无法检查更新，请稍后重试。",
+    "download": "前往 GitHub 发布页",
+    "close": "关闭",
+    "currentVersion": "当前：{{version}}",
+    "latestVersion": "最新：{{version}}"
   },
   "language": {
     "label": "语言",

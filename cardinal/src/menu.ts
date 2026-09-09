@@ -4,8 +4,9 @@ import { Menu, MenuItem, PredefinedMenuItem, Submenu } from '@tauri-apps/api/men
 import { openUrl } from '@tauri-apps/plugin-opener';
 import i18n from './i18n/config';
 import { openPreferences } from './utils/openPreferences';
+import { GITHUB_RELEASES_URL } from './utils/appUpdate';
 
-const HELP_UPDATES_URL = 'https://github.com/cardisoft/cardinal/releases';
+const HELP_UPDATES_URL = GITHUB_RELEASES_URL;
 
 let menuInitPromise: Promise<void> | null = null;
 

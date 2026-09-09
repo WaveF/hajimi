@@ -1,10 +1,17 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { invoke } from '@tauri-apps/api/core';
+import { openUrl } from '@tauri-apps/plugin-opener';
 import { getWatchRootValidation, isIgnorePatternValid, isPathInputValid } from '../utils/watchRoot';
 import { formatShortcutForDisplay, shortcutFromKeyboardEvent } from '../utils/globalShortcuts';
+import {
+  GITHUB_REPOSITORY_URL,
+  ORIGINAL_CARDINAL_URL,
+  type UpdateCheckFrequency,
+} from '../utils/appUpdate';
 import ThemeSwitcher from './ThemeSwitcher';
 import LanguageSwitcher from './LanguageSwitcher';
+import appIconUrl from '../../app-icon.png';
 
 type PreferencesOverlayProps = {
   open: boolean;
@@ -37,9 +44,15 @@ type PreferencesOverlayProps = {
   defaultIncludePaths: string[];
   onReset: () => void;
   themeResetToken: number;
+  appVersion: string;
+  autoUpdateEnabled: boolean;
+  onAutoUpdateEnabledChange: (enabled: boolean) => void;
+  updateCheckFrequency: UpdateCheckFrequency;
+  onUpdateCheckFrequencyChange: (frequency: UpdateCheckFrequency) => void;
+  onCheckForUpdates: () => void;
 };
 
-type PreferencesSectionId = 'general' | 'search' | 'indexing' | 'mcp';
+type PreferencesSectionId = 'general' | 'search' | 'indexing' | 'mcp' | 'about';
 
 type McpConnectionInfo = {
   available: boolean;
@@ -55,6 +68,7 @@ const PREFERENCES_NAV_ITEMS: Array<{
   { id: 'search', labelKey: 'preferences.nav.search' },
   { id: 'indexing', labelKey: 'preferences.nav.indexing' },
   { id: 'mcp', labelKey: 'preferences.nav.mcp' },
+  { id: 'about', labelKey: 'preferences.nav.about' },
 ];
 
 function PreferencesNavIcon({
@@ -92,13 +106,19 @@ function PreferencesNavIcon({
           <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5z" />
           <path d="M8 8h8M8 12h8M8 16h5" />
         </>
-      ) : (
+      ) : section === 'mcp' ? (
         <>
           <path d="M12 3v4" />
           <path d="M12 17v4" />
           <path d="M3 12h4" />
           <path d="M17 12h4" />
           <circle cx="12" cy="12" r="4" />
+        </>
+      ) : (
+        <>
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 10v6" />
+          <path d="M12 7h.01" />
         </>
       )}
     </svg>
@@ -132,6 +152,12 @@ export function PreferencesOverlay({
   defaultIncludePaths,
   onReset,
   themeResetToken,
+  appVersion,
+  autoUpdateEnabled,
+  onAutoUpdateEnabledChange,
+  updateCheckFrequency,
+  onUpdateCheckFrequencyChange,
+  onCheckForUpdates,
 }: PreferencesOverlayProps): React.JSX.Element | null {
   const { t } = useTranslation();
   const [thresholdInput, setThresholdInput] = useState<string>(() => sortThreshold.toString());
@@ -368,12 +394,15 @@ Use search_files before opening a path when the exact path is unknown. Confirm a
     const container = event.currentTarget;
     const containerTop = container.getBoundingClientRect().top;
     let visibleSection: PreferencesSectionId = 'general';
+    let closestSectionTop = Number.NEGATIVE_INFINITY;
 
     for (const item of PREFERENCES_NAV_ITEMS) {
       const sectionElement = document.getElementById(`preferences-section-${item.id}`);
       if (!sectionElement) continue;
-      if (sectionElement.getBoundingClientRect().top - containerTop <= 48) {
+      const sectionTop = sectionElement.getBoundingClientRect().top - containerTop;
+      if (sectionTop <= 48 && sectionTop > closestSectionTop) {
         visibleSection = item.id;
+        closestSectionTop = sectionTop;
       }
     }
 
@@ -749,6 +778,103 @@ Use search_files before opening a path when the exact path is unknown. Confirm a
                       aria-label={t('preferences.mcp.promptLabel')}
                     />
                   </div>
+                </div>
+              </section>
+
+              <section
+                id="preferences-section-about"
+                className="preferences-group preferences-about"
+              >
+                <div className="preferences-group__header">
+                  <h2 className="preferences-group__title">{t('preferences.nav.about')}</h2>
+                </div>
+                <div className="preferences-about__identity">
+                  <div className="preferences-about__icon-frame">
+                    <img
+                      className="preferences-about__icon"
+                      src={appIconUrl}
+                      alt={t('preferences.about.iconAlt')}
+                    />
+                  </div>
+                  <h3 className="preferences-about__name">hajimi</h3>
+                  <p className="preferences-about__version">
+                    {t('preferences.about.version', { version: appVersion })}
+                  </p>
+                </div>
+                <div className="preferences-about__copy">
+                  <p>{t('preferences.about.description')}</p>
+                  <p>
+                    {t('preferences.about.attributionPrefix')}
+                    <button
+                      className="preferences-about__link"
+                      type="button"
+                      onClick={() =>
+                        void openUrl(ORIGINAL_CARDINAL_URL).catch((error) => {
+                          console.error('Failed to open original project', error);
+                        })
+                      }
+                    >
+                      {t('preferences.about.attributionProject')}
+                    </button>
+                    {t('preferences.about.attributionSuffix')}
+                  </p>
+                </div>
+                <div className="preferences-settings-card preferences-about__updates">
+                  <div className="preferences-row">
+                    <p className="preferences-label">{t('preferences.about.autoCheck')}</p>
+                    <div className="preferences-control">
+                      <label className="preferences-switch">
+                        <input
+                          className="preferences-switch__input"
+                          type="checkbox"
+                          checked={autoUpdateEnabled}
+                          onChange={(event) => onAutoUpdateEnabledChange(event.target.checked)}
+                          aria-label={t('preferences.about.autoCheck')}
+                        />
+                        <span className="preferences-switch__track" aria-hidden="true" />
+                      </label>
+                    </div>
+                  </div>
+                  <div className="preferences-row">
+                    <label className="preferences-label" htmlFor="update-check-frequency">
+                      {t('preferences.about.frequency')}
+                    </label>
+                    <div className="preferences-control">
+                      <select
+                        id="update-check-frequency"
+                        className="preferences-select"
+                        value={updateCheckFrequency}
+                        onChange={(event) =>
+                          onUpdateCheckFrequencyChange(event.target.value as UpdateCheckFrequency)
+                        }
+                        aria-label={t('preferences.about.frequency')}
+                      >
+                        <option value="daily">{t('preferences.about.daily')}</option>
+                        <option value="weekly">{t('preferences.about.weekly')}</option>
+                        <option value="monthly">{t('preferences.about.monthly')}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div className="preferences-about__actions">
+                  <button
+                    className="preferences-about__secondary"
+                    type="button"
+                    onClick={() =>
+                      void openUrl(GITHUB_REPOSITORY_URL).catch((error) => {
+                        console.error('Failed to open GitHub repository', error);
+                      })
+                    }
+                  >
+                    {t('preferences.about.github')}
+                  </button>
+                  <button
+                    className="preferences-about__primary"
+                    type="button"
+                    onClick={onCheckForUpdates}
+                  >
+                    {t('preferences.about.checkUpdates')}
+                  </button>
                 </div>
               </section>
             </div>

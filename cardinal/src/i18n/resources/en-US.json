@@ -134,7 +134,8 @@
       "general": "General",
       "search": "Search",
       "indexing": "Indexing",
-      "mcp": "MCP"
+      "mcp": "MCP",
+      "about": "About"
     },
     "appearance": "Appearance",
     "language": "Language",
@@ -152,6 +153,21 @@
       "promptLabel": "Agent instructions",
       "copy": "Copy for AI",
       "copied": "Copied"
+    },
+    "about": {
+      "iconAlt": "hajimi app icon",
+      "version": "Version {{version}}",
+      "description": "A fast, local-first file search tool for finding files and folders on your Mac.",
+      "attributionPrefix": "hajimi is based on ",
+      "attributionProject": "Cardinal",
+      "attributionSuffix": " by cardisoft and its contributors, with additional features and refinements.",
+      "autoCheck": "Check for updates automatically",
+      "frequency": "Check frequency",
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "github": "Star on GitHub",
+      "checkUpdates": "Check for updates"
     },
     "hideEmptyResults": {
       "label": "Hide results when search is empty"
@@ -176,6 +192,18 @@
     "save": "Save",
     "reset": "Restore defaults",
     "close": "Close"
+  },
+  "updates": {
+    "title": "Software Update",
+    "checking": "Checking for updates...",
+    "availableTitle": "A new version is available",
+    "availableDescription": "hajimi {{version}} is available. You are using {{currentVersion}}.",
+    "upToDate": "hajimi is up to date.",
+    "error": "Unable to check for updates. Please try again later.",
+    "download": "Open GitHub release",
+    "close": "Close",
+    "currentVersion": "Current: {{version}}",
+    "latestVersion": "Latest: {{version}}"
   },
   "language": {
     "label": "Language",

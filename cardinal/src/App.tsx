@@ -32,9 +32,29 @@ import { useAppWindowListeners } from './hooks/useAppWindowListeners';
 import { useFilesTabEffects } from './hooks/useFilesTabEffects';
 import { useFilesTabState } from './hooks/useFilesTabState';
 import { useSearchDisplayPreferences } from './hooks/useSearchDisplayPreferences';
+import { useAppUpdate } from './hooks/useAppUpdate';
 import { open as openDirectoryDialog } from '@tauri-apps/plugin-dialog';
+import UpdateDialog from './components/UpdateDialog';
 
 function App() {
+  const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
+  const {
+    appVersion,
+    autoUpdateEnabled,
+    setAutoUpdateEnabled,
+    updateCheckFrequency,
+    setUpdateCheckFrequency,
+    resetUpdatePreferences,
+    updateState,
+    checkForUpdates,
+  } = useAppUpdate();
+
+  useEffect(() => {
+    if (updateState.status === 'available') {
+      setIsUpdateDialogOpen(true);
+    }
+  }, [updateState.status]);
+
   const quitApp = useCallback(() => {
     void invoke('quit_app').catch((error) => {
       console.error('Failed to quit hajimi', error);
@@ -233,7 +253,8 @@ function App() {
   const handleResetPreferences = useCallback(() => {
     resetSearchDisplayPreferences();
     handleResetPreferencesFromApp();
-  }, [handleResetPreferencesFromApp, resetSearchDisplayPreferences]);
+    resetUpdatePreferences();
+  }, [handleResetPreferencesFromApp, resetSearchDisplayPreferences, resetUpdatePreferences]);
 
   useAppWindowListeners({
     activeTab,
@@ -526,6 +547,21 @@ function App() {
         defaultIncludePaths={defaultIncludePaths}
         onReset={handleResetPreferences}
         themeResetToken={preferencesResetToken}
+        appVersion={appVersion}
+        autoUpdateEnabled={autoUpdateEnabled}
+        onAutoUpdateEnabledChange={setAutoUpdateEnabled}
+        updateCheckFrequency={updateCheckFrequency}
+        onUpdateCheckFrequencyChange={setUpdateCheckFrequency}
+        onCheckForUpdates={() => {
+          setIsUpdateDialogOpen(true);
+          void checkForUpdates();
+        }}
+      />
+      <UpdateDialog
+        open={isUpdateDialogOpen}
+        currentVersion={appVersion}
+        state={updateState}
+        onClose={() => setIsUpdateDialogOpen(false)}
       />
       {showFullDiskAccessOverlay && (
         <PermissionOverlay
