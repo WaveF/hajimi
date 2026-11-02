@@ -30,6 +30,9 @@ type PreferencesOverlayProps = {
   globalShortcut: string;
   defaultGlobalShortcut: string;
   onGlobalShortcutChange: (shortcut: string) => Promise<void> | void;
+  caseSensitiveShortcut: string;
+  defaultCaseSensitiveShortcut: string;
+  onCaseSensitiveShortcutChange: (shortcut: string) => void;
   onQuit: () => void;
   watchRoot: string;
   defaultWatchRoot: string;
@@ -52,7 +55,7 @@ type PreferencesOverlayProps = {
   onCheckForUpdates: () => void;
 };
 
-type PreferencesSectionId = 'general' | 'search' | 'indexing' | 'mcp' | 'about';
+type PreferencesSectionId = 'general' | 'search' | 'indexing' | 'shortcuts' | 'mcp' | 'about';
 
 type McpConnectionInfo = {
   available: boolean;
@@ -67,6 +70,7 @@ const PREFERENCES_NAV_ITEMS: Array<{
   { id: 'general', labelKey: 'preferences.nav.general' },
   { id: 'search', labelKey: 'preferences.nav.search' },
   { id: 'indexing', labelKey: 'preferences.nav.indexing' },
+  { id: 'shortcuts', labelKey: 'preferences.nav.shortcuts' },
   { id: 'mcp', labelKey: 'preferences.nav.mcp' },
   { id: 'about', labelKey: 'preferences.nav.about' },
 ];
@@ -106,6 +110,11 @@ function PreferencesNavIcon({
           <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4h13A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5z" />
           <path d="M8 8h8M8 12h8M8 16h5" />
         </>
+      ) : section === 'shortcuts' ? (
+        <>
+          <rect x="4" y="6" width="16" height="12" rx="2" />
+          <path d="M7 9h.01M10 9h.01M13 9h.01M16 9h.01M7 12h.01M10 12h.01M13 12h.01M16 12h.01M7 15h6" />
+        </>
       ) : section === 'mcp' ? (
         <>
           <path d="M12 3v4" />
@@ -142,6 +151,9 @@ export function PreferencesOverlay({
   globalShortcut,
   defaultGlobalShortcut,
   onGlobalShortcutChange,
+  caseSensitiveShortcut,
+  defaultCaseSensitiveShortcut,
+  onCaseSensitiveShortcutChange,
   onQuit,
   watchRoot,
   defaultWatchRoot,
@@ -165,6 +177,12 @@ export function PreferencesOverlay({
   const [ignorePathsInput, setIgnorePathsInput] = useState<string>(() => ignorePaths.join('\n'));
   const [includePathsInput, setIncludePathsInput] = useState<string>(() => includePaths.join('\n'));
   const [globalShortcutInput, setGlobalShortcutInput] = useState<string>(() => globalShortcut);
+  const [caseSensitiveShortcutInput, setCaseSensitiveShortcutInput] = useState<string>(
+    () => caseSensitiveShortcut,
+  );
+  const [activeShortcutInput, setActiveShortcutInput] = useState<'global' | 'caseSensitive' | null>(
+    null,
+  );
   const [globalShortcutError, setGlobalShortcutError] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [activeSection, setActiveSection] = useState<PreferencesSectionId>('general');
@@ -177,6 +195,8 @@ export function PreferencesOverlay({
     const command = JSON.stringify(executablePath);
     const discovery = JSON.stringify(discoveryPath);
     return `Use hajimi as a local MCP server for file search and file navigation.
+
+hajimi supports only one normal GUI instance. Reuse the currently running hajimi instance and its MCP bridge; do not launch a second GUI instance.
 
 MCP client configuration:
 {
@@ -268,8 +288,10 @@ Use search_files before opening a path when the exact path is unknown. Confirm a
     setIgnorePathsInput(ignorePaths.join('\n'));
     setIncludePathsInput(includePaths.join('\n'));
     setGlobalShortcutInput(globalShortcut);
+    setCaseSensitiveShortcutInput(caseSensitiveShortcut);
     setGlobalShortcutError(false);
-  }, [open, watchRoot, ignorePaths, includePaths, globalShortcut]);
+    setActiveShortcutInput(null);
+  }, [open, watchRoot, ignorePaths, includePaths, globalShortcut, caseSensitiveShortcut]);
 
   const handleGlobalShortcutKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
     event.stopPropagation();
@@ -291,6 +313,33 @@ Use search_files before opening a path when the exact path is unknown. Confirm a
   const clearGlobalShortcut = (): void => {
     setGlobalShortcutInput('');
     setGlobalShortcutError(false);
+  };
+
+  const handleCaseSensitiveShortcutKeyDown = (
+    event: React.KeyboardEvent<HTMLInputElement>,
+  ): void => {
+    event.stopPropagation();
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      setCaseSensitiveShortcutInput('');
+      return;
+    }
+
+    const shortcut = shortcutFromKeyboardEvent(event.nativeEvent);
+    event.preventDefault();
+    if (shortcut) {
+      setCaseSensitiveShortcutInput(shortcut);
+    }
+  };
+
+  const clearCaseSensitiveShortcut = (): void => {
+    setCaseSensitiveShortcutInput('');
+  };
+
+  const handleShortcutBlur = (shortcut: 'global' | 'caseSensitive'): void => {
+    setActiveShortcutInput((activeShortcut) =>
+      activeShortcut === shortcut ? null : activeShortcut,
+    );
   };
 
   const commitThreshold = useCallback(() => {
@@ -357,6 +406,11 @@ Use search_files before opening a path when the exact path is unknown. Confirm a
       }
     }
 
+    const trimmedCaseSensitiveShortcut = caseSensitiveShortcutInput.trim();
+    if (trimmedCaseSensitiveShortcut !== caseSensitiveShortcut) {
+      onCaseSensitiveShortcutChange(trimmedCaseSensitiveShortcut);
+    }
+
     commitThreshold();
     const trimmedWatchRoot = watchRootInput.trim();
     onWatchConfigChange({
@@ -376,6 +430,7 @@ Use search_files before opening a path when the exact path is unknown. Confirm a
     setIgnorePathsInput(defaultIgnorePaths.join('\n'));
     setIncludePathsInput(defaultIncludePaths.join('\n'));
     setGlobalShortcutInput(defaultGlobalShortcut);
+    setCaseSensitiveShortcutInput(defaultCaseSensitiveShortcut);
     setGlobalShortcutError(false);
     onReset();
   };
@@ -513,61 +568,6 @@ Use search_files before opening a path when the exact path is unknown. Confirm a
                         />
                         <span className="preferences-switch__track" aria-hidden="true" />
                       </label>
-                    </div>
-                  </div>
-                  <div className="preferences-row">
-                    <div className="preferences-row__details">
-                      <p className="preferences-label">{t('preferences.globalShortcut.label')}</p>
-                    </div>
-                    <div className="preferences-control preferences-shortcut-control">
-                      <div className="preferences-shortcut-input-row">
-                        <div className="preferences-shortcut-input-shell">
-                          <input
-                            className="preferences-field preferences-shortcut-input"
-                            type="text"
-                            value={formatShortcutForDisplay(globalShortcutInput)}
-                            onKeyDown={handleGlobalShortcutKeyDown}
-                            onChange={() => {}}
-                            placeholder={t('preferences.globalShortcut.placeholder')}
-                            aria-label={t('preferences.globalShortcut.label')}
-                            readOnly
-                            autoComplete="off"
-                            spellCheck={false}
-                          />
-                          {globalShortcutInput ? (
-                            <button
-                              className="preferences-shortcut-clear"
-                              type="button"
-                              onClick={clearGlobalShortcut}
-                              aria-label={t('preferences.globalShortcut.clear')}
-                            >
-                              <svg
-                                className="preferences-shortcut-clear__icon"
-                                width="16"
-                                height="16"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                aria-hidden="true"
-                              >
-                                <circle cx="12" cy="12" r="9" />
-                                <path d="m9 9 6 6M15 9l-6 6" />
-                              </svg>
-                            </button>
-                          ) : null}
-                        </div>
-                      </div>
-                      {globalShortcutError ? (
-                        <p
-                          className="permission-status permission-status--error preferences-field-error"
-                          role="status"
-                          aria-live="polite"
-                        >
-                          {t('preferences.globalShortcut.errors.unavailable')}
-                        </p>
-                      ) : null}
                     </div>
                   </div>
                 </div>
@@ -737,6 +737,139 @@ Use search_files before opening a path when the exact path is unknown. Confirm a
                 </div>
               </section>
 
+              <section id="preferences-section-shortcuts" className="preferences-group">
+                <div className="preferences-group__header">
+                  <h2 className="preferences-group__title">{t('preferences.nav.shortcuts')}</h2>
+                </div>
+                <div className="preferences-settings-card">
+                  <div className="preferences-row">
+                    <div className="preferences-row__details">
+                      <p className="preferences-label">
+                        {t('preferences.shortcuts.toggleVisibility')}
+                      </p>
+                    </div>
+                    <div className="preferences-control preferences-shortcut-control">
+                      <div className="preferences-shortcut-input-row">
+                        <div className="preferences-shortcut-input-shell">
+                          <input
+                            className={`preferences-field preferences-shortcut-input${
+                              activeShortcutInput === 'global'
+                                ? ' preferences-shortcut-input--active'
+                                : ''
+                            }`}
+                            type="text"
+                            value={formatShortcutForDisplay(globalShortcutInput)}
+                            onKeyDown={handleGlobalShortcutKeyDown}
+                            onChange={() => {}}
+                            onFocus={() => setActiveShortcutInput('global')}
+                            onBlur={() => handleShortcutBlur('global')}
+                            placeholder={t(
+                              activeShortcutInput === 'global'
+                                ? 'preferences.globalShortcut.recording'
+                                : 'preferences.globalShortcut.empty',
+                            )}
+                            aria-label={t('preferences.shortcuts.toggleVisibility')}
+                            readOnly
+                            autoComplete="off"
+                            spellCheck={false}
+                          />
+                          {globalShortcutInput ? (
+                            <button
+                              className="preferences-shortcut-clear"
+                              type="button"
+                              onClick={clearGlobalShortcut}
+                              aria-label={t('preferences.globalShortcut.clear')}
+                            >
+                              <svg
+                                className="preferences-shortcut-clear__icon"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                aria-hidden="true"
+                              >
+                                <circle cx="12" cy="12" r="9" />
+                                <path d="m9 9 6 6M15 9l-6 6" />
+                              </svg>
+                            </button>
+                          ) : null}
+                        </div>
+                      </div>
+                      {globalShortcutError ? (
+                        <p
+                          className="permission-status permission-status--error preferences-field-error"
+                          role="status"
+                          aria-live="polite"
+                        >
+                          {t('preferences.globalShortcut.errors.unavailable')}
+                        </p>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div className="preferences-row">
+                    <div className="preferences-row__details">
+                      <p className="preferences-label">
+                        {t('preferences.shortcuts.caseSensitive')}
+                      </p>
+                    </div>
+                    <div className="preferences-control preferences-shortcut-control">
+                      <div className="preferences-shortcut-input-row">
+                        <div className="preferences-shortcut-input-shell">
+                          <input
+                            className={`preferences-field preferences-shortcut-input${
+                              activeShortcutInput === 'caseSensitive'
+                                ? ' preferences-shortcut-input--active'
+                                : ''
+                            }`}
+                            type="text"
+                            value={formatShortcutForDisplay(caseSensitiveShortcutInput)}
+                            onKeyDown={handleCaseSensitiveShortcutKeyDown}
+                            onChange={() => {}}
+                            onFocus={() => setActiveShortcutInput('caseSensitive')}
+                            onBlur={() => handleShortcutBlur('caseSensitive')}
+                            placeholder={t(
+                              activeShortcutInput === 'caseSensitive'
+                                ? 'preferences.globalShortcut.recording'
+                                : 'preferences.globalShortcut.empty',
+                            )}
+                            aria-label={t('preferences.shortcuts.caseSensitive')}
+                            readOnly
+                            autoComplete="off"
+                            spellCheck={false}
+                          />
+                          {caseSensitiveShortcutInput ? (
+                            <button
+                              className="preferences-shortcut-clear"
+                              type="button"
+                              onClick={clearCaseSensitiveShortcut}
+                              aria-label={t('preferences.globalShortcut.clear')}
+                            >
+                              <svg
+                                className="preferences-shortcut-clear__icon"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                aria-hidden="true"
+                              >
+                                <circle cx="12" cy="12" r="9" />
+                                <path d="m9 9 6 6M15 9l-6 6" />
+                              </svg>
+                            </button>
+                          ) : null}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
               <section id="preferences-section-mcp" className="preferences-group preferences-mcp">
                 <div className="preferences-group__header">
                   <h2 className="preferences-group__title">{t('preferences.nav.mcp')}</h2>
@@ -760,7 +893,7 @@ Use search_files before opening a path when the exact path is unknown. Confirm a
                       {t('preferences.mcp.promptLabel')}
                     </label>
                     <button
-                      className="preferences-mcp__copy"
+                      className="app-button app-button--primary preferences-mcp__copy"
                       type="button"
                       onClick={() => void copyMcpPrompt()}
                       disabled={!mcpInfo?.available}
@@ -858,7 +991,7 @@ Use search_files before opening a path when the exact path is unknown. Confirm a
                 </div>
                 <div className="preferences-about__actions">
                   <button
-                    className="preferences-about__secondary"
+                    className="app-button app-button--secondary preferences-about__secondary"
                     type="button"
                     onClick={() =>
                       void openUrl(GITHUB_REPOSITORY_URL).catch((error) => {
@@ -869,7 +1002,7 @@ Use search_files before opening a path when the exact path is unknown. Confirm a
                     {t('preferences.about.github')}
                   </button>
                   <button
-                    className="preferences-about__primary"
+                    className="app-button app-button--primary preferences-about__primary"
                     type="button"
                     onClick={onCheckForUpdates}
                   >
@@ -879,11 +1012,15 @@ Use search_files before opening a path when the exact path is unknown. Confirm a
               </section>
             </div>
             <footer className="preferences-card__footer">
-              <button className="preferences-reset" type="button" onClick={handleReset}>
+              <button
+                className="app-button app-button--secondary preferences-reset"
+                type="button"
+                onClick={handleReset}
+              >
                 {t('preferences.reset')}
               </button>
               <button
-                className="preferences-save"
+                className="app-button app-button--primary preferences-save"
                 type="button"
                 onClick={handleSave}
                 disabled={

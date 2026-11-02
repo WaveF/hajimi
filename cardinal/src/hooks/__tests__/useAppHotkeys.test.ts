@@ -31,6 +31,8 @@ type HookProps = {
   clearSelection: () => void;
   navigateSelection: (delta: 1 | -1, options?: { extend?: boolean }) => void;
   triggerQuickLook: () => void;
+  caseSensitiveShortcut: string;
+  onToggleCaseSensitive: () => void;
 };
 
 describe('useAppHotkeys', () => {
@@ -40,6 +42,7 @@ describe('useAppHotkeys', () => {
   const clearSelection = vi.fn();
   const navigateSelection = vi.fn();
   const triggerQuickLook = vi.fn();
+  const onToggleCaseSensitive = vi.fn();
 
   let quickLookListener: ((payload: any) => void) | null;
 
@@ -55,6 +58,8 @@ describe('useAppHotkeys', () => {
         clearSelection,
         navigateSelection,
         triggerQuickLook,
+        caseSensitiveShortcut: '',
+        onToggleCaseSensitive,
         ...overrides,
       },
     });
@@ -117,6 +122,23 @@ describe('useAppHotkeys', () => {
     expect(mockedInvoke).toHaveBeenCalledWith('copy_files_to_clipboard', {
       paths: ['/tmp/a', '/tmp/b'],
     });
+  });
+
+  it('handles the configured local case-sensitive search shortcut', () => {
+    renderHotkeys({ caseSensitiveShortcut: 'CommandOrControl+S' });
+
+    const caseSensitiveEvent = new KeyboardEvent('keydown', {
+      key: 's',
+      code: 'KeyS',
+      metaKey: true,
+      cancelable: true,
+    });
+    act(() => {
+      window.dispatchEvent(caseSensitiveEvent);
+    });
+
+    expect(onToggleCaseSensitive).toHaveBeenCalledTimes(1);
+    expect(caseSensitiveEvent.defaultPrevented).toBe(true);
   });
 
   it('does not override native copy shortcuts inside editable fields', () => {
@@ -249,6 +271,8 @@ describe('useAppHotkeys', () => {
       clearSelection,
       navigateSelection,
       triggerQuickLook,
+      caseSensitiveShortcut: '',
+      onToggleCaseSensitive,
     });
 
     navigateSelection.mockClear();

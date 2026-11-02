@@ -140,8 +140,8 @@
       "label": "Doppelklick auf die Pfadspalte öffnet den übergeordneten Ordner"
     },
     "globalShortcut": {
-      "label": "Global shortcut",
-      "placeholder": "Press a key combination",
+      "empty": "Nicht festgelegt",
+      "recording": "Tastenkombination drücken",
       "clear": "Clear",
       "errors": {
         "unavailable": "This shortcut is unavailable or already in use."

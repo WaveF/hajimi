@@ -68,6 +68,9 @@ function App() {
     setRefreshEventsOnlyWhenActive,
     openDirectoryOnPathDoubleClick,
     setOpenDirectoryOnPathDoubleClick,
+    caseSensitiveShortcut,
+    defaultCaseSensitiveShortcut,
+    setCaseSensitiveShortcut,
     resetSearchDisplayPreferences,
   } = useSearchDisplayPreferences();
   const {
@@ -262,12 +265,16 @@ function App() {
     focusAndSelectSearchInput,
     handleStatusUpdate,
     setLifecycleState,
+    closePreferences,
     submitFilesQuery,
     setEventFilterQuery,
   });
 
   const navigateSelection = useStableEvent(moveSelection);
   const triggerQuickLook = useStableEvent(toggleQuickLook);
+  const toggleCaseSensitive = useCallback(() => {
+    updateSearchParams({ caseSensitive: !caseSensitive });
+  }, [caseSensitive, updateSearchParams]);
 
   useAppHotkeys({
     activeTab,
@@ -279,6 +286,8 @@ function App() {
     clearSelection,
     navigateSelection,
     triggerQuickLook,
+    caseSensitiveShortcut,
+    onToggleCaseSensitive: toggleCaseSensitive,
   });
 
   useFilesTabEffects({
@@ -537,6 +546,9 @@ function App() {
         globalShortcut={globalShortcut}
         defaultGlobalShortcut={defaultGlobalShortcut}
         onGlobalShortcutChange={handleGlobalShortcutChange}
+        caseSensitiveShortcut={caseSensitiveShortcut}
+        defaultCaseSensitiveShortcut={defaultCaseSensitiveShortcut}
+        onCaseSensitiveShortcutChange={setCaseSensitiveShortcut}
         onQuit={quitApp}
         watchRoot={watchRoot ?? defaultWatchRoot}
         defaultWatchRoot={defaultWatchRoot}
@@ -572,6 +584,8 @@ function App() {
           onRequestPermission={requestFullDiskAccessPermission}
           disabled={isCheckingFullDiskAccess}
           actionLabel={openSettingsLabel}
+          quitLabel={t('tray.quit')}
+          onQuit={quitApp}
         />
       )}
     </>

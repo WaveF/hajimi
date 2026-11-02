@@ -140,8 +140,8 @@
       "label": "Al hacer doble clic en la columna de ruta se abre la carpeta contenedora"
     },
     "globalShortcut": {
-      "label": "Global shortcut",
-      "placeholder": "Press a key combination",
+      "empty": "No establecido",
+      "recording": "Pulsa una combinación de teclas",
       "clear": "Clear",
       "errors": {
         "unavailable": "This shortcut is unavailable or already in use."

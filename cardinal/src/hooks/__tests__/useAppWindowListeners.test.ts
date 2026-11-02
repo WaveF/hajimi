@@ -27,6 +27,7 @@ type HookProps = {
   focusAndSelectSearchInput: () => void;
   handleStatusUpdate: (scannedFiles: number, processedEvents: number, rescanErrors: number) => void;
   setLifecycleState: (status: 'Initializing' | 'Updating' | 'Ready') => void;
+  closePreferences: () => void;
   submitFilesQuery: (query: string, options?: { immediate?: boolean }) => void;
   setEventFilterQuery: (query: string) => void;
 };
@@ -40,6 +41,7 @@ describe('useAppWindowListeners', () => {
   const focusAndSelectSearchInput = vi.fn();
   const handleStatusUpdate = vi.fn();
   const setLifecycleState = vi.fn();
+  const closePreferences = vi.fn();
   const submitFilesQuery = vi.fn();
   const setEventFilterQuery = vi.fn();
   const searchInputRef: { current: HTMLInputElement | null } = { current: null };
@@ -61,6 +63,7 @@ describe('useAppWindowListeners', () => {
         focusAndSelectSearchInput,
         handleStatusUpdate,
         setLifecycleState,
+        closePreferences,
         submitFilesQuery,
         setEventFilterQuery,
         ...overrides,
@@ -124,6 +127,7 @@ describe('useAppWindowListeners', () => {
       quickLaunchCallback?.();
     });
     expect(focusAndSelectSearchInput).toHaveBeenCalledTimes(1);
+    expect(closePreferences).toHaveBeenCalledTimes(1);
   });
 
   it('handles drag-drop search routing for files and events tabs', async () => {
@@ -149,6 +153,7 @@ describe('useAppWindowListeners', () => {
       focusAndSelectSearchInput,
       handleStatusUpdate,
       setLifecycleState,
+      closePreferences,
       submitFilesQuery,
       setEventFilterQuery,
     });

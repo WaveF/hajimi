@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "hajimi",
-  "version": "0.1.24",
+  "version": "0.1.25",
   "identifier": "com.hajimi.one",
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -25,7 +25,7 @@
     "active": true,
     "targets": "all",
     "category": "Utilities",
-    "resources": ["icons/tray-search.png"],
+    "resources": ["icons/hajimi-tray.png"],
     "macOS": {
       "signingIdentity": "-",
       "minimumSystemVersion": "12.0"

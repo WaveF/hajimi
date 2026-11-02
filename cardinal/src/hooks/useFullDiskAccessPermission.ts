@@ -22,11 +22,20 @@ export function useFullDiskAccessPermission(): UseFullDiskAccessPermissionResult
   const [status, setStatus] = useState<FullDiskAccessStatus>('granted');
   const [isChecking, setIsChecking] = useState(true);
   const hasLoggedPermissionStatusRef = useRef(false);
+  const isCheckingRef = useRef(false);
+  const waitingForPermissionReturnRef = useRef(false);
 
   const refreshStatus = useCallback(async () => {
+    if (isCheckingRef.current) {
+      return;
+    }
+
+    isCheckingRef.current = true;
+
     if (skipPermissionCheck) {
       setStatus('granted');
       setIsChecking(false);
+      isCheckingRef.current = false;
       return;
     }
 
@@ -43,6 +52,7 @@ export function useFullDiskAccessPermission(): UseFullDiskAccessPermissionResult
       setStatus('denied');
     } finally {
       setIsChecking(false);
+      isCheckingRef.current = false;
     }
   }, []);
 
@@ -52,16 +62,20 @@ export function useFullDiskAccessPermission(): UseFullDiskAccessPermissionResult
 
   useEffect(() => {
     const refreshWhenAppReturns = () => {
+      if (!waitingForPermissionReturnRef.current) {
+        return;
+      }
+      waitingForPermissionReturnRef.current = false;
       void refreshStatus();
     };
     const refreshWhenVisible = () => {
       if (document.visibilityState === 'visible') {
-        void refreshStatus();
+        refreshWhenAppReturns();
       }
     };
 
-    // System Settings is a separate app. Re-check when the user returns so a
-    // newly granted permission is reflected without requiring a restart.
+    // System Settings is a separate app. Only re-check after this app explicitly
+    // opened System Settings; focus and visibility can both fire on return.
     window.addEventListener('focus', refreshWhenAppReturns);
     document.addEventListener('visibilitychange', refreshWhenVisible);
 
@@ -72,12 +86,14 @@ export function useFullDiskAccessPermission(): UseFullDiskAccessPermissionResult
   }, [refreshStatus]);
 
   const requestPermission = useCallback(async () => {
+    waitingForPermissionReturnRef.current = true;
     try {
       await requestNativeFullDiskAccessPermission();
-    } finally {
-      await refreshStatus();
+    } catch (error) {
+      waitingForPermissionReturnRef.current = false;
+      console.error('Failed to open Full Disk Access settings', error);
     }
-  }, [refreshStatus]);
+  }, []);
 
   return {
     status,

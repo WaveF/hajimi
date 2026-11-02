@@ -139,8 +139,8 @@
       "label": "雙擊路徑欄開啟所在目錄"
     },
     "globalShortcut": {
-      "label": "全域 顯示/隱藏 熱鍵",
-      "placeholder": "按下快捷鍵組合",
+      "empty": "未設定",
+      "recording": "按下快捷鍵組合",
       "clear": "清除",
       "errors": {
         "unavailable": "此快捷鍵無法使用或已被佔用。"

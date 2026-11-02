@@ -140,8 +140,8 @@
       "label": "Подвійне клацання стовпця шляху відкриває батьківську папку"
     },
     "globalShortcut": {
-      "label": "Global shortcut",
-      "placeholder": "Press a key combination",
+      "empty": "Не встановлено",
+      "recording": "Натисніть комбінацію клавіш",
       "clear": "Clear",
       "errors": {
         "unavailable": "This shortcut is unavailable or already in use."

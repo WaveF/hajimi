@@ -140,8 +140,8 @@
       "label": "Un doppio clic sulla colonna del percorso apre la cartella contenitore"
     },
     "globalShortcut": {
-      "label": "Global shortcut",
-      "placeholder": "Press a key combination",
+      "empty": "Non impostato",
+      "recording": "Premi una combinazione di tasti",
       "clear": "Clear",
       "errors": {
         "unavailable": "This shortcut is unavailable or already in use."

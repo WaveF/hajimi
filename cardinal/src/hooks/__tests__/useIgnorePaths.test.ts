@@ -15,6 +15,10 @@ const EXPECTED_DEFAULT_IGNORE_PATHS = [
   '/System/Library/Caches',
   '/private/var',
   '/private/tmp',
+  'node_modules/',
+  '.venv/',
+  '__pycache__/',
+  '.git/',
 ];
 
 const flushEffects = async () => {
@@ -40,7 +44,7 @@ describe('useIgnorePaths', () => {
 
     await flushEffects();
 
-    expect(setItemSpy).not.toHaveBeenCalled();
+    expect(setItemSpy).not.toHaveBeenCalledWith(STORAGE_KEY, expect.anything());
   });
 
   it('uses defaults and persists when no stored value exists', async () => {
@@ -71,6 +75,22 @@ describe('useIgnorePaths', () => {
     expect(result.current.defaultIgnorePaths).toContain('~/Library/Metadata');
     expect(result.current.defaultIgnorePaths).toContain('/private/var');
     expect(result.current.defaultIgnorePaths).toContain('/private/tmp');
+    expect(result.current.defaultIgnorePaths).toContain('node_modules/');
+    expect(result.current.defaultIgnorePaths).toContain('.venv/');
+    expect(result.current.defaultIgnorePaths).toContain('__pycache__/');
+    expect(result.current.defaultIgnorePaths).toContain('.git/');
+  });
+
+  it('migrates an untouched legacy default list with development directories once', async () => {
+    const legacyDefaults = EXPECTED_DEFAULT_IGNORE_PATHS.slice(0, 10);
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(legacyDefaults));
+
+    const { result } = renderHook(() => useIgnorePaths());
+
+    await flushEffects();
+
+    expect(result.current.ignorePaths).toEqual(EXPECTED_DEFAULT_IGNORE_PATHS);
+    expect(window.localStorage.getItem('hajimi.ignorePathsDefaultsVersion')).toBe('2');
   });
 
   it('keeps an empty stored array without writing defaults', async () => {
@@ -83,7 +103,7 @@ describe('useIgnorePaths', () => {
 
     await flushEffects();
 
-    expect(setItemSpy).not.toHaveBeenCalled();
+    expect(setItemSpy).not.toHaveBeenCalledWith(STORAGE_KEY, expect.anything());
   });
 
   it('cleans and persists updates', async () => {

@@ -140,8 +140,8 @@
       "label": "Двойной щелчок по столбцу пути открывает содержащую папку"
     },
     "globalShortcut": {
-      "label": "Global shortcut",
-      "placeholder": "Press a key combination",
+      "empty": "Не задано",
+      "recording": "Нажмите сочетание клавиш",
       "clear": "Clear",
       "errors": {
         "unavailable": "This shortcut is unavailable or already in use."

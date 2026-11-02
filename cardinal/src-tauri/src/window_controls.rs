@@ -1,4 +1,6 @@
 use crate::commands::SearchState;
+#[cfg(target_os = "macos")]
+use tauri::ActivationPolicy;
 use tauri::{AppHandle, Emitter, Manager, Runtime, WebviewWindow};
 use tracing::{error, info, warn};
 
@@ -9,7 +11,26 @@ pub enum WindowToggle {
     Failed,
 }
 
+pub fn set_application_visibility<R: Runtime>(app: &AppHandle<R>, visible: bool) {
+    #[cfg(target_os = "macos")]
+    {
+        let policy = if visible {
+            ActivationPolicy::Regular
+        } else {
+            ActivationPolicy::Accessory
+        };
+        if let Err(err) = app.set_activation_policy(policy) {
+            error!(?err, visible, "Failed to set macOS activation policy");
+        }
+        if let Err(err) = app.set_dock_visibility(visible) {
+            error!(?err, visible, "Failed to set macOS Dock visibility");
+        }
+    }
+}
+
 pub fn activate_window<R: Runtime>(window: &WebviewWindow<R>) {
+    set_application_visibility(&window.app_handle(), true);
+
     if let Ok(true) = window.is_minimized()
         && let Err(err) = window.unminimize()
     {
@@ -32,6 +53,7 @@ pub fn hide_window<R: Runtime>(window: &WebviewWindow<R>) -> bool {
         error!(?err, "Failed to hide window");
         return false;
     }
+    set_application_visibility(&window.app_handle(), false);
     true
 }
 
@@ -81,6 +103,19 @@ pub fn activate_main_window_impl(app: &AppHandle) {
         }
     } else {
         warn!("Activate requested but main window is unavailable");
+    }
+}
+
+#[cfg(not(feature = "dev"))]
+pub fn wake_main_window_impl(app: &AppHandle) {
+    if let Some(window) = app.get_webview_window("main") {
+        trigger_quick_launch(&window);
+        info!("Main window woken via secondary instance request");
+        if let Some(state) = app.try_state::<SearchState>() {
+            let _ = state.update_window_state_tx.try_send(());
+        }
+    } else {
+        warn!("Wake requested but main window is unavailable");
     }
 }
 

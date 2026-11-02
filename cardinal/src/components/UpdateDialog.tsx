@@ -66,7 +66,11 @@ export default function UpdateDialog({
                 <span>{t('updates.currentVersion', { version: currentVersion })}</span>
                 <span>{t('updates.latestVersion', { version: state.manifest.version })}</span>
               </div>
-              <button className="update-dialog__primary" type="button" onClick={openRelease}>
+              <button
+                className="app-button app-button--primary update-dialog__primary"
+                type="button"
+                onClick={openRelease}
+              >
                 {t('updates.download')}
               </button>
             </>
@@ -76,13 +80,24 @@ export default function UpdateDialog({
             <p>{t('updates.upToDate')}</p>
           )}
         </div>
-        {state.status !== 'checking' && state.status !== 'idle' && state.status !== 'available' ? (
-          <div className="update-dialog__footer">
-            <button className="update-dialog__secondary" type="button" onClick={onClose}>
+        <div
+          className="update-dialog__footer"
+          aria-hidden={
+            state.status === 'checking' || state.status === 'idle' || state.status === 'available'
+          }
+        >
+          {state.status !== 'checking' &&
+          state.status !== 'idle' &&
+          state.status !== 'available' ? (
+            <button
+              className="app-button app-button--secondary update-dialog__secondary"
+              type="button"
+              onClick={onClose}
+            >
               {t('updates.close')}
             </button>
-          </div>
-        ) : null}
+          ) : null}
+        </div>
       </div>
     </div>
   );

@@ -25,7 +25,7 @@ use search_cache::{
 use search_cancel::CancellationToken;
 use serde::{Deserialize, Serialize};
 use std::{cell::LazyCell, process::Command};
-use tauri::{ActivationPolicy, AppHandle, State};
+use tauri::{AppHandle, State};
 use tracing::{error, info, warn};
 
 #[derive(Debug, Clone)]
@@ -535,17 +535,9 @@ pub async fn toggle_main_window(app: AppHandle) {
 }
 
 #[tauri::command]
-pub async fn set_tray_activation_policy(app: AppHandle, enabled: bool) {
+pub async fn set_tray_activation_policy(app: AppHandle, _enabled: bool) {
     let app_handle = app.clone();
     if let Err(e) = app.run_on_main_thread(move || {
-        let policy = if enabled {
-            ActivationPolicy::Accessory
-        } else {
-            ActivationPolicy::Regular
-        };
-        if let Err(e) = app_handle.set_activation_policy(policy) {
-            error!("Failed to set activation policy: {e:?}");
-        }
         activate_main_window_impl(&app_handle);
     }) {
         error!("Failed to dispatch activation policy update: {e:?}");

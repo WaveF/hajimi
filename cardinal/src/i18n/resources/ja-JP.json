@@ -140,8 +140,8 @@
       "label": "パス列をダブルクリックすると親フォルダを開く"
     },
     "globalShortcut": {
-      "label": "Global shortcut",
-      "placeholder": "Press a key combination",
+      "empty": "未設定",
+      "recording": "キーの組み合わせを押してください",
       "clear": "Clear",
       "errors": {
         "unavailable": "This shortcut is unavailable or already in use."

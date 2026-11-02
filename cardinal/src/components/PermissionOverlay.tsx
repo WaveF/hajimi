@@ -8,6 +8,8 @@ type PermissionOverlayProps = {
   onRequestPermission: () => void;
   disabled: boolean;
   actionLabel: string;
+  quitLabel: string;
+  onQuit: () => void;
 };
 
 export function PermissionOverlay({
@@ -18,6 +20,8 @@ export function PermissionOverlay({
   onRequestPermission,
   disabled,
   actionLabel,
+  quitLabel,
+  onQuit,
 }: PermissionOverlayProps): React.JSX.Element {
   return (
     <div className="permission-overlay">
@@ -33,8 +37,16 @@ export function PermissionOverlay({
           {statusMessage}
         </p>
         <div className="permission-actions">
-          <button type="button" onClick={onRequestPermission} disabled={disabled}>
+          <button
+            className="app-button app-button--primary"
+            type="button"
+            onClick={onRequestPermission}
+            disabled={disabled}
+          >
             {actionLabel}
+          </button>
+          <button className="app-button app-button--secondary" type="button" onClick={onQuit}>
+            {quitLabel}
           </button>
         </div>
       </div>

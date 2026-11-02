@@ -140,8 +140,8 @@
       "label": "يؤدي النقر المزدوج على عمود المسار إلى فتح المجلد المحتوي"
     },
     "globalShortcut": {
-      "label": "Global shortcut",
-      "placeholder": "Press a key combination",
+      "empty": "غير مضبوط",
+      "recording": "اضغط مجموعة مفاتيح",
       "clear": "Clear",
       "errors": {
         "unavailable": "This shortcut is unavailable or already in use."

@@ -140,8 +140,8 @@
       "label": "Yol sütununa çift tıklamak içeren klasörü açar"
     },
     "globalShortcut": {
-      "label": "Global shortcut",
-      "placeholder": "Press a key combination",
+      "empty": "Ayarlanmadı",
+      "recording": "Bir tuş kombinasyonuna basın",
       "clear": "Clear",
       "errors": {
         "unavailable": "This shortcut is unavailable or already in use."

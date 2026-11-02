@@ -7,6 +7,7 @@ import {
   type QuickLookKeydownPayload,
 } from '../runtime/tauriEventRuntime';
 import { hasModifierKey } from '../utils/keyboard';
+import { shortcutFromKeyboardEvent } from '../utils/globalShortcuts';
 import { openResultPath } from '../utils/openResultPath';
 import { useStableEvent } from './useStableEvent';
 
@@ -24,6 +25,8 @@ type UseAppHotkeysOptions = {
   clearSelection: () => void;
   navigateSelection: (delta: 1 | -1, options?: MoveSelectionOptions) => void;
   triggerQuickLook: () => void;
+  caseSensitiveShortcut: string;
+  onToggleCaseSensitive: () => void;
 };
 
 const QUICK_LOOK_KEYCODE_DOWN = 125;
@@ -46,6 +49,8 @@ export function useAppHotkeys({
   clearSelection,
   navigateSelection,
   triggerQuickLook,
+  caseSensitiveShortcut,
+  onToggleCaseSensitive,
 }: UseAppHotkeysOptions): void {
   const keyboardStateRef = useRef<{ activeTab: StatusTabKey; activeRowIndex: number | null }>({
     activeTab,
@@ -141,6 +146,20 @@ export function useAppHotkeys({
     return false;
   });
 
+  const handleCaseSensitiveShortcut = useStableEvent((event: KeyboardEvent) => {
+    if (
+      !caseSensitiveShortcut ||
+      event.repeat ||
+      shortcutFromKeyboardEvent(event) !== caseSensitiveShortcut
+    ) {
+      return false;
+    }
+
+    event.preventDefault();
+    onToggleCaseSensitive();
+    return true;
+  });
+
   useEffect(() => {
     if (typeof window === 'undefined') {
       return;
@@ -148,6 +167,10 @@ export function useAppHotkeys({
 
     const handleKeyDown = (event: KeyboardEvent) => {
       const { activeTab: currentTab } = keyboardStateRef.current;
+
+      if (handleCaseSensitiveShortcut(event)) {
+        return;
+      }
 
       if (event.metaKey && handleMetaShortcut(event, currentTab)) {
         return;
@@ -164,7 +187,7 @@ export function useAppHotkeys({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleMetaShortcut, handleFilesNavigation]);
+  }, [handleCaseSensitiveShortcut, handleFilesNavigation, handleMetaShortcut]);
 
   const handleQuickLookKeydown = useStableEvent((payload: QuickLookKeydownPayload) => {
     if (keyboardStateRef.current.activeTab !== 'files') {

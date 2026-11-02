@@ -8,15 +8,15 @@ import {
 
 describe('app update helpers', () => {
   it('compares release versions numerically', () => {
-    expect(compareVersions('0.1.24', '0.1.23')).toBe(1);
+    expect(compareVersions('0.1.25', '0.1.24')).toBe(1);
     expect(compareVersions('v1.2.0', '1.2')).toBe(0);
     expect(compareVersions('1.1.9', '1.2.0')).toBe(-1);
   });
 
   it('normalizes a manifest and derives a release URL when needed', () => {
-    expect(parseUpdateManifest({ version: 'v0.1.24' })).toEqual({
-      version: '0.1.24',
-      releaseUrl: 'https://github.com/WaveF/hajimi/releases/tag/v0.1.24',
+    expect(parseUpdateManifest({ version: 'v0.1.25' })).toEqual({
+      version: '0.1.25',
+      releaseUrl: 'https://github.com/WaveF/hajimi/releases/tag/v0.1.25',
     });
   });
 
@@ -39,17 +39,17 @@ describe('app update helpers', () => {
         ok: true,
         status: 200,
         json: async () => ({
-          tag_name: 'v0.1.24',
-          html_url: 'https://github.com/WaveF/hajimi/releases/tag/v0.1.24',
+          tag_name: 'v0.1.25',
+          html_url: 'https://github.com/WaveF/hajimi/releases/tag/v0.1.25',
         }),
       });
     vi.stubGlobal('fetch', fetchMock);
 
-    await expect(checkForLatestUpdate('0.1.23')).resolves.toEqual({
+    await expect(checkForLatestUpdate('0.1.24')).resolves.toEqual({
       status: 'available',
       manifest: {
-        version: '0.1.24',
-        releaseUrl: 'https://github.com/WaveF/hajimi/releases/tag/v0.1.24',
+        version: '0.1.25',
+        releaseUrl: 'https://github.com/WaveF/hajimi/releases/tag/v0.1.25',
       },
     });
 

@@ -134,6 +134,7 @@
       "general": "General",
       "search": "Search",
       "indexing": "Indexing",
+      "shortcuts": "Shortcuts",
       "mcp": "MCP",
       "about": "About"
     },
@@ -182,12 +183,16 @@
       "label": "Sorting limit"
     },
     "globalShortcut": {
-      "label": "Global shortcut",
-      "placeholder": "Press a key combination",
+      "empty": "Not set",
+      "recording": "Press a key combination",
       "clear": "Clear",
       "errors": {
         "unavailable": "This shortcut is unavailable or already in use."
       }
+    },
+    "shortcuts": {
+      "toggleVisibility": "Show/Hide (Global)",
+      "caseSensitive": "Toggle case-sensitive matching"
     },
     "save": "Save",
     "reset": "Restore defaults",

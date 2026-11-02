@@ -140,8 +140,8 @@
       "label": "Un double-clic sur la colonne du chemin ouvre le dossier parent"
     },
     "globalShortcut": {
-      "label": "Global shortcut",
-      "placeholder": "Press a key combination",
+      "empty": "Non défini",
+      "recording": "Appuyez sur une combinaison de touches",
       "clear": "Clear",
       "errors": {
         "unavailable": "This shortcut is unavailable or already in use."

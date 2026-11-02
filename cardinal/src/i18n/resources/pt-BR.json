@@ -140,8 +140,8 @@
       "label": "Clique duas vezes na coluna de caminho para abrir a pasta contêiner"
     },
     "globalShortcut": {
-      "label": "Global shortcut",
-      "placeholder": "Press a key combination",
+      "empty": "Não definido",
+      "recording": "Pressione uma combinação de teclas",
       "clear": "Clear",
       "errors": {
         "unavailable": "This shortcut is unavailable or already in use."

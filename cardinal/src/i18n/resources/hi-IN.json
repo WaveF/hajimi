@@ -130,8 +130,8 @@
       "label": "पथ कॉलम पर डबल-क्लिक करने से फ़ाइल वाला फ़ोल्डर खुलता है"
     },
     "globalShortcut": {
-      "label": "Global shortcut",
-      "placeholder": "Press a key combination",
+      "empty": "सेट नहीं है",
+      "recording": "कुंजियों का संयोजन दबाएँ",
       "clear": "Clear",
       "errors": {
         "unavailable": "This shortcut is unavailable or already in use."

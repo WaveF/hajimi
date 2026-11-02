@@ -19,11 +19,20 @@ describe('useFullDiskAccessPermission', () => {
     vi.mocked(requestFullDiskAccessPermission).mockResolvedValue(undefined);
   });
 
-  it('rechecks permission when the app regains focus', async () => {
+  it('rechecks permission once when the app returns from System Settings', async () => {
     const { result } = renderHook(() => useFullDiskAccessPermission());
 
     await waitFor(() => expect(checkFullDiskAccessPermission).toHaveBeenCalledTimes(1));
     expect(result.current.status).toBe('denied');
+
+    act(() => {
+      window.dispatchEvent(new Event('focus'));
+    });
+    expect(checkFullDiskAccessPermission).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      await result.current.requestPermission();
+    });
 
     vi.mocked(checkFullDiskAccessPermission).mockResolvedValueOnce(true);
     act(() => {
@@ -44,7 +53,14 @@ describe('useFullDiskAccessPermission', () => {
       await result.current.requestPermission();
     });
 
-    expect(result.current.status).toBe('granted');
+    expect(result.current.status).toBe('denied');
     expect(requestFullDiskAccessPermission).toHaveBeenCalledTimes(1);
+
+    vi.mocked(checkFullDiskAccessPermission).mockResolvedValueOnce(true);
+    act(() => {
+      window.dispatchEvent(new Event('focus'));
+    });
+
+    await waitFor(() => expect(result.current.status).toBe('granted'));
   });
 });

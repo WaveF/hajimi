@@ -1,6 +1,6 @@
 [package]
 name = "hajimi"
-version = "0.1.24"
+version = "0.1.25"
 description = "hajimi is a cross platform file searching tool"
 authors = ["ldm2993593805@163.com"]
 edition = "2024"
@@ -19,6 +19,7 @@ tauri-build = { version = "2", features = [] }
 
 [dependencies]
 tauri = { version = "2", features = ["tray-icon"] }
+tauri-plugin-single-instance = "2"
 tauri-plugin-dialog = "=2.6.0"
 tauri-plugin-opener = "2"
 tauri-plugin-global-shortcut = "2"

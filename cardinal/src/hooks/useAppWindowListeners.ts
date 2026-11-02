@@ -21,6 +21,7 @@ type UseAppWindowListenersOptions = {
   focusAndSelectSearchInput: () => void;
   handleStatusUpdate: (scannedFiles: number, processedEvents: number, rescanErrors: number) => void;
   setLifecycleState: (status: AppLifecycleStatus) => void;
+  closePreferences: () => void;
   submitFilesQuery: (query: string, options?: QueueSearchOptions) => void;
   setEventFilterQuery: (value: string) => void;
 };
@@ -39,6 +40,7 @@ export function useAppWindowListeners({
   focusAndSelectSearchInput,
   handleStatusUpdate,
   setLifecycleState,
+  closePreferences,
   submitFilesQuery,
   setEventFilterQuery,
 }: UseAppWindowListenersOptions): UseAppWindowListenersResult {
@@ -65,10 +67,11 @@ export function useAppWindowListeners({
 
   useEffect(() => {
     const unlistenQuickLaunch = subscribeQuickLaunch(() => {
+      closePreferences();
       focusAndSelectSearchInput();
     });
     return unlistenQuickLaunch;
-  }, [focusAndSelectSearchInput]);
+  }, [closePreferences, focusAndSelectSearchInput]);
 
   useEffect(() => {
     if (typeof window === 'undefined') {

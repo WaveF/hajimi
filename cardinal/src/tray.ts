@@ -6,7 +6,7 @@ import i18n from './i18n/config';
 import { getStoredGlobalShortcut } from './utils/globalShortcuts';
 
 const TRAY_ID = 'hajimi.tray';
-const TRAY_ICON_RESOURCE = 'icons/tray-search.png';
+const TRAY_ICON_RESOURCE = 'icons/hajimi-tray.png';
 
 let trayInitPromise: Promise<void> | null = null;
 let trayIcon: TrayIcon | null = null;

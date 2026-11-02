@@ -13,5 +13,7 @@ export const openResultDirectory = (path: string | null | undefined): void => {
     return;
   }
 
-  void invoke('open_path', { path });
+  // Keep directory-column double-click behavior aligned with Cmd+R so the
+  // user's preferred Finder replacement (for example, QSpace) can handle it.
+  void invoke('open_in_finder', { path });
 };

@@ -140,8 +140,8 @@
       "label": "경로 열을 두 번 클릭하면 상위 폴더 열기"
     },
     "globalShortcut": {
-      "label": "Global shortcut",
-      "placeholder": "Press a key combination",
+      "empty": "설정되지 않음",
+      "recording": "키 조합을 누르세요",
       "clear": "Clear",
       "errors": {
         "unavailable": "This shortcut is unavailable or already in use."

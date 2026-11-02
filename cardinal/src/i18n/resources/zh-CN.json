@@ -133,6 +133,7 @@
       "general": "通用",
       "search": "搜索",
       "indexing": "索引",
+      "shortcuts": "快捷键",
       "mcp": "MCP",
       "about": "关于"
     },
@@ -181,12 +182,16 @@
       "label": "排序上限"
     },
     "globalShortcut": {
-      "label": "全局 唤起/隐藏 热键",
-      "placeholder": "按下快捷键组合",
+      "empty": "未设置",
+      "recording": "按下快捷键组合",
       "clear": "清除",
       "errors": {
         "unavailable": "该快捷键不可用或已被占用。"
       }
+    },
+    "shortcuts": {
+      "toggleVisibility": "唤起/隐藏（全局）",
+      "caseSensitive": "切换区分大小写匹配"
     },
     "save": "保存设置",
     "reset": "恢复默认设置",

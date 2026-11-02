@@ -74,6 +74,17 @@ pub fn run() -> Result<()> {
     let mut builder = tauri::Builder::default();
     #[cfg(not(feature = "dev"))]
     {
+        builder = builder.plugin(tauri_plugin_single_instance::init(|app, _argv, _cwd| {
+            let app_handle = app.clone();
+            if let Err(error) = app.run_on_main_thread(move || {
+                window_controls::wake_main_window_impl(&app_handle);
+            }) {
+                warn!("Failed to wake the existing hajimi instance: {error:?}");
+            }
+        }));
+    }
+    #[cfg(not(feature = "dev"))]
+    {
         builder = builder.plugin(tauri_plugin_prevent_default::init());
     }
     let update_window_state_tx_for_window = update_window_state_tx.clone();

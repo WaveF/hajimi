@@ -44,6 +44,9 @@ const baseProps = {
   globalShortcut: '',
   defaultGlobalShortcut: '',
   onGlobalShortcutChange: vi.fn(),
+  caseSensitiveShortcut: '',
+  defaultCaseSensitiveShortcut: '',
+  onCaseSensitiveShortcutChange: vi.fn(),
   onQuit: vi.fn(),
   watchRoot: '/old/root',
   defaultWatchRoot: '/default/root',
@@ -54,7 +57,7 @@ const baseProps = {
   onReset: vi.fn(),
   themeResetToken: 0,
   onWatchConfigChange: vi.fn(),
-  appVersion: '0.1.24',
+  appVersion: '0.1.25',
   autoUpdateEnabled: true,
   onAutoUpdateEnabledChange: vi.fn(),
   updateCheckFrequency: 'weekly' as const,
@@ -271,7 +274,12 @@ describe('PreferencesOverlay', () => {
     const onGlobalShortcutChange = vi.fn().mockResolvedValue(undefined);
     render(<PreferencesOverlay {...baseProps} onGlobalShortcutChange={onGlobalShortcutChange} />);
 
-    const shortcutInput = screen.getByLabelText('preferences.globalShortcut.label');
+    fireEvent.click(screen.getByRole('button', { name: 'preferences.nav.shortcuts' }));
+    const shortcutInput = screen.getByLabelText('preferences.shortcuts.toggleVisibility');
+    expect(shortcutInput).toHaveAttribute('placeholder', 'preferences.globalShortcut.empty');
+    fireEvent.focus(shortcutInput);
+    expect(shortcutInput).toHaveAttribute('placeholder', 'preferences.globalShortcut.recording');
+    expect(shortcutInput.className).toContain('preferences-shortcut-input--active');
     fireEvent.keyDown(shortcutInput, {
       key: 'k',
       code: 'KeyK',
@@ -280,6 +288,8 @@ describe('PreferencesOverlay', () => {
     });
 
     expect(shortcutInput).toHaveValue('Ctrl+Shift+K');
+    fireEvent.blur(shortcutInput);
+    expect(shortcutInput.className).not.toContain('preferences-shortcut-input--active');
     fireEvent.click(screen.getByText('preferences.save'));
 
     await waitFor(() => {
@@ -305,6 +315,29 @@ describe('PreferencesOverlay', () => {
     });
   });
 
+  it('records and saves the local case-sensitive search shortcut', async () => {
+    const onCaseSensitiveShortcutChange = vi.fn();
+    render(
+      <PreferencesOverlay
+        {...baseProps}
+        onCaseSensitiveShortcutChange={onCaseSensitiveShortcutChange}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'preferences.nav.shortcuts' }));
+    const shortcutInput = screen.getByLabelText('preferences.shortcuts.caseSensitive');
+    fireEvent.keyDown(shortcutInput, {
+      key: 's',
+      code: 'KeyS',
+      metaKey: true,
+    });
+    fireEvent.click(screen.getByText('preferences.save'));
+
+    await waitFor(() => {
+      expect(onCaseSensitiveShortcutChange).toHaveBeenCalledWith('CommandOrControl+S');
+    });
+  });
+
   it('clears the shortcut with Escape without closing preferences', () => {
     const onClose = vi.fn();
     render(
@@ -315,7 +348,8 @@ describe('PreferencesOverlay', () => {
       />,
     );
 
-    const shortcutInput = screen.getByLabelText('preferences.globalShortcut.label');
+    fireEvent.click(screen.getByRole('button', { name: 'preferences.nav.shortcuts' }));
+    const shortcutInput = screen.getByLabelText('preferences.shortcuts.toggleVisibility');
     fireEvent.keyDown(shortcutInput, { key: 'Escape', code: 'Escape' });
 
     expect(shortcutInput).toHaveValue('');
@@ -333,7 +367,8 @@ describe('PreferencesOverlay', () => {
       />,
     );
 
-    fireEvent.keyDown(screen.getByLabelText('preferences.globalShortcut.label'), {
+    fireEvent.click(screen.getByRole('button', { name: 'preferences.nav.shortcuts' }));
+    fireEvent.keyDown(screen.getByLabelText('preferences.shortcuts.toggleVisibility'), {
       key: 'k',
       code: 'KeyK',
       ctrlKey: true,

@@ -255,7 +255,7 @@ main,
   height: var(--search-segment-height);
   padding: 0;
   border: none;
-  border-radius: 0.55rem;
+  border-radius: 4px;
   background: transparent;
   box-shadow: none;
   color: var(--color-muted);
@@ -1132,8 +1132,7 @@ button:active:not(:disabled) {
     background: rgba(255, 255, 255, 0.75);
   }
 
-  :root:not([data-theme]) .permission-overlay,
-  :root:not([data-theme]) .preferences-overlay {
+  :root:not([data-theme]) .permission-overlay {
     background: rgba(7, 9, 14, 0.72);
   }
 
@@ -1215,8 +1214,7 @@ button:active:not(:disabled) {
   background: rgba(255, 255, 255, 0.75);
 }
 
-[data-theme='dark'] .permission-overlay,
-[data-theme='dark'] .preferences-overlay {
+[data-theme='dark'] .permission-overlay {
   background: rgba(7, 9, 14, 0.72);
 }
 
@@ -1727,8 +1725,9 @@ button:active:not(:disabled) {
   display: grid;
   place-items: center;
   padding: 5vh 24px;
-  background: rgba(15, 17, 26, 0.78);
-  backdrop-filter: blur(6px);
+  background: rgba(255, 255, 255, 0.48);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .preferences-card {
@@ -1741,8 +1740,8 @@ button:active:not(:disabled) {
   border: 1px solid rgba(222, 226, 230, 0.88);
   border-radius: 18px;
   box-shadow:
-    0 20px 60px rgba(24, 31, 49, 0.09),
-    0 2px 8px rgba(24, 31, 49, 0.04);
+    0 30px 90px rgba(24, 31, 49, 0.16),
+    0 6px 18px rgba(24, 31, 49, 0.08);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -1946,6 +1945,73 @@ button:active:not(:disabled) {
   background: var(--color-bg);
 }
 
+/* Shared button system for preference actions and dialogs. */
+.app-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 7px 14px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.2;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    filter 0.12s ease;
+}
+
+.app-button--primary {
+  border-color: var(--color-accent);
+  color: var(--color-accent-contrast, #ffffff);
+  background: var(--color-accent);
+  font-weight: 600;
+}
+
+.app-button--primary:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  background: rgba(var(--color-accent-rgb), 0.88);
+}
+
+.app-button--primary:active:not(:disabled) {
+  border-color: var(--color-accent);
+  background: rgba(var(--color-accent-rgb), 0.88);
+  filter: brightness(0.8);
+}
+
+.app-button--secondary {
+  border-color: var(--color-elevated-border, var(--color-border));
+  color: var(--color-text);
+  background: var(--color-elevated-bg);
+}
+
+.app-button--secondary:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: transparent;
+}
+
+.app-button--secondary:active:not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: rgba(var(--color-accent-rgb), 0.2);
+  filter: none;
+}
+
+.app-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.app-button:focus-visible {
+  outline: 2px solid rgba(var(--color-accent-rgb), 0.4);
+  outline-offset: 2px;
+}
+
 .preferences-mcp__intro {
   max-width: 720px;
   margin: 0 0 14px;
@@ -1992,29 +2058,11 @@ button:active:not(:disabled) {
 }
 
 .preferences-mcp__copy {
-  border: 1px solid var(--color-accent);
-  border-radius: 7px;
-  padding: 7px 12px;
-  color: var(--color-accent-contrast, #ffffff);
-  background: var(--color-accent);
-  font-size: 13px;
-  cursor: pointer;
-  transition: filter 0.18s ease;
-}
-
-.preferences-mcp__copy:hover:not(:disabled),
-.preferences-mcp__copy:focus-visible:not(:disabled) {
-  filter: brightness(0.8);
+  padding-inline: 12px;
 }
 
 .preferences-mcp__copy:disabled {
-  cursor: not-allowed;
   opacity: 0.5;
-}
-
-.preferences-mcp__copy:focus-visible {
-  outline: 2px solid rgba(var(--color-accent-rgb), 0.45);
-  outline-offset: 2px;
 }
 
 .preferences-mcp__prompt {
@@ -2030,6 +2078,10 @@ button:active:not(:disabled) {
   user-select: text;
   -webkit-user-select: text;
   -moz-user-select: text;
+}
+
+.preferences-mcp__prompt::-webkit-scrollbar {
+  width: 7px;
 }
 
 .preferences-about__identity {
@@ -2119,38 +2171,6 @@ button:active:not(:disabled) {
 .preferences-about__primary,
 .preferences-about__secondary {
   min-width: 140px;
-  padding: 8px 14px;
-  border-radius: 7px;
-  font: inherit;
-  font-size: 13px;
-  cursor: pointer;
-  transition: filter 0.18s ease;
-}
-
-.preferences-about__primary {
-  border: 1px solid var(--color-accent);
-  color: var(--color-accent-contrast, #ffffff);
-  background: var(--color-accent);
-  font-weight: 600;
-}
-
-.preferences-about__secondary {
-  border: 1px solid var(--color-elevated-border, var(--color-border));
-  color: var(--color-text);
-  background: var(--color-elevated-bg);
-}
-
-.preferences-about__primary:hover,
-.preferences-about__secondary:hover,
-.preferences-about__primary:focus-visible,
-.preferences-about__secondary:focus-visible {
-  filter: brightness(0.8);
-}
-
-.preferences-about__primary:focus-visible,
-.preferences-about__secondary:focus-visible {
-  outline: 2px solid rgba(var(--color-accent-rgb), 0.4);
-  outline-offset: 2px;
 }
 
 .update-dialog-overlay {
@@ -2181,6 +2201,11 @@ button:active:not(:disabled) {
   justify-content: space-between;
   gap: 16px;
   padding: 16px 18px;
+}
+
+.update-dialog__footer {
+  min-height: 72px;
+  box-sizing: border-box;
 }
 
 .update-dialog__header h2 {
@@ -2267,43 +2292,15 @@ button:active:not(:disabled) {
 
 .update-dialog__primary,
 .update-dialog__secondary {
-  padding: 8px 13px;
-  border-radius: 7px;
-  font: inherit;
-  font-size: 13px;
-  cursor: pointer;
+  min-width: 88px;
 }
 
 .update-dialog__primary {
   margin-top: 18px;
-  border: 1px solid var(--color-accent);
-  color: var(--color-accent-contrast, #ffffff);
-  background: var(--color-accent);
-  font-weight: 600;
 }
 
 .update-dialog__secondary {
   margin-left: auto;
-  border: 1px solid var(--color-elevated-border, var(--color-border));
-  color: var(--color-text);
-  background: var(--color-elevated-bg);
-}
-
-.update-dialog__primary:hover,
-.update-dialog__secondary:hover {
-  border-color: var(--color-accent);
-}
-
-.update-dialog__primary:active:not(:disabled),
-.update-dialog__secondary:active:not(:disabled) {
-  border-color: var(--color-accent);
-  filter: brightness(0.8);
-}
-
-.update-dialog__primary:focus-visible,
-.update-dialog__secondary:focus-visible {
-  outline: 2px solid rgba(var(--color-accent-rgb), 0.4);
-  outline-offset: 2px;
 }
 
 .preferences-card__footer {
@@ -2343,20 +2340,10 @@ button:active:not(:disabled) {
 }
 
 .preferences-save {
-  border: 1px solid var(--color-accent);
-  background: var(--color-accent);
-  color: var(--color-accent-contrast, #ffffff);
-  border-radius: 7px;
-  padding: 7px 14px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+  min-width: 104px;
 }
 
 .preferences-save:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
   box-shadow: none;
   transform: none;
 }
@@ -2365,36 +2352,8 @@ button:active:not(:disabled) {
   background: var(--color-accent);
 }
 
-.preferences-save:hover {
-  background: rgba(var(--color-accent-rgb), 0.88);
-}
-
-.preferences-save:focus-visible {
-  outline: 2px solid rgba(var(--color-accent-rgb), 0.45);
-  outline-offset: 2px;
-}
-
 .preferences-reset {
-  border: 1px solid var(--color-elevated-border, var(--color-border));
-  background: var(--color-elevated-bg);
-  color: var(--color-text);
-  border-radius: 7px;
-  padding: 7px 12px;
-  font-size: 14px;
-  cursor: pointer;
-  transition:
-    border-color 0.2s ease,
-    background-color 0.2s ease;
-}
-
-.preferences-reset:hover {
-  border-color: var(--color-accent);
-  background: var(--color-bg);
-}
-
-.preferences-reset:focus-visible {
-  outline: 2px solid rgba(var(--color-accent-rgb), 0.4);
-  outline-offset: 2px;
+  min-width: 104px;
 }
 
 .preferences-row {
@@ -2403,7 +2362,7 @@ button:active:not(:disabled) {
   align-items: center;
   gap: 20px;
   min-height: 66px;
-  padding: 15px 17px;
+  padding: 12px 16px;
 }
 
 .preferences-row + .preferences-row {
@@ -2488,6 +2447,16 @@ button:active:not(:disabled) {
   text-align: left;
   cursor: pointer;
   background: var(--color-bg);
+}
+
+.preferences-shortcut-input::placeholder {
+  color: var(--color-muted, var(--color-text));
+  opacity: 0.72;
+}
+
+.preferences-shortcut-input--active {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px rgba(var(--color-accent-rgb), 0.18);
 }
 
 .preferences-shortcut-clear {

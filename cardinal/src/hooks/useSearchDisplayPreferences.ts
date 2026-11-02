@@ -1,4 +1,9 @@
 import { useCallback, useState } from 'react';
+import {
+  DEFAULT_CASE_SENSITIVE_SHORTCUT,
+  getStoredCaseSensitiveShortcut,
+  updateCaseSensitiveShortcut,
+} from '../utils/localShortcuts';
 
 export const HIDE_EMPTY_RESULTS_STORAGE_KEY = 'hajimi.search.hideEmptyResults';
 export const REFRESH_EVENTS_ONLY_WHEN_ACTIVE_STORAGE_KEY =
@@ -42,6 +47,9 @@ export type SearchDisplayPreferences = {
   setRefreshEventsOnlyWhenActive: (enabled: boolean) => void;
   openDirectoryOnPathDoubleClick: boolean;
   setOpenDirectoryOnPathDoubleClick: (enabled: boolean) => void;
+  caseSensitiveShortcut: string;
+  defaultCaseSensitiveShortcut: string;
+  setCaseSensitiveShortcut: (shortcut: string) => void;
   resetSearchDisplayPreferences: () => void;
 };
 
@@ -61,6 +69,9 @@ export function useSearchDisplayPreferences(): SearchDisplayPreferences {
       DEFAULT_OPEN_DIRECTORY_ON_PATH_DOUBLE_CLICK,
     ),
   );
+  const [caseSensitiveShortcut, setCaseSensitiveShortcutState] = useState(() =>
+    getStoredCaseSensitiveShortcut(),
+  );
 
   const setHideEmptyResults = useCallback((enabled: boolean) => {
     setHideEmptyResultsState(enabled);
@@ -77,10 +88,17 @@ export function useSearchDisplayPreferences(): SearchDisplayPreferences {
     persistBoolean(OPEN_DIRECTORY_ON_PATH_DOUBLE_CLICK_STORAGE_KEY, enabled);
   }, []);
 
+  const setCaseSensitiveShortcut = useCallback((shortcutInput: string) => {
+    const shortcut = shortcutInput.trim();
+    updateCaseSensitiveShortcut(shortcut);
+    setCaseSensitiveShortcutState(shortcut);
+  }, []);
+
   const resetSearchDisplayPreferences = useCallback(() => {
     setHideEmptyResultsState(DEFAULT_HIDE_EMPTY_RESULTS);
     setRefreshEventsOnlyWhenActiveState(DEFAULT_REFRESH_EVENTS_ONLY_WHEN_ACTIVE);
     setOpenDirectoryOnPathDoubleClickState(DEFAULT_OPEN_DIRECTORY_ON_PATH_DOUBLE_CLICK);
+    setCaseSensitiveShortcutState(DEFAULT_CASE_SENSITIVE_SHORTCUT);
     persistBoolean(HIDE_EMPTY_RESULTS_STORAGE_KEY, DEFAULT_HIDE_EMPTY_RESULTS);
     persistBoolean(
       REFRESH_EVENTS_ONLY_WHEN_ACTIVE_STORAGE_KEY,
@@ -90,6 +108,7 @@ export function useSearchDisplayPreferences(): SearchDisplayPreferences {
       OPEN_DIRECTORY_ON_PATH_DOUBLE_CLICK_STORAGE_KEY,
       DEFAULT_OPEN_DIRECTORY_ON_PATH_DOUBLE_CLICK,
     );
+    updateCaseSensitiveShortcut(DEFAULT_CASE_SENSITIVE_SHORTCUT);
   }, []);
 
   return {
@@ -99,6 +118,9 @@ export function useSearchDisplayPreferences(): SearchDisplayPreferences {
     setRefreshEventsOnlyWhenActive,
     openDirectoryOnPathDoubleClick,
     setOpenDirectoryOnPathDoubleClick,
+    caseSensitiveShortcut,
+    defaultCaseSensitiveShortcut: DEFAULT_CASE_SENSITIVE_SHORTCUT,
+    setCaseSensitiveShortcut,
     resetSearchDisplayPreferences,
   };
 }
